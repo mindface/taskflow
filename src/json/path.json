@@ -1,0 +1,22 @@
+[
+  {
+    "id":"path1",
+    "name":"home",
+    "path":"/"
+  },
+  {
+    "id":"path2",
+    "name":"structsmake",
+    "path":"/structsmake"
+  },
+  {
+    "id":"path3",
+    "name":"tokenizer",
+    "path":"/tokenizer"
+  },
+  {
+    "id":"path4",
+    "name":"makertext",
+    "path":"/makertext"
+  }
+]
