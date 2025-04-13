@@ -1,0 +1,102 @@
+{
+  "categories": [
+    {
+      "id": "1",
+      "name": "FinancialAccounting",
+      "ja": "財務会計",
+      "value": 5,
+      "children": [
+        {
+          "numberId": 1,
+          "title": "Literature",
+          "ja": "",
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "2",
+      "name": "HumanResourcesManagement",
+      "ja": "人事管理",
+      "value": 6,
+      "children": [
+        {
+          "numberId": 1,
+          "title": "Sociology",
+          "ja": "",
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "3",
+      "name": "SalesManagement",
+      "ja": "販売管理",
+      "value": 7,
+      "children": [
+        {
+          "numberId": 1,
+          "title": "Physics",
+          "ja": "",
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "4",
+      "name": "ProductionManagement",
+      "ja": "生産管理",
+      "value": 8,
+      "children": [
+        {
+          "numberId": 1,
+          "title": "PureMathematics",
+          "ja": "",
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "5",
+      "name": "Engineering",
+      "ja": "在庫管理",
+      "value": 7.5,
+      "children": [
+        {
+          "numberId": 1,
+          "title": "InventoryManagement",
+          "ja": "",
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "6",
+      "name": "QualityControl",
+      "ja": "品質管理",
+      "value": 7.5,
+      "children": [
+        {
+          "numberId": 1,
+          "title": "GeneralMedicine",
+          "ja": "",
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "id": "7",
+      "name": "CustomerRelationshipManagement",
+      "ja": "顧客関係管理",
+      "value": 6.5,
+      "children": [
+        {
+          "numberId": 1,
+          "title": "BiologicalProduction",
+          "ja": "生物生産学",
+          "detail": "植物や動物の生産プロセスに関する学問。生物の生育、収穫、保存技術に関する研究を含む。"
+        }
+      ]
+    }
+  ]
+}

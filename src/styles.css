@@ -93,6 +93,9 @@ button {
 .rounded {
   border-radius: 8px;
 }
+.text-black {
+  color: black;
+}
 
 .p-1 {
   padding: 4px;

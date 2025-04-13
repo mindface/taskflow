@@ -5,6 +5,7 @@ import Home from "./pages/Home";
 import Structsmake from "./pages/Structsmake";
 import Tokenizer from "./pages/Tokenizer";
 import MakerText from "./pages/MakerText";
+import CsvMaker from "./pages/CsvMaker";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 
@@ -20,12 +21,13 @@ function App() {
         <Header
           nextPageAction={(path:string) => viewTypeSet(path)}
         />
-        <>{viewtype}</>
+        <p className="text-black">{viewtype}</p>
         <main className="main">
-          {viewtype === "home " && <DataProvider><Home/></DataProvider> }
-          {viewtype === "structsmake" && <Structsmake/> }
-          {viewtype === "tokenizer" && <Tokenizer/> }
-          {viewtype === "makertext" && <MakerText/> }
+          {viewtype === "home " && <DataProvider><Home /></DataProvider> }
+          {viewtype === "structsmake" && <Structsmake /> }
+          {viewtype === "tokenizer" && <Tokenizer /> }
+          {viewtype === "makertext" && <MakerText /> }
+          {viewtype === "csvmaker" && <CsvMaker /> }
         </main>
         <Footer />
       </div>

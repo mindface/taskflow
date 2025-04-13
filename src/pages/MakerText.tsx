@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/tauri";
+import ReactMarkdown from "react-markdown";
 
 export default function MakerText() {
   const [files, setFiles] = useState<string[]>([]);
+  const [viewMarkDown, setViewMarkDown] = useState(false);
   const [selectedFile, setSelectedFile] = useState("");
   const [fileContent, setFileContent] = useState("");
   const [addFileName, setAddFileName] = useState("");
@@ -29,6 +31,10 @@ export default function MakerText() {
     } catch (error) {
       console.error("Failed to read file:", error);
     }
+  }
+
+  function viewMarkDownAction() {
+    setViewMarkDown(!viewMarkDown)
   }
 
   async function saveFile() {
@@ -63,6 +69,11 @@ export default function MakerText() {
     }
   }
 
+  const exportPdf = async () => {
+    const filePath = `target/${selectedFile}pdf.pdf`;
+    const content = await invoke("export_pdf", { outputPath: filePath, text: fileContent });
+  }
+
   return (
     <div className="p-4">
       <div className="add-file-box">
@@ -80,7 +91,6 @@ export default function MakerText() {
           <li
             key={`file${index}`}
             className="cursor-pointer p-4 color-black"
-            
           >
             <span onClick={() => loadFile(file)}>{file}</span>
             <button onClick={() => deleteingFile(file)}>削除</button>
@@ -89,16 +99,31 @@ export default function MakerText() {
       </ul>
       {selectedFile && (
         <div>
-          <textarea
-            cols={30}
-            rows={20}
-            className="w-full h-64 p-4 border rounded w-100 "
-            value={fileContent}
-            onChange={(e) => setFileContent(e.target.value)}
-          />
-          <button onClick={saveFile} className="mt-2 p-2 bg-blue-500 text-white rounded">
-            Save File
-          </button>
+          <div className="input-box">
+            <textarea
+              cols={30}
+              rows={20}
+              className="w-full h-64 p-4 border rounded w-100 line-height"
+              value={fileContent}
+              onChange={(e) => setFileContent(e.target.value)}
+            />
+          </div>
+          { viewMarkDown && 
+            <div className="output-box p-4 prose prose-sm max-w-none color-black">
+              <ReactMarkdown>{fileContent}</ReactMarkdown>
+            </div>
+          }
+          <div className="p-3">
+            <button onClick={viewMarkDownAction} className="mt-2 p-2 bg-blue-500 text-white rounded">
+              View maek down
+            </button>
+            <button onClick={saveFile} className="mt-2 p-2 bg-blue-500 text-white rounded">
+              Save File
+            </button>
+            <button onClick={exportPdf} className="mt-2 p-2 bg-blue-500 text-white rounded">
+              Export Pdf
+            </button>
+          </div>
         </div>
       )}
     </div>

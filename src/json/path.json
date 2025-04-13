@@ -18,5 +18,10 @@
     "id":"path4",
     "name":"makertext",
     "path":"/makertext"
+  },
+  {
+    "id":"path5",
+    "name":"csvmaker",
+    "path":"/csvmaker"
   }
 ]

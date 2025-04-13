@@ -60,6 +60,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             commands::file_operations::writing_file,
             commands::file_operations::add_file,
             commands::file_operations::deleteing_file,
+            commands::file_operations::export_pdf,
+            commands::file_operations::export_to_csv,
             read_file,
           ])
         .run(tauri::generate_context!())
