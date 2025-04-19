@@ -3,8 +3,6 @@ use std::path::{Path, PathBuf};
 use std::io::{self, Write};
 use genpdf::{Document, elements, fonts};
 use serde::Deserialize;
-use tauri::api::path::document_dir;
-use tauri::api::path::app_data_dir;
 use std::fs::File;
 use tauri::{AppHandle};
 

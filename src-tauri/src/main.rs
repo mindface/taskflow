@@ -1,60 +1,94 @@
-
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-#[macro_use]
-use lindera_core::{mode::Mode, LinderaResult};
-use lindera_dictionary::{DictionaryConfig, DictionaryKind};
-use lindera_tokenizer::tokenizer::{Tokenizer, TokenizerConfig};
-use std::fs;
-use std::io::{self, Write};
+
+use chrono::{DateTime, Utc};
+use serde::{Serialize, Deserialize};
+
+mod data_collection;
+mod vector_store;
 mod commands;
+mod database;
+mod error;
+mod scheduler;
 
-#[derive(Debug)]
-pub enum LinderaError {
-    Custom(String),
+use database::Database;
+use error::{Result};
+
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct HistoryEntry {
+    timestamp: DateTime<Utc>,
+    content: String,
+    source: String,
+    metadata: serde_json::Value,
 }
 
-impl std::fmt::Display for LinderaError {
-  fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-    match self {
-      LinderaError::Custom(s) => write!(f, "Custom error: {}", s),
-    }
-  }
+#[derive(Debug, thiserror::Error, serde::Serialize)]
+pub enum AppError {
+    #[error("DB error: {0}")]
+    SqlxError(String),
+
+    #[error("IO error: {0}")]
+    IoError(String),
+
+    #[error("Other error: {0}")]
+    Other(String),
 }
 
-// Todo どこかで消す
 #[tauri::command]
-fn read_file(path: String) -> Result<String, String> {
-    fs::read_to_string(&path)
-        .map_err(|e| format!("Failed to read file: {}", e))
+async fn process_history() -> std::result::Result<String, String> {
+  let db = Database::new().await.map_err(|e| e.to_string())?;
+  let pool = db.get_pool();
+
+  data_collection::collect_history(pool)
+      .await
+      .map_err(|e| e.to_string())?;
+
+  Ok("履歴の処理が完了しました".to_string())
 }
 
-fn main() -> Result<(), Box<dyn std::error::Error>> {
+#[tauri::command]
+async fn query_history(query: String) -> std::result::Result<String, String> {
+    let db = Database::new().await.map_err(|e| e.to_string())?;
+    let pool = db.get_pool();
 
-    let dictionary = DictionaryConfig {
-        kind: Some(DictionaryKind::IPADIC),
-        path: None,
-    };
+    let like_query = format!("%{}%", query);
+    let results = sqlx::query!(
+        r#"
+        SELECT * FROM browser_history
+        WHERE url LIKE ? OR title LIKE ?
+        ORDER BY visit_time DESC
+        LIMIT 10
+        "#,
+        like_query,
+        like_query
+    )
+    .fetch_all(pool)
+    .await
+        .map_err(|e| e.to_string())?;
 
-    let config = TokenizerConfig {
-        dictionary,
-        user_dictionary: None,
-        mode: Mode::Normal,
-    };
+    let formatted_results = results
+        .iter()
+        .map(|r| format!("{} - {} ({})", r.title.clone().unwrap_or_default(), r.url, r.visit_time))
+        .collect::<Vec<_>>()
+        .join("\n");
 
-    // create tokenizer
-    let tokenizer = Tokenizer::from_config(config)?;
+    Ok(formatted_results)
+}
 
-    // tokenize the text
-    let tokens = tokenizer.tokenize("関西国際空港限定トートバッグ")?;
+fn main() -> Result<()> {
+    // let scheduler = Scheduler::new(60);
+    // tokio::spawn(async move {
+    //   scheduler.start().await.unwrap_or_else(|e| {
+    //       eprintln!("Scheduler error: {}", e);
+    //   });
+    // });
 
-    // output the tokens
-    for token in tokens {
-        println!("{}", token.text);
-    }
 
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
+            process_history,
+            query_history,
             commands::file_operations::list_files,
             commands::file_operations::reading_file,
             commands::file_operations::writing_file,
@@ -62,25 +96,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             commands::file_operations::deleteing_file,
             commands::file_operations::export_pdf,
             commands::file_operations::export_to_csv,
-            read_file,
-          ])
+        ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
-    
+        
     Ok(())
 }
-
-// #[tauri::command]
-// fn tokening(name: &str) -> String {
-//     let text = "関西国際空港限定トートバッグ";
-
-//     let mut user_dict = UserDictionary::default();
-//     let mut tokenizer = Tokenizer::new(Mode::Normal, "", &mut user_dict).unwrap();
-//     let tokens = tokenizer.tokenize(text).unwrap();
-
-//     for token in tokens {
-//         println!("{:?}", token.text);
-//     }
-
-//     format!("Hello, {}! use Lindera!", name)
-// }

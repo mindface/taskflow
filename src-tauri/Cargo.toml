@@ -1,6 +1,6 @@
 [package]
 name = "taskflow"
-version = "0.0.0"
+version = "0.1.0"
 description = "A Tauri App"
 authors = ["you"]
 license = ""
@@ -10,17 +10,31 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [build-dependencies]
-tauri-build = { version = "1.4", features = [] }
+tauri-build = { version = "1.5", features = [] }
 
 [dependencies]
-tauri = { version = "1.4", features = [ "fs-write-file", "dialog-message", "dialog-save", "dialog-open", "shell-open"] }
+tauri = { version = "1.5", features = ["dialog-message", "dialog-open", "dialog-save", "fs-write-file", "shell-open"] }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
-lindera-tokenizer = { version = "0.27.0", features = ["ipadic"] }
-lindera-dictionary = "0.27.0"
-lindera-core = "0.27.0"
-lindera = "0.27.0"
+lindera-tokenizer = { version = "0.32.3", features = ["ipadic"] }
+lindera-dictionary = "0.41.0"
+lindera-core = "0.33.0"
+lindera = "0.41.0"
 genpdf = "0.2"
+ollama-rs = "0.3.0"
+qdrant-client = "1.13.0"
+rust-bert = { version = "0.23.0", features = ["download-libtorch"] }
+tokio = { version = "1.0", features = ["full"] }
+chrono = { version = "0.4", features = ["serde"] }
+url = "2.4"
+sqlx = { version = "0.8.3", features = ["sqlite", "runtime-tokio", "chrono", "runtime-tokio-native-tls"] }
+dirs = "6.0.0"
+thiserror = "2.0"
+env_logger = "0.11"
+log = "0.4"
+dotenv = "0.15.0"
+futures = "0.3"
+anyhow = "1"
 
 [features]
 # this feature is used for production builds or when `devPath` points to the filesystem
