@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/tauri";
+import { sendNotification } from "@tauri-apps/api/notification";
+import { open } from "@tauri-apps/api/dialog";
+
 import ReactMarkdown from "react-markdown";
 
 export default function MakerText() {
@@ -8,22 +11,30 @@ export default function MakerText() {
   const [selectedFile, setSelectedFile] = useState("");
   const [fileContent, setFileContent] = useState("");
   const [addFileName, setAddFileName] = useState("");
+  const [directoryPath, setDirectoryPath] = useState("target");
 
-  async function fetchFiles() {
+  async function fetchFiles(selectedFolder?: string) {
     try {
-      const fileList = await invoke<string[]>("list_files", { directory: "target" });
+      const fileList = await invoke<string[]>("list_files", { directory: selectedFolder ? selectedFolder : directoryPath });
+      console.log(fileList)
       setFiles(fileList);
     } catch (error) {
       console.error("Failed to fetch files:", error);
     }
   }
 
-  useEffect(() => {
-    fetchFiles();
-  }, []);
+  const fetchFilesAction = async () => {
+    const selected = await open({
+      directory: true,
+      multiple: false,
+      title: "保存先フォルダを選択してください"
+    });
+    setDirectoryPath(selected as string);
+    fetchFiles(selected as string );
+  }
 
   async function loadFile(fileName: string) {
-    const filePath = `target/${fileName}`;
+    const filePath = `${directoryPath}/${fileName}`;
     try {
       const content = await invoke<string>("reading_file", { filePath });
       setSelectedFile(fileName);
@@ -40,9 +51,9 @@ export default function MakerText() {
   async function saveFile() {
     if (!selectedFile) return;
     console.log(selectedFile);
-    const filePath = `target/${selectedFile}`;
+    const filePath = `${directoryPath}/${selectedFile}`;
     try {
-      await invoke("writing_file", { fileName: filePath, content: fileContent  });
+      await invoke("writing_file", { directory: directoryPath, fileName: selectedFile, content: fileContent  });
       alert("File saved successfully");
     } catch (error) {
       console.error("Failed to save file:", error);
@@ -52,8 +63,26 @@ export default function MakerText() {
 
   async function addFile() {
     try {
-      const response = await invoke("add_file", { fileName: addFileName, content: "test" });
+      const selected = await open({
+        directory: true,
+        multiple: false,
+        title: "保存先フォルダを選択してください"
+      });
+
+      if (!selected) {
+        alert("フォルダが選択されませんでした");
+        return;
+      }
+      const directory = typeof selected === "string" ? selected : selected[0];
+      setDirectoryPath(directory);
+      const response = await invoke("add_file", {
+        directory,
+        fileName: addFileName,
+        content: "test"
+      });
       console.log(response);
+      sendNotification({ title: 'ファイル追加', body: `${addFileName} を追加しました。` });
+      fetchFiles();
     } catch (error) {
       console.error("Failed to add file:", error);
     }
@@ -77,6 +106,7 @@ export default function MakerText() {
   return (
     <div className="p-4">
       <div className="add-file-box">
+        <button onClick={fetchFilesAction}>fetchFilesAction</button>
         <div className="flex p-4">
           <input
             type="text"

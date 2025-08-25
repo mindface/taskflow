@@ -3,15 +3,69 @@ use std::path::{Path, PathBuf};
 use std::io::{self, Write};
 use genpdf::{Document, elements, fonts};
 use serde::Deserialize;
+use serde::Serialize;
 use tauri::api::path::document_dir;
 use tauri::api::path::app_data_dir;
 use std::fs::File;
 use tauri::{AppHandle};
 
+
+
 #[derive(Deserialize)]
 pub struct Person {
     name: String,
     age: u32,
+}
+
+#[derive(Deserialize, Serialize, Debug, Clone)]
+pub struct Task {
+    pub name: String,
+    pub title: String,
+}
+
+#[derive(Deserialize, Serialize, Debug, Clone)]
+pub struct Config {
+    pub directory: String,
+    pub tasks: Vec<Task>,
+}
+
+#[tauri::command]
+pub fn load_config(config_path: String) -> Result<Config, String> {
+    let config_str = fs::read_to_string(&config_path)
+        .map_err(|e| format!("Failed to read config file: {}", e))?;
+    let config: Config = serde_json::from_str(&config_str)
+        .map_err(|e| format!("Failed to parse config file: {}", e))?;
+    Ok(config)
+}
+
+#[tauri::command]
+pub fn list_task_files(config_path: String) -> Result<Vec<String>, String> {
+    let config = load_config(config_path)?;
+    let dir_path = Path::new(&config.directory);
+
+    let entries = fs::read_dir(dir_path)
+        .map_err(|e| format!("Failed to read directory: {}", e))?;
+
+    let files: Vec<String> = entries
+        .filter_map(|entry| entry.ok())
+        .filter(|entry| entry.path().is_file())
+        .filter_map(|entry| {
+            let file_name = entry.file_name().into_string().ok()?;
+            if file_name == "CACHEDIR.TAG" || file_name.starts_with('.') {
+                None
+            } else {
+                Some(file_name)
+            }
+        })
+        .collect();
+
+    Ok(files)
+}
+
+#[tauri::command]
+pub fn get_tasks(config_path: String) -> Result<Vec<Task>, String> {
+    let config = load_config(config_path)?;
+    Ok(config.tasks)
 }
 
 #[tauri::command]
@@ -48,13 +102,15 @@ pub fn reading_file(file_path: String) -> Result<String, String> {
 }
 
 #[tauri::command]
-pub fn writing_file(file_name: String, content: String) -> Result<(), String> {
-    fs::write(&file_name, content).map_err(|e| format!("Failed to write file: {}", e))
+pub fn writing_file(directory: String, file_name: String, content: String) -> Result<(), String> {
+    let path = Path::new(&directory).join(&file_name);
+    fs::write(&path, content).map_err(|e| format!("Failed to write file: {}", e))
 }
 
 #[tauri::command]
-pub fn add_file(file_name: String, content: String) -> Result<String, String> {
-    let path = Path::new("target").join(file_name);
+pub fn add_file(directory: String, file_name: String, content: String) -> Result<String, String> {
+    let path = Path::new(&directory).join(file_name);
+    // let path = Path::new("target").join(file_name);
 
     fs::write(&path, content)
         .map_err(|e| format!("Failed to write to file: {}", e))?;
