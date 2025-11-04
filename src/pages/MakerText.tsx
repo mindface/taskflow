@@ -50,7 +50,6 @@ export default function MakerText() {
 
   async function saveFile() {
     if (!selectedFile) return;
-    console.log(selectedFile);
     const filePath = `${directoryPath}/${selectedFile}`;
     try {
       await invoke("writing_file", { directory: directoryPath, fileName: selectedFile, content: fileContent  });
@@ -101,6 +100,7 @@ export default function MakerText() {
   const exportPdf = async () => {
     const filePath = `target/${selectedFile}pdf.pdf`;
     const content = await invoke("export_pdf", { outputPath: filePath, text: fileContent });
+    await invoke("run_mediapipe",{ input: "test" });
   }
 
   return (
@@ -156,6 +156,10 @@ export default function MakerText() {
           </div>
         </div>
       )}
+
+            <button onClick={exportPdf} className="mt-2 p-2 bg-blue-500 text-white rounded">
+              Export Pdf
+            </button>
     </div>
   );
 }

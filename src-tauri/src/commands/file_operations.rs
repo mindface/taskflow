@@ -9,8 +9,6 @@ use tauri::api::path::app_data_dir;
 use std::fs::File;
 use tauri::{AppHandle};
 
-
-
 #[derive(Deserialize)]
 pub struct Person {
     name: String,
