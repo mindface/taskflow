@@ -16,8 +16,7 @@ export default function MakerText() {
   async function fetchFiles(selectedFolder?: string) {
     try {
       const fileList = await invoke<string[]>("list_files", { directory: selectedFolder ? selectedFolder : directoryPath });
-      console.log(fileList)
-      setFiles(fileList);
+      setFiles(fileList)
     } catch (error) {
       console.error("Failed to fetch files:", error);
     }
