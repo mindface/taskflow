@@ -124,6 +124,13 @@ button {
   font-size: var(--font-size-small);
 }
 
+.w-full {
+  width: 100%;
+}
+.w-half {
+  width: 50%;
+}
+
 .p-1 {
   padding: 4px;
 }

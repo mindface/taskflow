@@ -1,18 +1,13 @@
 import { useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/tauri";
-
-type Note = {
-  id: number;
-  title: string;
-  content: string;
-  created_at: string;
-  updated_at: string;
-};
-
+import { Note } from "../models/Notes";
+import { MemoMakerSidebar } from "./MemoMakerSidebar";
+import "github-markdown-css/github-markdown.css";
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import "../styles/markdown.css";
 
 export default function MemoMaker() {
-
   const [notes, setNotes] = useState<Note[]>([]);
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [title, setTitle] = useState("");
@@ -90,24 +85,13 @@ export default function MemoMaker() {
 
   return (
     <div className="p-4">
-      <aside>
-        <div className="pb-2">
-          <button onClick={loadNotes}>更新</button>
-          <button onClick={newNote}>新規</button>
-        </div>
-        <ul className="overflow-auto" style={{ maxHeight: "70vh" }}>
-          {notes.map((n,index) => (
-            <li key={n.id} className="p-2 border-b border-gray-200">
-              <h3 className="pb-2 " onClick={() => selectNote(n.id)}>No{index+1}:{n.title || "(無題)"}</h3>
-              <div className="flex gap-2">
-                <button onClick={() => selectNote(n.id)}>開く</button>
-                <button onClick={() => removeNote(n.id)}>削除</button>
-              </div>
-            </li>
-          ))}
-        </ul>
-      </aside>
-
+      <MemoMakerSidebar
+        notes={notes}
+        onSelectNote={selectNote}
+        onCreateNote={newNote}
+        onDeleteNote={removeNote}
+        onLoadNotes={loadNotes}
+      />
       <section>
         <div className="pb-2">
           <input style={{ width: "70%" }} value={title} onChange={(e) => setTitle(e.target.value)} placeholder="タイトル" />
@@ -115,7 +99,16 @@ export default function MemoMaker() {
             {selectedId == null ? "作成" : "保存"}
           </button>
         </div>
-        <textarea className="p-4" value={content} onChange={(e) => setContent(e.target.value)} style={{ width: "100%", height: "60vh" }} />
+        <div className="flex">
+          <div className="writer w-half p-4">
+            <textarea className="p-4" value={content} onChange={(e) => setContent(e.target.value)} style={{ width: "100%", height: "60vh" }} />
+          </div>
+          <div className="preview w-half p-4">
+            <ReactMarkdown
+              remarkPlugins={[remarkGfm]}
+            >{content}</ReactMarkdown>
+          </div>
+        </div>
       </section>
     </div>
   );
