@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Note } from "../models/Notes";
 
 type Props = {
@@ -15,10 +16,18 @@ export function MemoMakerSidebar({
   onDeleteNote,
   onLoadNotes
 }: Props) {
+  const [switcher,setSwitcher] = useState(false)
+
+  const switcherAction = () => {
+    setSwitcher(!switcher);
+  }
 
   return (
-    <div className="p-4">
+    <div className={switcher?"sidebar sidebar-on p-4":"sidebar p-4"}>
       <aside>
+        <div className="sidebar-btn">
+          <button onClick={switcherAction}>{switcher?"open":"close"}</button>
+        </div>
         <div className="pb-2">
           <button onClick={onLoadNotes}>更新</button>
           <button onClick={onCreateNote}>新規</button>

@@ -6,7 +6,9 @@ use lindera_dictionary::{DictionaryConfig, DictionaryKind};
 use lindera_tokenizer::tokenizer::{Tokenizer, TokenizerConfig};
 use std::fs;
 use std::io::{self, Write};
+
 mod commands;
+mod models;
 
 #[derive(Debug)]
 pub enum LinderaError {

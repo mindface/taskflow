@@ -4,7 +4,7 @@ use std::fs;
 use std::env;
 use serde::{Deserialize, Serialize};
 use chrono::Utc;
-use crate::models::note::Note;
+use crate::commands::models::Note;
 
 fn db_path() -> PathBuf {
     // 1) 環境変数で指定があればそれを優先

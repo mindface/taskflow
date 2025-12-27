@@ -27,6 +27,8 @@
   min-height: min(100vh, 650px);
 }
 body {
+  height: 100vh;
+  margin: 0;
   padding: 16px;
   font-size: 14px;
   background-color: #fff;
