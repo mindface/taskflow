@@ -1,4 +1,3 @@
-
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 #[macro_use]
@@ -7,7 +6,9 @@ use lindera_dictionary::{DictionaryConfig, DictionaryKind};
 use lindera_tokenizer::tokenizer::{Tokenizer, TokenizerConfig};
 use std::fs;
 use std::io::{self, Write};
+
 mod commands;
+mod models;
 
 #[derive(Debug)]
 pub enum LinderaError {
@@ -54,19 +55,28 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
 
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![
-            commands::file_operations::list_files,
-            commands::file_operations::reading_file,
-            commands::file_operations::writing_file,
-            commands::file_operations::add_file,
-            commands::file_operations::deleteing_file,
-            commands::file_operations::export_pdf,
-            commands::file_operations::export_to_csv,
-            read_file,
-          ])
-        .run(tauri::generate_context!())
-        .expect("error while running tauri application");
-    
+      .invoke_handler(tauri::generate_handler![
+          commands::file_operations::list_files,
+          commands::file_operations::reading_file,
+          commands::file_operations::writing_file,
+          commands::file_operations::add_file,
+          commands::file_operations::deleteing_file,
+          commands::file_operations::export_pdf,
+          commands::file_operations::export_to_csv,
+
+          // SQL Memo commands
+          commands::sql_memo::init_db,
+          commands::sql_memo::add_note,
+          commands::sql_memo::list_notes,
+          commands::sql_memo::get_note,
+          commands::sql_memo::update_note,
+          commands::sql_memo::delete_note,
+
+          read_file,
+        ])
+      .run(tauri::generate_context!())
+      .expect("error while running tauri application");
+
     Ok(())
 }
 

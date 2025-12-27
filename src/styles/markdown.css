@@ -1,0 +1,35 @@
+
+.preview {
+  box-sizing: border-box;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 16px;
+  background-color: #f9f9f9;
+}
+
+.preview * {
+  line-height: 1.4;
+  color: #333;
+}
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  max-height: 100vh;
+  height: 100%;
+  width: 250px;
+  background-color: #f0f0f0;
+  border-right: 1px solid #ddd;
+  transition: transform 0.2s ease;
+}
+
+.sidebar-on {
+  transform: translate(-100%,0);
+}
+
+.sidebar-btn {
+  position: absolute;
+  top: 0;
+  left: 100%;
+}

@@ -23,5 +23,11 @@
     "id":"path5",
     "name":"csvmaker",
     "path":"/csvmaker"
+  },
+  {
+    "id":"path6",
+    "name":"memo",
+    "path":"/memo",
+    "description":"メモページ"
   }
 ]

@@ -6,6 +6,7 @@ import Structsmake from "./pages/Structsmake";
 import Tokenizer from "./pages/Tokenizer";
 import MakerText from "./pages/MakerText";
 import CsvMaker from "./pages/CsvMaker";
+import MemoMaker from "./pages/MemoMaker";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 
@@ -27,7 +28,8 @@ function App() {
           {viewtype === "structsmake" && <Structsmake /> }
           {viewtype === "tokenizer" && <Tokenizer /> }
           {viewtype === "makertext" && <MakerText /> }
-          {viewtype === "csvmaker" && <CsvMaker /> }
+          {viewtype === "csvmacker" && <CsvMaker /> }
+          {viewtype === "memo" && <MemoMaker /> }
         </main>
         <Footer />
       </div>

@@ -17,15 +17,22 @@
   --color-base: #368bf2;
   --color-white: #fff;
   --color-gray: #ccc;
+
+  --font-size-title: 20px;
+  --font-size-base: 16px;
+  --font-size-small: 14px;
 }
 
 .main {
   min-height: min(100vh, 650px);
 }
 body {
+  height: 100vh;
+  margin: 0;
   padding: 16px;
   font-size: 14px;
   background-color: #fff;
+  color: #333;
 }
 .div-outer {
   position: relative;
@@ -97,20 +104,53 @@ button {
   color: black;
 }
 
+.flex {
+  display: flex;
+}
+.justify-between {
+  justify-content: space-between;
+}
+.items-center {
+  align-items: center;
+}
+
+
+.font-size-title {
+  font-size: var(--font-size-title);
+  font-weight: 600;
+}
+.font-size-base {
+  font-size: var(--font-size-base);
+}
+.font-size-small {
+  font-size: var(--font-size-small);
+}
+
+.w-full {
+  width: 100%;
+}
+.w-half {
+  width: 50%;
+}
+
 .p-1 {
   padding: 4px;
 }
-
 .p-2 {
   padding: 8px;
 }
-
 .p-3 {
   padding: 12px;
 }
-
 .p-4 {
   padding: 16px;
+}
+
+.pb-2 {
+  padding-bottom: 8px;
+}
+.pb-4 {
+  padding-bottom: 16px;
 }
 
 .footer {
