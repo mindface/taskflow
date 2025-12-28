@@ -1,72 +1,65 @@
 use std::fs;
 use std::path::{Path, PathBuf};
-use std::io::{self, Write};
+use std::io::{self};
 use genpdf::{Document, elements, fonts};
+use crate::models::note::Note;
+use crate::commands::sql_memo::get_conn;
 use serde::Deserialize;
 use serde::Serialize;
-use tauri::api::path::document_dir;
-use tauri::api::path::app_data_dir;
-use std::fs::File;
-use tauri::{AppHandle};
+use rusqlite::{params};
+use csv::{Writer, Reader};
 
+// TODO 削除予定
+// #[derive(Deserialize, Serialize, Debug, Clone)]
+// pub struct Task {
+//     pub name: String,
+//     pub title: String,
+// }
 
+// #[derive(Deserialize, Serialize, Debug, Clone)]
+// pub struct Config {
+//     pub directory: String,
+//     pub tasks: Vec<Task>,
+// }
 
-#[derive(Deserialize)]
-pub struct Person {
-    name: String,
-    age: u32,
-}
+// #[tauri::command]
+// fn load_config(config_path: String) -> Result<Config, String> {
+//     let config_str = fs::read_to_string(&config_path)
+//         .map_err(|e| format!("Failed to read config file: {}", e))?;
+//     let config: Config = serde_json::from_str(&config_str)
+//         .map_err(|e| format!("Failed to parse config file: {}", e))?;
+//     Ok(config)
+// }
 
-#[derive(Deserialize, Serialize, Debug, Clone)]
-pub struct Task {
-    pub name: String,
-    pub title: String,
-}
+// #[tauri::command]
+// pub fn list_task_files(config_path: String) -> Result<Vec<String>, String> {
+//     let config = load_config(config_path)?;
+//     let dir_path = Path::new(&config.directory);
 
-#[derive(Deserialize, Serialize, Debug, Clone)]
-pub struct Config {
-    pub directory: String,
-    pub tasks: Vec<Task>,
-}
+//     let entries = fs::read_dir(dir_path)
+//         .map_err(|e| format!("Failed to read directory: {}", e))?;
 
-#[tauri::command]
-pub fn load_config(config_path: String) -> Result<Config, String> {
-    let config_str = fs::read_to_string(&config_path)
-        .map_err(|e| format!("Failed to read config file: {}", e))?;
-    let config: Config = serde_json::from_str(&config_str)
-        .map_err(|e| format!("Failed to parse config file: {}", e))?;
-    Ok(config)
-}
+//     let files: Vec<String> = entries
+//         .filter_map(|entry| entry.ok())
+//         .filter(|entry| entry.path().is_file())
+//         .filter_map(|entry| {
+//             let file_name = entry.file_name().into_string().ok()?;
+//             if file_name == "CACHEDIR.TAG" || file_name.starts_with('.') {
+//                 None
+//             } else {
+//                 Some(file_name)
+//             }
+//         })
+//         .collect();
 
-#[tauri::command]
-pub fn list_task_files(config_path: String) -> Result<Vec<String>, String> {
-    let config = load_config(config_path)?;
-    let dir_path = Path::new(&config.directory);
+//     Ok(files)
+// }
 
-    let entries = fs::read_dir(dir_path)
-        .map_err(|e| format!("Failed to read directory: {}", e))?;
-
-    let files: Vec<String> = entries
-        .filter_map(|entry| entry.ok())
-        .filter(|entry| entry.path().is_file())
-        .filter_map(|entry| {
-            let file_name = entry.file_name().into_string().ok()?;
-            if file_name == "CACHEDIR.TAG" || file_name.starts_with('.') {
-                None
-            } else {
-                Some(file_name)
-            }
-        })
-        .collect();
-
-    Ok(files)
-}
-
-#[tauri::command]
-pub fn get_tasks(config_path: String) -> Result<Vec<Task>, String> {
-    let config = load_config(config_path)?;
-    Ok(config.tasks)
-}
+// #[tauri::command]
+// pub fn get_tasks(config_path: String) -> Result<Vec<Task>, String> {
+//     let config = load_config(config_path)?;
+//     Ok(config.tasks)
+// }
 
 #[tauri::command]
 pub fn list_files(directory: Option<String>) -> Result<Vec<String>, String> {
@@ -143,29 +136,88 @@ pub fn export_pdf(output_path: String,text: String) -> Result<(), String> {
     doc.render_to_file(output_path).map_err(|e| e.to_string())
 }
 
-#[tauri::command]
-pub fn export_to_csv(app: AppHandle, data: Vec<Person>) -> Result<(), String> {
-    let header = "name,age\n";
-    let mut csv_content = String::from(header);
 
-    for person in data {
-        csv_content.push_str(&format!("{},{}\n", person.name, person.age));
+#[tauri::command]
+pub fn export_notes(csv_path: String) -> Result<(), String> {
+    let conn = get_conn()?;
+
+    let mut stmt = conn.prepare(
+        "SELECT id, title, content, created_at, updated_at
+         FROM notes
+         ORDER BY created_at ASC"
+    ).map_err(|e| e.to_string())?;
+
+    let notes_iter = stmt.query_map([], |row| {
+        Ok(Note {
+            id: row.get(0)?,
+            title: row.get(1)?,
+            content: row.get(2)?,
+            created_at: row.get(3)?,
+            updated_at: row.get(4)?,
+        })
+    }).map_err(|e| e.to_string())?;
+
+    let mut wtr = Writer::from_path(&csv_path)
+        .map_err(|e| e.to_string())?;
+
+    // ヘッダー
+    wtr.write_record(&[
+        "id", "title", "content", "created_at", "updated_at"
+    ]).map_err(|e| e.to_string())?;
+
+    for note in notes_iter {
+        let n = note.map_err(|e| e.to_string())?;
+        wtr.write_record(&[
+            n.id.to_string(),
+            n.title,
+            n.content,
+            n.created_at,
+            n.updated_at,
+        ]).map_err(|e| e.to_string())?;
     }
 
-    // let file_path: PathBuf = match app_data_dir(&*app.config()) {
-    //     Some(mut dir) => {
-    //         dir.push("exported_data.csv");
-    //         dir
-    //     }
-    //     None => return Err("Could not find app data directory.".into()),
-    // };
-    let mut file_path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
-    file_path.push("csv/exported_data.csv");
-    println!("CSV file path: {:?}", file_path);
+    wtr.flush().map_err(|e| e.to_string())
+}
 
-    File::create(&file_path)
-        .and_then(|mut file| file.write_all(csv_content.as_bytes()))
-        .map_err(|e| format!("Failed to write file: {}", e))?;
 
-    Ok(())
+#[tauri::command]
+pub fn import_notes(csv_path: String) -> Result<(), String> {
+    let mut conn = get_conn()?;
+    let tx = conn.transaction()
+        .map_err(|e| e.to_string())?;
+
+    let mut rdr = Reader::from_path(csv_path)
+        .map_err(|e| e.to_string())?;
+
+    for result in rdr.deserialize::<Note>() {
+        let note = result.map_err(|e| e.to_string())?;
+
+        // バリデーション
+        if note.title.trim().is_empty() {
+            return Err("title is empty".into());
+        }
+
+        tx.execute(
+            "
+            INSERT INTO notes (
+                id, title, content, created_at, updated_at
+            ) VALUES (
+                ?, ?, ?, ?, ?
+            )
+            ON CONFLICT(id) DO UPDATE SET
+                title = excluded.title,
+                content = excluded.content,
+                updated_at = excluded.updated_at
+            ",
+            params![
+                note.id,
+                note.title,
+                note.content,
+                note.created_at,
+                note.updated_at
+            ],
+        ).map_err(|e| e.to_string())?;
+    }
+
+    tx.commit().map_err(|e| e.to_string())
 }

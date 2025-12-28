@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/tauri";
 import { Note } from "../models/Notes";
-import { MemoMakerSidebar } from "./MemoMakerSidebar";
+import { MemoMakerSidebar } from "../components/MemoMakerSidebar";
 import "github-markdown-css/github-markdown.css";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import "../styles/markdown.css";
+
+import { save } from "@tauri-apps/api/dialog";
+import { open } from "@tauri-apps/api/dialog";
 
 export default function MemoMaker() {
   const [notes, setNotes] = useState<Note[]>([]);
@@ -77,6 +80,37 @@ export default function MemoMaker() {
     }
   }
 
+  async function exportNotes() {
+    try {
+      const csvPath = await save({
+        title: "CSVとしてエクスポート",
+        filters: [{ name: "CSV", extensions: ["csv"] }],
+        defaultPath: "notes.csv"
+      });
+      console.log(csvPath);
+      if (!csvPath) return;
+      await invoke("export_notes",{ csvPath });
+    } catch (e) {
+      console.error("export error", e);
+    }
+  }
+
+  async function importsNotes() {
+    try {
+      const file = await open({
+        title: "CSVを選択",
+        filters: [{ name: "CSV", extensions: ["csv"] }],
+        multiple: false
+      });
+      if (!file || Array.isArray(file)) return;
+      await invoke("import_notes", {
+        csvPath: file
+      });
+    } catch (e) {
+      console.error("import error", e);
+    }
+  }
+
   const newNote = () => {
     setSelectedId(null);
     setTitle("");
@@ -91,6 +125,8 @@ export default function MemoMaker() {
         onCreateNote={newNote}
         onDeleteNote={removeNote}
         onLoadNotes={loadNotes}
+        onExportNotes={exportNotes}
+        onImportNotes={importsNotes}
       />
       <section>
         <div className="pb-2">

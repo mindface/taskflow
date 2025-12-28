@@ -23,6 +23,7 @@ lindera-dictionary = "0.27.0"
 lindera-core = "0.27.0"
 lindera = "0.27.0"
 genpdf = "0.2"
+csv = "1.4.0"
 
 [features]
 # this feature is used for production builds or when `devPath` points to the filesystem

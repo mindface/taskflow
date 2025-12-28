@@ -1,11 +1,9 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-#[macro_use]
-use lindera_core::{mode::Mode, LinderaResult};
+use lindera_core::{mode::Mode};
 use lindera_dictionary::{DictionaryConfig, DictionaryKind};
 use lindera_tokenizer::tokenizer::{Tokenizer, TokenizerConfig};
 use std::fs;
-use std::io::{self, Write};
 
 mod commands;
 mod models;
@@ -62,7 +60,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
           commands::file_operations::add_file,
           commands::file_operations::deleteing_file,
           commands::file_operations::export_pdf,
-          commands::file_operations::export_to_csv,
+          commands::file_operations::export_notes,
+          commands::file_operations::import_notes,
 
           // SQL Memo commands
           commands::sql_memo::init_db,

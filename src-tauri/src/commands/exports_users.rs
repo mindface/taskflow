@@ -1,10 +1,9 @@
-use rusqlite::{params, Connection};
-use std::path::PathBuf;
 use std::fs;
 use std::env;
+use rusqlite::{params, Connection};
+use std::path::PathBuf;
 use serde::{Deserialize, Serialize};
 use chrono::Utc;
-use crate::commands::models::Note;
 
 fn db_path() -> PathBuf {
     // 1) 環境変数で指定があればそれを優先

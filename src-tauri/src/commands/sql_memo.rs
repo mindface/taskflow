@@ -2,7 +2,6 @@ use rusqlite::{params, Connection};
 use std::path::PathBuf;
 use std::fs;
 use std::env;
-use serde::{Deserialize, Serialize};
 use chrono::Utc;
 use crate::models::note::Note;
 
@@ -30,7 +29,7 @@ fn db_path() -> PathBuf {
     p
 }
 
-fn get_conn() -> Result<Connection, String> {
+pub fn get_conn() -> Result<Connection, String> {
     let path = db_path();
     Connection::open(path).map_err(|e| format!("DB open error: {}", e))
 }

@@ -7,6 +7,8 @@ type Props = {
   onCreateNote: () => void;
   onDeleteNote: (id: number) => void;
   onLoadNotes: () => void;
+  onExportNotes: () => void;
+  onImportNotes: () => void;
 }
 
 export function MemoMakerSidebar({
@@ -14,7 +16,9 @@ export function MemoMakerSidebar({
   onSelectNote,
   onCreateNote,
   onDeleteNote,
-  onLoadNotes
+  onLoadNotes,
+  onExportNotes,
+  onImportNotes
 }: Props) {
   const [switcher,setSwitcher] = useState(false)
 
@@ -44,6 +48,10 @@ export function MemoMakerSidebar({
           ))}
         </ul>
       </aside>
+      <div className="files-actions">
+        <button onClick={onImportNotes}>インポート</button>
+        <button onClick={onExportNotes}>エクスポート</button>
+      </div>
     </div>
   );
 }
