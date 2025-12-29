@@ -6,12 +6,13 @@ import "github-markdown-css/github-markdown.css";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import "../styles/markdown.css";
+import { useNotes } from "../store/note";
 
 import { save } from "@tauri-apps/api/dialog";
 import { open } from "@tauri-apps/api/dialog";
 
 export default function MemoMaker() {
-  const [notes, setNotes] = useState<Note[]>([]);
+  const { loadNotes, notes } = useNotes();
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -27,14 +28,14 @@ export default function MemoMaker() {
     })();
   }, []);
 
-  async function loadNotes() {
-    try {
-      const res = await invoke<Note[]>("list_notes");
-      setNotes(res || []);
-    } catch (e) {
-      console.error("list_notes error", e);
-    }
-  }
+  // async function loadNotes() {
+  //   try {
+  //     const res = await invoke<Note[]>("list_notes");
+  //     setNotes(res || []);
+  //   } catch (e) {
+  //     console.error("list_notes error", e);
+  //   }
+  // }
 
   async function selectNote(id: number) {
     try {
@@ -87,7 +88,7 @@ export default function MemoMaker() {
         filters: [{ name: "CSV", extensions: ["csv"] }],
         defaultPath: "notes.csv"
       });
-      console.log(csvPath);
+
       if (!csvPath) return;
       await invoke("export_notes",{ csvPath });
     } catch (e) {
