@@ -43,6 +43,8 @@ export default function MemoMaker() {
       setSelectedId(n.id);
       setTitle(n.title);
       setContent(n.content);
+      const data = await invoke("get_note_detail", { noteId: id });
+      console.log("note detail", data);
     } catch (e) {
       console.error("get_note error", e);
     }
@@ -131,7 +133,7 @@ export default function MemoMaker() {
       />
       <section>
         <div className="pb-2">
-          <input style={{ width: "70%" }} value={title} onChange={(e) => setTitle(e.target.value)} placeholder="タイトル" />
+          <input className="w-half mr-1" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="タイトル" />
           <button onClick={selectedId == null ? createNote : saveNote} >
             {selectedId == null ? "作成" : "保存"}
           </button>

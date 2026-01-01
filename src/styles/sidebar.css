@@ -1,0 +1,39 @@
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  max-height: 100vh;
+  height: 100%;
+  width: 50vw;
+  background-color: #f0f0f0;
+  border-right: 1px solid #ddd;
+  transition: transform 0.2s ease;
+}
+
+.sidebar-on {
+  transform: translate(-100%,0);
+}
+
+.sidebar-btn {
+  position: absolute;
+  bottom: 0;
+  left: 100%;
+}
+
+.sidebar-item {
+  position: relative;
+  padding: 8px;
+}
+
+.action-items {
+  position: absolute;
+  right: 8px;
+  bottom: 0;
+  gap: 8px;
+  display: none;
+}
+
+.sidebar-item:hover .action-items {
+  display: flex;
+}

@@ -4,7 +4,6 @@ import { BrowserRouter } from "react-router-dom";
 import Home from "./pages/Home";
 import Structsmake from "./pages/Structsmake";
 import Tokenizer from "./pages/Tokenizer";
-import MakerText from "./pages/MakerText";
 import MemoLinker from "./pages/MemoLinker";
 import MemoMaker from "./pages/MemoMaker";
 import Header from "./components/Header";
