@@ -4,18 +4,17 @@ import { BrowserRouter } from "react-router-dom";
 import Home from "./pages/Home";
 import Structsmake from "./pages/Structsmake";
 import Tokenizer from "./pages/Tokenizer";
-import MakerText from "./pages/MakerText";
-import CsvMaker from "./pages/CsvMaker";
+import MemoLinker from "./pages/MemoLinker";
 import MemoMaker from "./pages/MemoMaker";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 
 import { DataProvider } from "./store/dataBox";
+import { NotesProvider } from "./store/note";
 
 function App() {
   const [viewtype, viewTypeSet] = useState("home");
 
-  // react-router-domでエラーのため、タブのようにして表示 20230716
   return (
     <BrowserRouter>
       <div className="div-outer">
@@ -27,14 +26,12 @@ function App() {
           {viewtype === "home " && <DataProvider><Home /></DataProvider> }
           {viewtype === "structsmake" && <Structsmake /> }
           {viewtype === "tokenizer" && <Tokenizer /> }
-          {viewtype === "makertext" && <MakerText /> }
-          {viewtype === "csvmacker" && <CsvMaker /> }
-          {viewtype === "memo" && <MemoMaker /> }
+          {viewtype === "memolinker" && <NotesProvider><MemoLinker /></NotesProvider> }
+          {viewtype === "memo" && <NotesProvider><MemoMaker /></NotesProvider> }
         </main>
         <Footer />
       </div>
     </BrowserRouter>
-    
   );
 }
 

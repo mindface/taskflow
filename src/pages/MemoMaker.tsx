@@ -1,20 +1,23 @@
 import { useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/tauri";
-import { Note } from "../models/Notes";
+import { Note, NoteData } from "../models/Notes";
 import { MemoMakerSidebar } from "../components/MemoMakerSidebar";
-import "github-markdown-css/github-markdown.css";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { useNotes } from "../store/note";
+
+import "github-markdown-css/github-markdown.css";
 import "../styles/markdown.css";
 
 import { save } from "@tauri-apps/api/dialog";
 import { open } from "@tauri-apps/api/dialog";
 
 export default function MemoMaker() {
-  const [notes, setNotes] = useState<Note[]>([]);
+  const { loadNotes, notes } = useNotes();
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [noteData, setNoteData] = useState<NoteData | null>(null)
 
   useEffect(() => {
     (async () => {
@@ -27,14 +30,14 @@ export default function MemoMaker() {
     })();
   }, []);
 
-  async function loadNotes() {
-    try {
-      const res = await invoke<Note[]>("list_notes");
-      setNotes(res || []);
-    } catch (e) {
-      console.error("list_notes error", e);
-    }
-  }
+  // async function loadNotes() {
+  //   try {
+  //     const res = await invoke<Note[]>("list_notes");
+  //     setNotes(res || []);
+  //   } catch (e) {
+  //     console.error("list_notes error", e);
+  //   }
+  // }
 
   async function selectNote(id: number) {
     try {
@@ -42,6 +45,8 @@ export default function MemoMaker() {
       setSelectedId(n.id);
       setTitle(n.title);
       setContent(n.content);
+      const data = await invoke("get_note_detail", { noteId: id });
+      setNoteData(data as NoteData);
     } catch (e) {
       console.error("get_note error", e);
     }
@@ -87,7 +92,7 @@ export default function MemoMaker() {
         filters: [{ name: "CSV", extensions: ["csv"] }],
         defaultPath: "notes.csv"
       });
-      console.log(csvPath);
+
       if (!csvPath) return;
       await invoke("export_notes",{ csvPath });
     } catch (e) {
@@ -130,7 +135,7 @@ export default function MemoMaker() {
       />
       <section>
         <div className="pb-2">
-          <input style={{ width: "70%" }} value={title} onChange={(e) => setTitle(e.target.value)} placeholder="タイトル" />
+          <input className="w-half mr-1" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="タイトル" />
           <button onClick={selectedId == null ? createNote : saveNote} >
             {selectedId == null ? "作成" : "保存"}
           </button>
@@ -145,6 +150,29 @@ export default function MemoMaker() {
             >{content}</ReactMarkdown>
           </div>
         </div>
+        {noteData && (<div className="note-data p-4 mt-4 border-t">
+          <h3 className="pb-2">Note Data</h3>
+          <div>
+            <h4>Concepts</h4>
+            <ul>
+              {noteData.concepts.map((concept) => (
+                <li key={concept.id}>
+                  <p>{concept.name} </p>
+                  <div>{concept.description}</div>
+                  <p>{concept.tag}</p>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <h4>Relations</h4>
+            <ul>
+              {noteData.relations.map((relation, index) => (
+                <li key={index}>From Concept ID: {relation.from_concept_id} - To Concept ID: {relation.to_concept_id} (Type: {relation.relation_type})</li>
+              ))}
+            </ul>
+          </div>
+        </div>)}
       </section>
     </div>
   );

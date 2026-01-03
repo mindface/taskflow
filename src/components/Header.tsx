@@ -1,5 +1,4 @@
 import { useEffect } from "react";
-import { Link } from "react-router-dom";
 import paths from "../json/path.json";
 
 type Props = {

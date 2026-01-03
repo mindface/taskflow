@@ -1,0 +1,54 @@
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  max-height: 100vh;
+  height: 100%;
+  width: 50vw;
+  background-color: #f0f0f0;
+  border-right: 1px solid #ddd;
+  transform: translate(-100%,0);
+  transition: transform 0.2s ease;
+}
+
+.sidebar-outer {
+  position: relative;
+}
+
+.sidebar-on .sidebar {
+  transform: translate(0,0);
+  transform: translate(0,0);
+}
+.sidebar-on .sidebar-on-overlay {
+  position: fixed;
+  content: "";
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0,0,0,0.3);
+}
+
+.sidebar-btn {
+  position: absolute;
+  bottom: 0;
+  left: 100%;
+}
+
+.sidebar-item {
+  position: relative;
+  padding: 8px;
+}
+
+.action-items {
+  position: absolute;
+  right: 8px;
+  bottom: 0;
+  gap: 8px;
+  display: none;
+}
+
+.sidebar-item:hover .action-items {
+  display: flex;
+}

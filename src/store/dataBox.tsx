@@ -41,7 +41,7 @@ const reducer = (state:State,action:Action) => {
     case "data/add":
       return {
         ...state,
-        layerList: actionList
+        dataBoxList: actionList
       }
     case "data/update":
       const __ = actionList.map((item) => {
@@ -49,7 +49,7 @@ const reducer = (state:State,action:Action) => {
       }).filter(Boolean) as DataBox[];
       return {
         ...state,
-        layerList: __
+        dataBoxList: __
       }
     default:
       return state

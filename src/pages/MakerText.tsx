@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { invoke } from "@tauri-apps/api/tauri";
 import { sendNotification } from "@tauri-apps/api/notification";
 import { open } from "@tauri-apps/api/dialog";

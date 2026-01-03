@@ -70,6 +70,17 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
           commands::sql_memo::get_note,
           commands::sql_memo::update_note,
           commands::sql_memo::delete_note,
+          commands::sql_memo::add_concept_to_note,
+          commands::sql_memo::list_concepts,
+          commands::sql_memo::get_note_detail,
+
+          commands::sql_memo::add_concept,
+          commands::sql_memo::add_concept_process_factor,
+          commands::sql_memo::add_concept_relation,
+          commands::sql_memo::add_note_concept,
+          // commands::sql_memo::list_concepts,
+          // commands::sql_memo::get_note_detail,
+          // commands::sql_memo::search_concepts,
 
           read_file,
         ])
