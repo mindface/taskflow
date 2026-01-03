@@ -8,11 +8,26 @@
   width: 50vw;
   background-color: #f0f0f0;
   border-right: 1px solid #ddd;
+  transform: translate(-100%,0);
   transition: transform 0.2s ease;
 }
 
-.sidebar-on {
-  transform: translate(-100%,0);
+.sidebar-outer {
+  position: relative;
+}
+
+.sidebar-on .sidebar {
+  transform: translate(0,0);
+  transform: translate(0,0);
+}
+.sidebar-on .sidebar-on-overlay {
+  position: fixed;
+  content: "";
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0,0,0,0.3);
 }
 
 .sidebar-btn {

@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/tauri";
-import { Note } from "../models/Notes";
+import { Note, NoteData } from "../models/Notes";
 import { MemoMakerSidebar } from "../components/MemoMakerSidebar";
-import "github-markdown-css/github-markdown.css";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import "../styles/markdown.css";
 import { useNotes } from "../store/note";
+
+import "github-markdown-css/github-markdown.css";
+import "../styles/markdown.css";
 
 import { save } from "@tauri-apps/api/dialog";
 import { open } from "@tauri-apps/api/dialog";
@@ -16,6 +17,7 @@ export default function MemoMaker() {
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [noteData, setNoteData] = useState<NoteData | null>(null)
 
   useEffect(() => {
     (async () => {
@@ -44,7 +46,7 @@ export default function MemoMaker() {
       setTitle(n.title);
       setContent(n.content);
       const data = await invoke("get_note_detail", { noteId: id });
-      console.log("note detail", data);
+      setNoteData(data as NoteData);
     } catch (e) {
       console.error("get_note error", e);
     }
@@ -148,6 +150,29 @@ export default function MemoMaker() {
             >{content}</ReactMarkdown>
           </div>
         </div>
+        {noteData && (<div className="note-data p-4 mt-4 border-t">
+          <h3 className="pb-2">Note Data</h3>
+          <div>
+            <h4>Concepts</h4>
+            <ul>
+              {noteData.concepts.map((concept) => (
+                <li key={concept.id}>
+                  <p>{concept.name} </p>
+                  <div>{concept.description}</div>
+                  <p>{concept.tag}</p>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <h4>Relations</h4>
+            <ul>
+              {noteData.relations.map((relation, index) => (
+                <li key={index}>From Concept ID: {relation.from_concept_id} - To Concept ID: {relation.to_concept_id} (Type: {relation.relation_type})</li>
+              ))}
+            </ul>
+          </div>
+        </div>)}
       </section>
     </div>
   );

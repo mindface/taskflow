@@ -11,3 +11,7 @@
   line-height: 1.4;
   color: #333;
 }
+
+.preview p {
+  padding: 8px 0;
+}
