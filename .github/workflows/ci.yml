@@ -80,6 +80,4 @@ jobs:
       # Build Tauri Rust backend
       # --------------------
       - name: Build tauri Rust backend
-        run: cargo build \
-          --manifest-path src-tauri/Cargo.toml \
-          --release
+        run: cargo build --manifest-path src-tauri/Cargo.toml --release
