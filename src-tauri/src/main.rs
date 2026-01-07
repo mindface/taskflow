@@ -1,6 +1,6 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use lindera_core::{mode::Mode};
+use lindera_core::mode::Mode;
 use lindera_dictionary::{DictionaryConfig, DictionaryKind};
 use lindera_tokenizer::tokenizer::{Tokenizer, TokenizerConfig};
 use std::fs;
@@ -10,7 +10,7 @@ mod models;
 
 #[derive(Debug)]
 pub enum LinderaError {
-    Custom(String),
+  Custom(String),
 }
 
 impl std::fmt::Display for LinderaError {
@@ -24,70 +24,65 @@ impl std::fmt::Display for LinderaError {
 // Todo どこかで消す
 #[tauri::command]
 fn read_file(path: String) -> Result<String, String> {
-    fs::read_to_string(&path)
-        .map_err(|e| format!("Failed to read file: {}", e))
+  fs::read_to_string(&path).map_err(|e| format!("Failed to read file: {}", e))
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
+  let dictionary = DictionaryConfig {
+    kind: Some(DictionaryKind::IPADIC),
+    path: None,
+  };
 
-    let dictionary = DictionaryConfig {
-        kind: Some(DictionaryKind::IPADIC),
-        path: None,
-    };
+  let config = TokenizerConfig {
+    dictionary,
+    user_dictionary: None,
+    mode: Mode::Normal,
+  };
 
-    let config = TokenizerConfig {
-        dictionary,
-        user_dictionary: None,
-        mode: Mode::Normal,
-    };
+  // create tokenizer
+  let tokenizer = Tokenizer::from_config(config)?;
 
-    // create tokenizer
-    let tokenizer = Tokenizer::from_config(config)?;
+  // tokenize the text
+  let tokens = tokenizer.tokenize("関西国際空港限定トートバッグ")?;
 
-    // tokenize the text
-    let tokens = tokenizer.tokenize("関西国際空港限定トートバッグ")?;
+  // output the tokens
+  for token in tokens {
+    println!("{}", token.text);
+  }
 
-    // output the tokens
-    for token in tokens {
-        println!("{}", token.text);
-    }
+  tauri::Builder::default()
+    .invoke_handler(tauri::generate_handler![
+      commands::file_operations::list_files,
+      commands::file_operations::reading_file,
+      commands::file_operations::writing_file,
+      commands::file_operations::add_file,
+      commands::file_operations::deleteing_file,
+      commands::file_operations::export_pdf,
+      commands::file_operations::export_notes,
+      commands::file_operations::import_notes,
+      // SQL Memo commands
+      commands::sql_memo::init_db,
+      commands::sql_memo::add_note,
+      commands::sql_memo::list_notes,
+      commands::sql_memo::get_note,
+      commands::sql_memo::update_note,
+      commands::sql_memo::delete_note,
+      commands::sql_memo::add_concept_to_note,
+      commands::sql_memo::list_concepts,
+      commands::sql_memo::get_note_detail,
+      commands::sql_memo::add_concept,
+      commands::sql_memo::add_concept_process_factor,
+      commands::sql_memo::add_concept_relation,
+      commands::sql_memo::add_note_concept,
+      // commands::sql_memo::list_concepts,
+      // commands::sql_memo::get_note_detail,
+      // commands::sql_memo::search_concepts,
+      read_file,
+    ])
+    .run(tauri::generate_context!())
+    .expect("error while running tauri application");
 
-    tauri::Builder::default()
-      .invoke_handler(tauri::generate_handler![
-          commands::file_operations::list_files,
-          commands::file_operations::reading_file,
-          commands::file_operations::writing_file,
-          commands::file_operations::add_file,
-          commands::file_operations::deleteing_file,
-          commands::file_operations::export_pdf,
-          commands::file_operations::export_notes,
-          commands::file_operations::import_notes,
-
-          // SQL Memo commands
-          commands::sql_memo::init_db,
-          commands::sql_memo::add_note,
-          commands::sql_memo::list_notes,
-          commands::sql_memo::get_note,
-          commands::sql_memo::update_note,
-          commands::sql_memo::delete_note,
-          commands::sql_memo::add_concept_to_note,
-          commands::sql_memo::list_concepts,
-          commands::sql_memo::get_note_detail,
-
-          commands::sql_memo::add_concept,
-          commands::sql_memo::add_concept_process_factor,
-          commands::sql_memo::add_concept_relation,
-          commands::sql_memo::add_note_concept,
-          // commands::sql_memo::list_concepts,
-          // commands::sql_memo::get_note_detail,
-          // commands::sql_memo::search_concepts,
-
-          read_file,
-        ])
-      .run(tauri::generate_context!())
-      .expect("error while running tauri application");
-
-    Ok(())
+  Ok(())
 }
 
 // #[tauri::command]
