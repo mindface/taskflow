@@ -1,38 +1,8 @@
 use crate::models::note::{ConceptRelationView, ConceptView, Note, NoteDetail};
 use chrono::Utc;
 use rusqlite::{params, Connection};
-use std::env;
-use std::fs;
-use std::path::PathBuf;
 
-fn db_path() -> PathBuf {
-  // 1) 環境変数で指定があればそれを優先
-  if let Ok(p) = env::var("TASKFLOW_DB_PATH") {
-    return PathBuf::from(p);
-  }
-
-  // 2) 開発ビルド（debug）ならプロジェクト内 data/notes-dev.db を使う
-  if cfg!(debug_assertions) {
-    let mut p = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
-    p.push("data");
-    let _ = fs::create_dir_all(&p);
-    p.push("notes-dev.db");
-    return p;
-  }
-
-  // 3) 本番（release）ではユーザーのホーム配下に .taskflow/notes.db を作る
-  let home = env::var("HOME").unwrap_or_else(|_| ".".to_string());
-  let mut p = PathBuf::from(home);
-  p.push(".taskflow");
-  let _ = fs::create_dir_all(&p);
-  p.push("notes.db");
-  p
-}
-
-pub fn get_conn() -> Result<Connection, String> {
-  let path = db_path();
-  Connection::open(path).map_err(|e| format!("DB open error: {}", e))
-}
+use crate::commands::db_core::get_conn;
 
 #[tauri::command]
 pub fn init_db() -> Result<String, String> {

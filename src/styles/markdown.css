@@ -12,6 +12,11 @@
   color: #333;
 }
 
+.preview li {
+  padding-left: 10px;
+  list-style-position: inside;
+}
+
 .preview p {
   padding: 8px 0;
 }

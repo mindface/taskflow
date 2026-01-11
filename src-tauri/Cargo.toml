@@ -13,6 +13,7 @@ edition = "2021"
 tauri-build = { version = "1.4", features = [] }
 
 [dependencies]
+log = "0.4"
 rusqlite = "0.29"
 chrono = { version = "0.4", features = ["serde"] }
 tauri = { version = "1.4", features = [ "fs-write-file", "dialog-message", "dialog-save", "dialog-open", "shell-open"] }

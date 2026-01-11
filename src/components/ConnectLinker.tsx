@@ -40,7 +40,6 @@ function ConnectLinker({ noteList }: Props) {
   useEffect(() => {
     (async () => {
       const res = await invoke("list_concepts")
-      console.log("concepts", res);
     })();
   }, [noteList]);
 

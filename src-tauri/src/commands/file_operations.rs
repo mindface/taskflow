@@ -1,65 +1,11 @@
-use crate::commands::sql_memo::get_conn;
 use crate::models::note::Note;
+use crate::commands::db_core::{get_conn};
 use csv::{Reader, Writer};
 use genpdf::{elements, fonts, Document};
 use rusqlite::params;
-use serde::Deserialize;
-use serde::Serialize;
 use std::fs;
 use std::io::{self};
 use std::path::{Path, PathBuf};
-
-// TODO 削除予定
-// #[derive(Deserialize, Serialize, Debug, Clone)]
-// pub struct Task {
-//     pub name: String,
-//     pub title: String,
-// }
-
-// #[derive(Deserialize, Serialize, Debug, Clone)]
-// pub struct Config {
-//     pub directory: String,
-//     pub tasks: Vec<Task>,
-// }
-
-// #[tauri::command]
-// fn load_config(config_path: String) -> Result<Config, String> {
-//     let config_str = fs::read_to_string(&config_path)
-//         .map_err(|e| format!("Failed to read config file: {}", e))?;
-//     let config: Config = serde_json::from_str(&config_str)
-//         .map_err(|e| format!("Failed to parse config file: {}", e))?;
-//     Ok(config)
-// }
-
-// #[tauri::command]
-// pub fn list_task_files(config_path: String) -> Result<Vec<String>, String> {
-//     let config = load_config(config_path)?;
-//     let dir_path = Path::new(&config.directory);
-
-//     let entries = fs::read_dir(dir_path)
-//         .map_err(|e| format!("Failed to read directory: {}", e))?;
-
-//     let files: Vec<String> = entries
-//         .filter_map(|entry| entry.ok())
-//         .filter(|entry| entry.path().is_file())
-//         .filter_map(|entry| {
-//             let file_name = entry.file_name().into_string().ok()?;
-//             if file_name == "CACHEDIR.TAG" || file_name.starts_with('.') {
-//                 None
-//             } else {
-//                 Some(file_name)
-//             }
-//         })
-//         .collect();
-
-//     Ok(files)
-// }
-
-// #[tauri::command]
-// pub fn get_tasks(config_path: String) -> Result<Vec<Task>, String> {
-//     let config = load_config(config_path)?;
-//     Ok(config.tasks)
-// }
 
 #[tauri::command]
 pub fn list_files(directory: Option<String>) -> Result<Vec<String>, String> {
@@ -163,7 +109,6 @@ pub fn export_notes(csv_path: String) -> Result<(), String> {
 
   let mut wtr = Writer::from_path(&csv_path).map_err(|e| e.to_string())?;
 
-  // ヘッダー
   wtr
     .write_record(&["id", "title", "content", "created_at", "updated_at"])
     .map_err(|e| e.to_string())?;
