@@ -1,7 +1,7 @@
+use crate::commands::db_core::get_conn;
 use crate::models::note::{ConceptRelationView, ConceptView, Note, NoteDetail};
 use chrono::Utc;
 use rusqlite::{params, Connection};
-use crate::commands::db_core::get_conn;
 
 #[tauri::command]
 pub fn init_db() -> Result<String, String> {
@@ -66,7 +66,6 @@ pub fn add_note(title: String, content: String) -> Result<i64, String> {
     .map_err(|e| format!("Insert error: {}", e))?;
   Ok(conn.last_insert_rowid())
 }
-
 
 #[tauri::command]
 pub fn list_notes() -> Result<Vec<Note>, String> {

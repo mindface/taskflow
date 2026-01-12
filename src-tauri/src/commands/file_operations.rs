@@ -1,5 +1,5 @@
+use crate::commands::db_core::get_conn;
 use crate::models::note::Note;
-use crate::commands::db_core::{get_conn};
 use csv::{Reader, Writer};
 use genpdf::{elements, fonts, Document};
 use rusqlite::params;
