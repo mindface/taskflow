@@ -2,9 +2,13 @@ import { useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/tauri";
 import { Note, NoteData } from "../models/Notes";
 import { MemoMakerSidebar } from "../components/MemoMakerSidebar";
+import CommonModal from "../components/CommonModal";
 import ReactMarkdown from "react-markdown";
+
 import remarkGfm from "remark-gfm";
 import { useNotes } from "../store/note";
+
+import EditIcon from "../assets/edit.svg";
 
 import "github-markdown-css/github-markdown.css";
 import "../styles/markdown.css";
@@ -18,6 +22,7 @@ export default function MemoMaker() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [noteData, setNoteData] = useState<NoteData | null>(null)
+  const [isOpen,isOpenSet] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -116,6 +121,10 @@ export default function MemoMaker() {
     }
   }
 
+  const modalSwitchAction = () => {
+    isOpenSet(!isOpen);
+  }
+
   const newNote = () => {
     setSelectedId(null);
     setTitle("");
@@ -157,9 +166,25 @@ export default function MemoMaker() {
             <ul>
               {noteData.concepts.map((concept) => (
                 <li key={concept.id}>
-                  <p>{concept.name} </p>
-                  <div>{concept.description}</div>
-                  <p>{concept.tag}</p>
+                  <p>name: {concept.name} </p>
+                  <div>description: {concept.description}</div>
+                  <p>tag: {concept.tag}</p>
+                  <div
+                    className="hover inline-block shot-icon-btn"
+                    onClick={modalSwitchAction}
+                  >
+                    <img src={EditIcon} alt="edit" style={{ width: 12, height: 12 }} />
+                  </div>
+                  <CommonModal
+                    isOpen={isOpen}
+                    onClose={modalSwitchAction}
+                    title="変更と調整"
+                    children={
+                      <div className="content">
+                        入力
+                      </div>
+                    }
+                    />
                 </li>
               ))}
             </ul>
@@ -168,7 +193,9 @@ export default function MemoMaker() {
             <h4>Relations</h4>
             <ul>
               {noteData.relations.map((relation, index) => (
-                <li key={index}>From Concept ID: {relation.from_concept_id} - To Concept ID: {relation.to_concept_id} (Type: {relation.relation_type})</li>
+                <li className="flex" key={index}>
+                  From Concept ID: {relation.from_concept_id} - To Concept ID: {relation.to_concept_id} (Type: {relation.relation_type})
+                </li>
               ))}
             </ul>
           </div>

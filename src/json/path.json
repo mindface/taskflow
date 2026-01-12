@@ -16,16 +16,11 @@
   },
   {
     "id":"path4",
-    "name":"makertext",
-    "path":"/makertext"
-  },
-  {
-    "id":"path5",
     "name":"memolinker",
     "path":"/memolinker"
   },
   {
-    "id":"path6",
+    "id":"path5",
     "name":"memo",
     "path":"/memo",
     "description":"メモページ"

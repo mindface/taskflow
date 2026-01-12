@@ -16,6 +16,7 @@
 
   --color-base: #368bf2;
   --color-white: #fff;
+  --color-black: #333;
   --color-gray: #ccc;
 
   --font-size-title: 20px;
@@ -30,7 +31,7 @@
   min-height: min(100vh, 650px);
 }
 body {
-  height: 100vh;
+  height: 100%;
   margin: 0;
   padding: 16px;
   font-size: 14px;
@@ -95,6 +96,12 @@ button {
 }
 .icon-btn {
   padding: 8px;
+  border-radius: var(--border-radious);
+  background-color: var(--color-white);
+  box-shadow: var(--box-shadow);
+}
+.shot-icon-btn {
+  padding: 4px;
   border-radius: var(--border-radious);
   background-color: var(--color-white);
   box-shadow: var(--box-shadow);

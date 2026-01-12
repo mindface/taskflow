@@ -45,19 +45,19 @@ export function MemoMakerSidebar({
           <ul className="overflow-auto" style={{ maxHeight: "70vh" }}>
             {notes.map((n,index) => (
               <li key={n.id} className="sidebar-item p-2 border-b border-gray-200">
-                <h3 className="pb-2" onClick={() => onSelectNote(n.id)}>No{index+1}:{n.title || "(無題)"}</h3>
+                <h3 className="inline-block mb-2" onClick={() => onSelectNote(n.id)}>No{index+1}:{n.title || "(無題)"}</h3>
                 <div className="action-items flex gap-2">
                   <div
-                    className="hover icon-btn"
+                    className="hover shot-icon-btn"
                     onClick={() => onSelectNote(n.id)}
                   >
-                    <img src={EditIcon} alt="edit" style={{ width: 16, height: 16 }} />
+                    <img src={EditIcon} alt="edit" style={{ width: 12, height: 12 }} />
                   </div>
                   <div
-                    className="hover icon-btn"
+                    className="hover shot-icon-btn"
                     onClick={() => onDeleteNote(n.id)}
                   >
-                    <img src={DeleteIcon} alt="delete" style={{ width: 16, height: 16 }} />
+                    <img src={DeleteIcon} alt="delete" style={{ width: 12, height: 12 }} />
                   </div>
                 </div>
               </li>

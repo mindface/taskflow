@@ -3456,6 +3456,7 @@ dependencies = [
  "lindera-core",
  "lindera-dictionary",
  "lindera-tokenizer",
+ "log",
  "rusqlite",
  "serde",
  "serde_json",
