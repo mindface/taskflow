@@ -19,4 +19,14 @@
 
 .preview p {
   padding: 8px 0;
+  white-space: pre-wrap;
+}
+
+.preview pre code {
+  display: block;
+  white-space: pre-wrap;
+  margin: 8px 0;
+  padding: 8px;
+  color: var(--color-white);
+  background-color: var(--color-black);
 }

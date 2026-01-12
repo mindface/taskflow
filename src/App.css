@@ -4,6 +4,7 @@
 
 * {
   margin: 0;
+  margin-block-start: 0;
   padding: 0;
   box-sizing: border-box;
   line-height: 1;

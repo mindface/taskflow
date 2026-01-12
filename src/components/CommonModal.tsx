@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 
-interface CommonModalProps {
+interface Props {
   isOpen: boolean;
   onClose: () => void;
   title: string;
@@ -8,13 +8,13 @@ interface CommonModalProps {
   contentStyle?: React.CSSProperties,
 }
 
-const CommonModal: React.FC<CommonModalProps> = ({
+const CommonModal = ({
   isOpen,
   onClose,
   title,
   children,
   contentStyle = {},
-}) => {
+}: Props) => {
   useEffect(() => {
     document.body.setAttribute("style", isOpen ? "overflow: hidden;" : "");
   }, [isOpen]);
