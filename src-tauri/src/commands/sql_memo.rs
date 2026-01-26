@@ -240,51 +240,51 @@ pub fn get_note_detail(note_id: i64) -> Result<NoteDetail, String> {
   })
 }
 
-fn ensure_column(
-  conn: &Connection,
-  table: &str,
-  column: &str,
-  column_def: &str,
-) -> Result<(), String> {
-  // PRAGMA table_info('<table>') でカラム一覧を取得
-  let mut stmt = conn
-    .prepare(&format!("PRAGMA table_info('{}')", table))
-    .map_err(|e| format!("prepare pragma error: {}", e))?;
+// fn ensure_column(
+//   conn: &Connection,
+//   table: &str,
+//   column: &str,
+//   column_def: &str,
+// ) -> Result<(), String> {
+//   // PRAGMA table_info('<table>') でカラム一覧を取得
+//   let mut stmt = conn
+//     .prepare(&format!("PRAGMA table_info('{}')", table))
+//     .map_err(|e| format!("prepare pragma error: {}", e))?;
 
-  let mut exists = false;
-  let rows = stmt
-    .query_map([], |row| row.get::<usize, String>(1))
-    .map_err(|e| format!("query_map pragma error: {}", e))?;
-  for r in rows {
-    if let Ok(name) = r {
-      if name == column {
-        exists = true;
-        break;
-      }
-    }
-  }
+//   let mut exists = false;
+//   let rows = stmt
+//     .query_map([], |row| row.get::<usize, String>(1))
+//     .map_err(|e| format!("query_map pragma error: {}", e))?;
+//   for r in rows {
+//     if let Ok(name) = r {
+//       if name == column {
+//         exists = true;
+//         break;
+//       }
+//     }
+//   }
 
-  if exists {
-    return Ok(());
-  }
+//   if exists {
+//     return Ok(());
+//   }
 
-  // カラムがなければ追加（宣言は column_def、例: "TEXT"）
-  conn
-    .execute(
-      &format!("ALTER TABLE {} ADD COLUMN {} {}", table, column, column_def),
-      [],
-    )
-    .map_err(|e| format!("ALTER TABLE add column error: {}", e))?;
+//   // カラムがなければ追加（宣言は column_def、例: "TEXT"）
+//   conn
+//     .execute(
+//       &format!("ALTER TABLE {} ADD COLUMN {} {}", table, column, column_def),
+//       [],
+//     )
+//     .map_err(|e| format!("ALTER TABLE add column error: {}", e))?;
 
-  Ok(())
-}
+//   Ok(())
+// }
 
-#[tauri::command]
-pub fn run_migrations() -> Result<String, String> {
-  let conn = get_conn()?;
-  // ここに必要なカラムを列挙
-  ensure_column(&conn, "concepts", "infolink", "TEXT")?;
-  ensure_column(&conn, "concept_process_factors", "infolink", "TEXT")?;
-  // 将来的な追加カラム・インデックスはここに追記
-  Ok("migrations applied".into())
-}
+// #[tauri::command]
+// pub fn run_migrations() -> Result<String, String> {
+//   let conn = get_conn()?;
+//   // ここに必要なカラムを列挙
+//   ensure_column(&conn, "concepts", "infolink", "TEXT")?;
+//   ensure_column(&conn, "concept_process_factors", "infolink", "TEXT")?;
+//   // 将来的な追加カラム・インデックスはここに追記
+//   Ok("migrations applied".into())
+// }

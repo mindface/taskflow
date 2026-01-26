@@ -4,6 +4,7 @@ import { Note, NoteData } from "../models/Notes";
 import { MemoMakerSidebar } from "../components/MemoMakerSidebar";
 import CommonModal from "../components/CommonModal";
 import ReactMarkdown from "react-markdown";
+import { useWindowSync } from "../hooks/useWindowSync";
 
 import remarkGfm from "remark-gfm";
 import { useNotes } from "../store/note";
@@ -23,6 +24,8 @@ export default function MemoMaker() {
   const [content, setContent] = useState("");
   const [noteData, setNoteData] = useState<NoteData | null>(null)
   const [isOpen,isOpenSet] = useState(false);
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const { syncContent, syncNoteData, openPreview } = useWindowSync();
 
   useEffect(() => {
     (async () => {
@@ -131,6 +134,16 @@ export default function MemoMaker() {
     setContent("");
   }
 
+  const togglePreview = async () => {
+    if (!isPreviewOpen) {
+      syncContent(title,content);
+      await openPreview();
+      setIsPreviewOpen(true);
+    } else {
+      setIsPreviewOpen(false);
+    }
+  };
+
   return (
     <div className="p-4">
       <MemoMakerSidebar
@@ -147,6 +160,20 @@ export default function MemoMaker() {
           <input className="w-half mr-1" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="タイトル" />
           <button onClick={selectedId == null ? createNote : saveNote} >
             {selectedId == null ? "作成" : "保存"}
+          </button>
+          <button 
+            onClick={togglePreview} 
+            className="ml-2"
+            style={{ 
+              backgroundColor: isPreviewOpen ? '#4CAF50' : '#666',
+              color: 'white',
+              padding: '8px 16px',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: 'pointer'
+            }}
+          >
+            {isPreviewOpen ? "プレビュー表示中" : "別ウィンドウでプレビュー"}
           </button>
         </div>
         <div className="flex">
