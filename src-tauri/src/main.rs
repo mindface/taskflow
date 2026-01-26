@@ -24,7 +24,6 @@ impl std::fmt::Display for LinderaError {
   }
 }
 
-
 // Todo どこかで消す
 #[tauri::command]
 fn read_file(path: String) -> Result<String, String> {

@@ -1,6 +1,6 @@
 use crate::commands::db_core::get_conn;
-use crate::models::note::{ConceptView};
-use rusqlite::{params};
+use crate::models::note::ConceptView;
+use rusqlite::params;
 
 #[tauri::command]
 pub fn add_concept(name: String, description: Option<String>, tag: String) -> Result<i64, String> {

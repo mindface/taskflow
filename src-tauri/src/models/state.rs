@@ -1,4 +1,3 @@
-
 #[derive(Default)]
 pub struct PreviewState {
   pub content: String,
