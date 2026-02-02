@@ -8,6 +8,9 @@ use std::fs;
 mod commands;
 mod models;
 
+use crate::models::state::PreviewState;
+use std::sync::Mutex;
+
 #[derive(Debug)]
 pub enum LinderaError {
   Custom(String),
@@ -51,6 +54,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
   }
 
   tauri::Builder::default()
+    .manage(Mutex::new(PreviewState::default()))
     .invoke_handler(tauri::generate_handler![
       commands::file_operations::list_files,
       commands::file_operations::reading_file,
@@ -77,6 +81,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
       // commands::sql_memo::list_concepts,
       // commands::sql_memo::get_note_detail,
       // commands::sql_memo::search_concepts,
+      commands::preview::open_preview_window,
+      commands::preview::sync_content_to_preview,
+      commands::preview::sync_note_data_to_preview,
+      commands::preview::get_current_preview_content,
       read_file,
     ])
     .run(tauri::generate_context!())
