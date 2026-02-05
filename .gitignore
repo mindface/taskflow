@@ -25,3 +25,4 @@ dist-ssr
 .yarn/install-state.gz
 .yarn/*
 src-tauri/data
+src-tauri/gen/

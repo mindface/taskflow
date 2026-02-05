@@ -1,28 +1,37 @@
 use crate::models::note::Note;
 use crate::models::state::PreviewState;
 use std::sync::Mutex;
-use tauri::Manager;
+use tauri::{Emitter, Manager};
 
 #[tauri::command]
 pub fn open_preview_window(app: tauri::AppHandle) -> Result<(), String> {
   // 既存のプレビューウィンドウがあれば閉じる
-  if let Some(window) = app.get_window("preview") {
-    window.close().ok();
+  if let Some(window) = app.get_webview_window("preview") {
+    println!("[Rust] Closing existing preview window");
+    let _ = window.close(); // 型推論のため let _ = を使用
   }
 
-  let _preview_window =
-    tauri::WindowBuilder::new(&app, "preview", tauri::WindowUrl::App("index.html".into()))
-      .title("プレビュー")
-      .inner_size(800.0, 600.0)
-      .resizable(true)
-      .initialization_script(
-        r#"
-        window.__TAURI_WINDOW_LABEL__ = 'preview';
+  let _preview_window = tauri::webview::WebviewWindowBuilder::new(
+    &app,
+    "preview",
+    tauri::WebviewUrl::App("index.html".into()),
+  )
+  .title("プレビュー")
+  .inner_size(800.0, 600.0)
+  .resizable(true)
+  .initialization_script(
+    r#"
+      window.__TAURI_WINDOW_LABEL__ = 'preview';
     "#,
-      )
-      .build()
-      .map_err(|e| e.to_string())?;
+  )
+  .build()
+  .map_err(|e| {
+    let err = format!("Failed to build window: {}", e);
+    println!("[Rust] ERROR: {}", err);
+    err
+  })?;
 
+  println!("[Rust] Preview window created successfully");
   Ok(())
 }
 
@@ -39,17 +48,20 @@ pub fn sync_content_to_preview(
     state.title = title.clone();
   }
   app
-    .emit_all(
+    .emit_to(
+      "preview",
       "content-update",
       serde_json::json!({
           "content": content,
           "title": title,
       }),
     )
-    .map_err(|e| {
-      println!("emit_all error: {:?}", e);
+    .map_err(|e: tauri::Error| {
+      let err = format!("Failed to emit event: {}", e);
+      println!("[Rust] ERROR: {}", err);
       e.to_string()
     })?;
+
   // [TODO] Tauriのバージョンをあげて検証予定
   // if app.get_window("preview").is_none() {
   //     println!("preview window not found");

@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { invoke } from "@tauri-apps/api/tauri";
-import { sendNotification } from "@tauri-apps/api/notification";
-import { open } from "@tauri-apps/api/dialog";
+import { invoke } from "@tauri-apps/api/core";
+import { sendNotification } from "@tauri-apps/plugin-notification";
+import { open } from "@tauri-apps/plugin-dialog";
 
 import ReactMarkdown from "react-markdown";
 

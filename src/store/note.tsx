@@ -1,5 +1,5 @@
 import React, { createContext, useReducer, useContext, ReactNode } from "react";
-import { invoke } from "@tauri-apps/api/tauri";
+import { invoke } from "@tauri-apps/api/core";
 import { Note } from "../models/Notes";
 
 type State = {
