@@ -1,36 +1,35 @@
 use crate::models::note::Note;
 use crate::models::state::PreviewState;
 use std::sync::Mutex;
-use tauri::{Manager, Emitter};
+use tauri::{Emitter, Manager};
 
 #[tauri::command]
 pub fn open_preview_window(app: tauri::AppHandle) -> Result<(), String> {
   // 既存のプレビューウィンドウがあれば閉じる
   if let Some(window) = app.get_webview_window("preview") {
     println!("[Rust] Closing existing preview window");
-    let _ = window.close();  // 型推論のため let _ = を使用
+    let _ = window.close(); // 型推論のため let _ = を使用
   }
 
-  let _preview_window =
-    tauri::webview::WebviewWindowBuilder::new(
-      &app,
-      "preview",
-      tauri::WebviewUrl::App("index.html".into())
-    )
-    .title("プレビュー")
-    .inner_size(800.0, 600.0)
-    .resizable(true)
-    .initialization_script(
+  let _preview_window = tauri::webview::WebviewWindowBuilder::new(
+    &app,
+    "preview",
+    tauri::WebviewUrl::App("index.html".into()),
+  )
+  .title("プレビュー")
+  .inner_size(800.0, 600.0)
+  .resizable(true)
+  .initialization_script(
     r#"
       window.__TAURI_WINDOW_LABEL__ = 'preview';
     "#,
-    )
-    .build()
-    .map_err(|e| {
-      let err = format!("Failed to build window: {}", e);
-      println!("[Rust] ERROR: {}", err);
-      err
-    })?;
+  )
+  .build()
+  .map_err(|e| {
+    let err = format!("Failed to build window: {}", e);
+    println!("[Rust] ERROR: {}", err);
+    err
+  })?;
 
   println!("[Rust] Preview window created successfully");
   Ok(())
