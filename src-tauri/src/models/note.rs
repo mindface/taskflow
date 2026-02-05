@@ -16,14 +16,14 @@ pub struct NoteDetail {
   pub relations: Vec<ConceptRelationView>,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct ConceptProcessFactor {
-  pub id: i64,
-  pub conceptlist: Vec<i64>,
-  pub name: String,
-  pub description: Option<String>,
-  pub infolink: Option<String>, // url link to more info
-}
+// #[derive(Serialize, Deserialize, Debug, Clone)]
+// pub struct ConceptProcessFactor {
+//   pub id: i64,
+//   pub conceptlist: Vec<i64>,
+//   pub name: String,
+//   pub description: Option<String>,
+//   pub infolink: Option<String>, // url link to more info
+// }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct ConceptView {

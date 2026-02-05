@@ -1,7 +1,7 @@
 use crate::commands::db_core::get_conn;
 use crate::models::note::{ConceptRelationView, ConceptView, Note, NoteDetail};
 use chrono::Utc;
-use rusqlite::{params,Connection};
+use rusqlite::{params};
 
 #[tauri::command]
 pub fn init_db() -> Result<String, String> {
