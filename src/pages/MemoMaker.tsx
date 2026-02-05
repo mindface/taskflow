@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { invoke } from "@tauri-apps/api/tauri";
+import { invoke } from "@tauri-apps/api/core";
 import { Note, NoteData } from "../models/Notes";
 import { MemoMakerSidebar } from "../components/MemoMakerSidebar";
 import CommonModal from "../components/CommonModal";
@@ -14,8 +14,8 @@ import EditIcon from "../assets/edit.svg";
 import "github-markdown-css/github-markdown.css";
 import "../styles/markdown.css";
 
-import { save } from "@tauri-apps/api/dialog";
-import { open } from "@tauri-apps/api/dialog";
+import { save } from "@tauri-apps/plugin-dialog";
+import { open } from "@tauri-apps/plugin-dialog";
 
 export default function MemoMaker() {
   const { loadNotes, notes } = useNotes();

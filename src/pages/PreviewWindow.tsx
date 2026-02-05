@@ -4,7 +4,7 @@ import remarkGfm from 'remark-gfm';
 // TODO Tauriバージョン次第で変更予定
 // import { usePreviewListener } from '../hooks/useWindowSync';
 // import { listen, UnlistenFn } from '@tauri-apps/api/event';
-import { invoke } from "@tauri-apps/api/tauri";
+import { invoke } from "@tauri-apps/api/core";
 import { NoteData } from '../models/Notes';
 import 'github-markdown-css/github-markdown.css';
 import '../styles/markdown.css';
