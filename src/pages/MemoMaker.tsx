@@ -176,14 +176,16 @@ export default function MemoMaker() {
             {isPreviewOpen ? "プレビュー表示中" : "別ウィンドウでプレビュー"}
           </button>
         </div>
-        <div className="flex">
+        <div className="flex p-4">
           <div className="writer w-half p-4">
             <textarea className="p-4" value={content} onChange={(e) => setContent(e.target.value)} style={{ width: "100%", height: "60vh" }} />
           </div>
-          <div className="preview w-half p-4">
-            <ReactMarkdown
-              remarkPlugins={[remarkGfm]}
-            >{content}</ReactMarkdown>
+          <div className="w-half p-4">
+            <div className="preview">
+              <ReactMarkdown
+                remarkPlugins={[remarkGfm]}
+              >{content}</ReactMarkdown>
+            </div>
           </div>
         </div>
         {noteData && (<div className="note-data p-4 mt-4 border-t">

@@ -30,3 +30,8 @@
   color: var(--color-white);
   background-color: var(--color-black);
 }
+
+.markdown-body {
+  padding: 16px;
+  border-radius: var(--border-radious);
+}
