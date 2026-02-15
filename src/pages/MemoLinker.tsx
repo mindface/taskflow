@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { invoke } from "@tauri-apps/api/core";
 import { useNotes } from "../store/note";
 import ConnectLinker from "../components/ConnectLinker";
 

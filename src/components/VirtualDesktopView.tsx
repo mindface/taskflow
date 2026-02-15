@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { invoke } from '@tauri-apps/api/core';
 import { WindowManagerService, WindowInfo } from './VirtualDesktopViewService';
-import '../styles/VirtualDesktopView.css';
+import '../styles/WindowVirtual.css';
 
 export function VirtualDesktopView() {
   const [windows, setWindows] = useState<WindowInfo[]>([]);
