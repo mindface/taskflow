@@ -6,6 +6,8 @@ import Structsmake from "./pages/Structsmake";
 import Tokenizer from "./pages/Tokenizer";
 import MemoLinker from "./pages/MemoLinker";
 import MemoMaker from "./pages/MemoMaker";
+import WindowChecker from "./pages/WindowChecker";
+
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 
@@ -28,6 +30,7 @@ function App() {
           {viewtype === "tokenizer" && <Tokenizer /> }
           {viewtype === "memolinker" && <NotesProvider><MemoLinker /></NotesProvider> }
           {viewtype === "memo" && <NotesProvider><MemoMaker /></NotesProvider> }
+          {viewtype === "windowchecker" && <WindowChecker /> }
         </main>
         <Footer />
       </div>
