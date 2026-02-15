@@ -5,6 +5,8 @@ import DeleteIcon from "../assets/delete.svg";
 
 import "../styles/sidebar.css";
 
+import { useWindowSync } from "../hooks/useWindowSync";
+
 type Props = {
   notes: Note[];
   onSelectNote: (id: number) => void;
@@ -24,10 +26,16 @@ export function MemoMakerSidebar({
   onExportNotes,
   onImportNotes
 }: Props) {
-  const [switcher,setSwitcher] = useState(false)
+  const [switcher,setSwitcher] = useState(false);
+  const { syncContent, syncNoteData, openPreview } = useWindowSync();
 
   const switcherAction = () => {
     setSwitcher(!switcher);
+  }
+
+  const onPreviewNote = async (title: string, content: string) => {
+    syncContent(title, content);
+    await openPreview(true);
   }
 
   return (
@@ -44,7 +52,7 @@ export function MemoMakerSidebar({
           </div>
           <ul className="overflow-auto" style={{ maxHeight: "70vh" }}>
             {notes.map((n,index) => (
-              <li key={n.id} className="sidebar-item p-2 border-b border-gray-200">
+              <li className="sidebar-item p-2 border-b border-gray-200" key={n.id}>
                 <h3 className="inline-block mb-2" onClick={() => onSelectNote(n.id)}>No{index+1}:{n.title || "(無題)"}</h3>
                 <div className="action-items flex gap-2">
                   <div
@@ -58,6 +66,12 @@ export function MemoMakerSidebar({
                     onClick={() => onDeleteNote(n.id)}
                   >
                     <img src={DeleteIcon} alt="delete" style={{ width: 12, height: 12 }} />
+                  </div>
+                  <div
+                    className="hover shot-icon-btn"
+                    onClick={() => onPreviewNote(n.title, n.content)}
+                  >
+                    プレビュー表示
                   </div>
                 </div>
               </li>

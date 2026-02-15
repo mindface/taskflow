@@ -3,6 +3,7 @@ import { invoke } from "@tauri-apps/api/core";
 import { Note, NoteData } from "../models/Notes";
 import { MemoMakerSidebar } from "../components/MemoMakerSidebar";
 import CommonModal from "../components/CommonModal";
+import { VirtualDesktopView } from "../components/VirtualDesktopView";
 import ReactMarkdown from "react-markdown";
 import { useWindowSync } from "../hooks/useWindowSync";
 
@@ -137,7 +138,7 @@ export default function MemoMaker() {
   const togglePreview = async () => {
     if (!isPreviewOpen) {
       syncContent(title,content);
-      await openPreview();
+      await openPreview(false);
       setIsPreviewOpen(true);
     } else {
       setIsPreviewOpen(false);
@@ -146,6 +147,7 @@ export default function MemoMaker() {
 
   return (
     <div className="p-4">
+      <VirtualDesktopView />
       <MemoMakerSidebar
         notes={notes}
         onSelectNote={selectNote}

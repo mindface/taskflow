@@ -35,9 +35,9 @@ export function useWindowSync() {
     }
   }, []);
 
-  const openPreview = useCallback(async () => {
+  const openPreview = useCallback(async (openContinuous: boolean) => {
     try {
-      await invoke('open_preview_window');
+      await invoke('open_preview_window', { openContinuous });
     } catch (error) {
       console.error('open_preview_window error:', error);
     }
@@ -51,20 +51,19 @@ export function usePreviewListener(
   onNoteDataUpdate: (noteData: NoteData) => void
 ) {
   useEffect(() => {
-    console.log('[usePreviewListener@@@pp] Setting up listeners');
+    console.log('[usePreviewListener] Setting up listeners');
     let contentUnlisten: UnlistenFn;
     let noteDataUnlisten: UnlistenFn;
 
     (async () => {
       try {
-        console.log('wwwwwww');
         contentUnlisten = await listen<SyncPayload>('content-update', (event) => {
-          console.log('[usePreviewListener @@] content-update event received:', event.payload);
+          console.log('[usePreviewListener] content-update event received:', event.payload);
           onContentUpdate(event.payload);
         });
 
         noteDataUnlisten = await listen<NoteData>('note-data-update', (event) => {
-          console.log('[usePreviewListener @@] note-data-update event received:', event.payload);
+          console.log('[usePreviewListener] note-data-update event received:', event.payload);
           onNoteDataUpdate(event.payload);
         });
         

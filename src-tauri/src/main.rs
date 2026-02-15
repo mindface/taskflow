@@ -1,12 +1,13 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
+mod commands;
+mod models;
+mod window_capture;
+
 use lindera_core::mode::Mode;
 use lindera_dictionary::{DictionaryConfig, DictionaryKind};
 use lindera_tokenizer::tokenizer::{Tokenizer, TokenizerConfig};
 use std::fs;
-
-mod commands;
-mod models;
 
 use crate::models::state::PreviewState;
 use std::sync::Mutex;
@@ -88,6 +89,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
       commands::preview::sync_note_data_to_preview,
       commands::preview::get_current_preview_content,
       read_file,
+      commands::window_manager::get_all_windows,
+      commands::window_manager::get_all_windows_with_thumbnails,
+      commands::window_manager::capture_window,
+      commands::window_manager::focus_window,
+      commands::window_manager::test_enum_windows,
     ])
     .run(tauri::generate_context!())
     .expect("error while running tauri application");
