@@ -24,5 +24,11 @@
     "name":"memo",
     "path":"/memo",
     "description":"メモページ"
+  },
+  {
+    "id":"path6",
+    "name":"windowchecker",
+    "path":"/windowchecker",
+    "description":"ウィンドウチェックページ"
   }
 ]

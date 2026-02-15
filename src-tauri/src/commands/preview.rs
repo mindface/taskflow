@@ -1,19 +1,31 @@
 use crate::models::note::Note;
 use crate::models::state::PreviewState;
 use std::sync::Mutex;
+use std::time::{SystemTime, UNIX_EPOCH};
 use tauri::{Emitter, Manager};
 
 #[tauri::command]
-pub fn open_preview_window(app: tauri::AppHandle) -> Result<(), String> {
+pub fn open_preview_window(app: tauri::AppHandle, open_continuous: bool) -> Result<(), String> {
   // 既存のプレビューウィンドウがあれば閉じる
   if let Some(window) = app.get_webview_window("preview") {
+    if open_continuous {
+      println!("[Rust] Preview window already open, keeping it open due to open_continuous=true");
+      return Ok(());
+    }
     println!("[Rust] Closing existing preview window");
     let _ = window.close(); // 型推論のため let _ = を使用
   }
 
+  // 毎回ユニークなラベルを作成する（例: preview_1712345678）
+  let now = SystemTime::now()
+    .duration_since(UNIX_EPOCH)
+    .unwrap()
+    .as_secs();
+  let label = format!("preview_{}", now);
+
   let _preview_window = tauri::webview::WebviewWindowBuilder::new(
     &app,
-    "preview",
+    &label,
     tauri::WebviewUrl::App("index.html".into()),
   )
   .title("プレビュー")

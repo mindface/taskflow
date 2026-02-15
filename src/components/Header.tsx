@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import paths from "../json/path.json";
 
 type Props = {

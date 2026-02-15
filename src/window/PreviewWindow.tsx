@@ -81,7 +81,6 @@ export default function PreviewWindow() {
       {noteData && (
         <div className="note-data-preview p-6 mt-6 border-t bg-gray-50 rounded-lg">
           <h2 className="text-2xl font-semibold mb-4">Note Data</h2>
-          
           <div className="concepts mb-6">
             <h3 className="text-xl font-medium mb-3">
               Concepts ({noteData.concepts.length})
