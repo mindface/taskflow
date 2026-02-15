@@ -100,7 +100,7 @@ impl WindowCapture for MacOSCapture {
 
         // オーナー名（アプリ名）を取得
         let owner_name_key = CFString::from_static_string("kCGWindowOwnerName");
-        let owner_name_value = core_foundation::dictionary::CFDictionaryGetValue(
+        let _owner_name_value = core_foundation::dictionary::CFDictionaryGetValue(
           window_info,
           owner_name_key.as_concrete_TypeRef() as *const _,
         );

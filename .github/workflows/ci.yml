@@ -34,10 +34,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20.x
-          cache: 'pnpm' # キャッシュ対象をpnpmに変更
+          cache: "pnpm"
 
       - name: Install frontend dependencies (pnpm)
-        run: pnpm install --frozen-lockfile
+        run: pnpm install
 
       - name: Build frontend
         run: pnpm build

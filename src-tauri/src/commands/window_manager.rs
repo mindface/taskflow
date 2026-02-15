@@ -77,7 +77,7 @@ pub fn capture_window(handle: usize, width: u32, height: u32) -> Result<String, 
 }
 
 #[tauri::command]
-pub fn focus_window(handle: usize) -> Result<(), String> {
+pub fn focus_window(_handle: usize) -> Result<(), String> {
   #[cfg(target_os = "windows")]
   {
     use windows::Win32::Foundation::*;
@@ -99,15 +99,15 @@ pub fn focus_window(handle: usize) -> Result<(), String> {
   Err("Not implemented for this platform".to_string())
 }
 
-#[tauri::command]
-pub fn get_platform_info() -> String {
-  let os = std::env::consts::OS;
-  let arch = std::env::consts::ARCH;
+// #[tauri::command]
+// pub fn get_platform_info() -> String {
+//   let os = std::env::consts::OS;
+//   let arch = std::env::consts::ARCH;
 
-  println!("[get_platform_info] OS: {}, Arch: {}", os, arch);
+//   println!("[get_platform_info] OS: {}, Arch: {}", os, arch);
 
-  format!("OS: {}, Architecture: {}", os, arch) // ← セミコロンなし（return文）
-}
+//   format!("OS: {}, Architecture: {}", os, arch) // ← セミコロンなし（return文）
+// }
 
 #[tauri::command]
 pub fn test_enum_windows() -> Result<String, String> {
