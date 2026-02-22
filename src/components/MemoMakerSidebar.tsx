@@ -17,7 +17,7 @@ type Props = {
   onImportNotes: () => void;
 }
 
-export function MemoMakerSidebar({
+export default function MemoMakerSidebar({
   notes,
   onSelectNote,
   onCreateNote,

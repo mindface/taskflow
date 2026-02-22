@@ -4,7 +4,7 @@ import { invoke } from '@tauri-apps/api/core';
 import { WindowManagerService, WindowInfo } from './VirtualDesktopViewService';
 import '../styles/WindowVirtual.css';
 
-export function VirtualDesktopView() {
+export default function VirtualDesktopView() {
   const [windows, setWindows] = useState<WindowInfo[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedWindow, setSelectedWindow] = useState<WindowInfo | null>(null);

@@ -8,13 +8,13 @@ interface Props {
   contentStyle?: React.CSSProperties,
 }
 
-const CommonModal = ({
+export default function CommonModal({
   isOpen,
   onClose,
   title,
   children,
   contentStyle = {},
-}: Props) => {
+}: Props) {
   useEffect(() => {
     document.body.setAttribute("style", isOpen ? "overflow: hidden;" : "");
   }, [isOpen]);
@@ -37,5 +37,3 @@ const CommonModal = ({
     </>
   );
 };
-
-export default CommonModal;

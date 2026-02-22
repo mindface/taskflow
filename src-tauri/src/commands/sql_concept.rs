@@ -70,9 +70,9 @@ pub fn add_concept_to_note(
   // 1. concept を作成（すでにあれば無視）
   tx.execute(
     "
-        INSERT OR IGNORE INTO concepts (name, tag, description, infolink)
-        VALUES (?1, ?2, ?3, ?4)
-        ",
+    INSERT OR IGNORE INTO concepts (name, tag, description, infolink)
+    VALUES (?1, ?2, ?3, ?4)
+    ",
     params![name, tag, description, infolink],
   )
   .map_err(|e| format!("Insert concept error: {}", e))?;
@@ -89,10 +89,10 @@ pub fn add_concept_to_note(
   // 3. note と紐づけ
   tx.execute(
     "
-        INSERT OR IGNORE INTO note_concepts
-        (note_id, concept_id, role)
-        VALUES (?1, ?2, ?3)
-        ",
+    INSERT OR IGNORE INTO note_concepts
+    (note_id, concept_id, role)
+    VALUES (?1, ?2, ?3)
+    ",
     params![note_id, concept_id, role],
   )
   .map_err(|e| format!("Insert note_concept error: {}", e))?;
@@ -108,10 +108,10 @@ pub fn add_note_concept(note_id: i64, concept_id: i64, role: String) -> Result<(
   conn
     .execute(
       "
-        INSERT OR IGNORE INTO note_concepts
-        (note_id, concept_id, role)
-        VALUES (?1, ?2, ?3)
-        ",
+      INSERT OR IGNORE INTO note_concepts
+      (note_id, concept_id, role)
+      VALUES (?1, ?2, ?3)
+      ",
       params![note_id, concept_id, role],
     )
     .map_err(|e| format!("Insert note concept error: {}", e))?;

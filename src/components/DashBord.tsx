@@ -1,7 +1,7 @@
 import { useState , useContext } from "react";
 import { dataContext } from "../store/dataBox";
 
-function Header() {
+export default function Header() {
   const { state, dispatch} = useContext(dataContext);
   const [list, listSet] = useState(state.dataBoxList ?? [])
 
@@ -12,5 +12,3 @@ function Header() {
     </div>
   );
 }
-
-export default Header;

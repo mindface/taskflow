@@ -94,6 +94,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
       commands::window_manager::capture_window,
       commands::window_manager::focus_window,
       commands::window_manager::test_enum_windows,
+
+      commands::search::note_concepts::search_note_concepts,
+      commands::search::note_concepts::search_note_concepts,
+      commands::search::note_concepts::search_note_concepts,
     ])
     .run(tauri::generate_context!())
     .expect("error while running tauri application");
