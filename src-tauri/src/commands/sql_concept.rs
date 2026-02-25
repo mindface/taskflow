@@ -122,8 +122,9 @@ pub fn add_note_concept(note_id: i64, concept_id: i64, role: String) -> Result<(
 #[tauri::command]
 pub fn list_concepts() -> Result<Vec<ConceptView>, String> {
   let conn = get_conn()?;
-  let mut stmt = conn.prepare(
-    "SELECT
+  let mut stmt = conn
+    .prepare(
+      "SELECT
       c.id,
       c.name,
       c.description,
@@ -138,7 +139,8 @@ pub fn list_concepts() -> Result<Vec<ConceptView>, String> {
       LEFT JOIN note_concepts nc ON c.id = nc.concept_id
       LEFT JOIN notes n ON nc.note_id = n.id
       ORDER BY updated_at DESC
-    ")
+    ",
+    )
     .map_err(|e| format!("Prepare error: {}", e))?;
 
   let rows = stmt

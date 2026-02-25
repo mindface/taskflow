@@ -94,4 +94,3 @@ pub fn search_note_concepts(
 
   Ok(concepts)
 }
-
