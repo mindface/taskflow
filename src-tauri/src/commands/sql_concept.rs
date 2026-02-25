@@ -122,8 +122,25 @@ pub fn add_note_concept(note_id: i64, concept_id: i64, role: String) -> Result<(
 #[tauri::command]
 pub fn list_concepts() -> Result<Vec<ConceptView>, String> {
   let conn = get_conn()?;
-  let mut stmt = conn.prepare("SELECT id, name, description, tag, infolink, created_at, updated_at, role FROM concepts ORDER BY updated_at DESC")
-        .map_err(|e| format!("Prepare error: {}", e))?;
+  let mut stmt = conn.prepare(
+    "SELECT
+      c.id,
+      c.name,
+      c.description,
+      c.tag,
+      c.infolink,
+      c.created_at,
+      c.updated_at,
+      c.role
+      n.id
+      n.title
+      FROM concepts c
+      LEFT JOIN note_concepts nc ON c.id = nc.concept_id
+      LEFT JOIN notes n ON nc.note_id = n.id
+      ORDER BY updated_at DESC
+    ")
+    .map_err(|e| format!("Prepare error: {}", e))?;
+
   let rows = stmt
     .query_map([], |row| {
       Ok(ConceptView {
@@ -135,6 +152,8 @@ pub fn list_concepts() -> Result<Vec<ConceptView>, String> {
         created_at: row.get(5)?,
         updated_at: row.get(6)?,
         role: row.get::<_, Option<String>>(7)?,
+        note_id: row.get(8)?,
+        note_title: row.get(9)?,
       })
     })
     .map_err(|e| format!("QueryMap error: {}", e))?;

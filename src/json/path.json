@@ -30,5 +30,11 @@
     "name":"windowchecker",
     "path":"/windowchecker",
     "description":"ウィンドウチェックページ"
+  },
+  {
+    "id":"path7",
+    "name":"conceptsSearch",
+    "path":"/conceptsSearch",
+    "description":"コンセプトサーチ"
   }
 ]

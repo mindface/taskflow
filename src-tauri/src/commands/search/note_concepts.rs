@@ -4,6 +4,7 @@ use rusqlite::{params_from_iter, ToSql};
 
 #[tauri::command]
 pub fn search_note_concepts(
+  name: Option<String>,
   note_id: i64,
   tag: Option<String>,
   role: Option<String>,
@@ -21,9 +22,12 @@ pub fn search_note_concepts(
       c.infolink,
       c.created_at,
       c.updated_at,
-      nc.role
+      nc.role,
+      n.id,
+      n.title
     FROM concepts c
-    JOIN note_concepts nc ON c.id = nc.concept_id
+    LEFT JOIN note_concepts nc ON c.id = nc.concept_id
+    LEFT JOIN notes n ON nc.note_id = n.id
     WHERE nc.note_id = ?
     ",
   );
@@ -31,6 +35,14 @@ pub fn search_note_concepts(
   // params を順番に積む
   let mut params: Vec<Box<dyn ToSql>> = Vec::new();
   params.push(Box::new(note_id));
+
+  // name フィルタ
+  if let Some(name) = name.as_ref() {
+    println!("Is = {}", name.clone());
+    sql.push_str(" AND c.name LIKE ?");
+    let likefilter = format!("%{}%", name.clone());
+    params.push(Box::new(likefilter));
+  }
 
   // tag フィルタ
   if let Some(tag) = tag {
@@ -69,6 +81,8 @@ pub fn search_note_concepts(
         created_at: row.get(5)?,
         updated_at: row.get(6)?,
         role: row.get::<_, Option<String>>(7)?,
+        note_id: row.get::<_, Option<i64>>(8)?,
+        note_title: row.get::<_, Option<String>>(9)?,
       })
     })
     .map_err(|e| format!("QueryMap error: {}", e))?;
@@ -80,3 +94,4 @@ pub fn search_note_concepts(
 
   Ok(concepts)
 }
+
