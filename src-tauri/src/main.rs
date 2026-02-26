@@ -55,6 +55,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
   }
 
   tauri::Builder::default()
+    .plugin(tauri_plugin_fs::init())
     .plugin(tauri_plugin_shell::init())
     .plugin(tauri_plugin_dialog::init())
     .manage(Mutex::new(PreviewState::default()))
