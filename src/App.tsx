@@ -26,7 +26,7 @@ function App() {
           nextPageAction={(path:string) => viewTypeSet(path)}
         />
         <main className="main">
-          {viewtype === "home " && <DataProvider><Home /></DataProvider> }
+          {viewtype === "home" && <DataProvider><Home /></DataProvider> }
           {viewtype === "structsmake" && <Structsmake /> }
           {viewtype === "tokenizer" && <Tokenizer /> }
           {viewtype === "memolinker" && <NotesProvider><MemoLinker /></NotesProvider> }
