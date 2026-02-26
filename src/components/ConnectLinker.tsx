@@ -7,7 +7,7 @@ type Props = {
   noteList: Note[];
 };
 
-function ConnectLinker({ noteList }: Props) {
+export default function ConnectLinker({ noteList }: Props) {
   const [noteId, setNoteId] = useState<number | null>(null);
   const [name, setName] = useState("");
   const [tag, setTag] = useState("");
@@ -115,6 +115,3 @@ function ConnectLinker({ noteList }: Props) {
     </div>
   );
 }
-
-
-export default ConnectLinker;

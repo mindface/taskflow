@@ -2,9 +2,9 @@
 import { useState, useEffect } from 'react';
 import { invoke } from '@tauri-apps/api/core';
 import { WindowManagerService, WindowInfo } from './VirtualDesktopViewService';
-import '../styles/WindowVirtual.css';
+import '../styles/virtualDesktop.css';
 
-export function VirtualDesktopView() {
+export default function VirtualDesktopView() {
   const [windows, setWindows] = useState<WindowInfo[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedWindow, setSelectedWindow] = useState<WindowInfo | null>(null);
@@ -79,7 +79,7 @@ export function VirtualDesktopView() {
     <div className="virtual-desktop-view">
       <div className="header">
         <h1>開いているウィンドウ ({windows.length})</h1>
-        <button onClick={handleRefresh} className="refresh-button">
+        <button onClick={handleRefresh} className="btn">
           🔄 更新
         </button>
       </div>
@@ -107,7 +107,7 @@ export function VirtualDesktopView() {
                 </div>
               )}
             </div>
-            
+
             <div className="window-info">
               <h3 className="window-title" title={window.title}>
                 {window.title}

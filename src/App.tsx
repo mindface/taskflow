@@ -7,6 +7,7 @@ import Tokenizer from "./pages/Tokenizer";
 import MemoLinker from "./pages/MemoLinker";
 import MemoMaker from "./pages/MemoMaker";
 import WindowChecker from "./pages/WindowChecker";
+import ConceptSearch from "./pages/ConceptSearch";
 
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -21,16 +22,17 @@ function App() {
     <BrowserRouter>
       <div className="div-outer">
         <Header
+          activePath={viewtype}
           nextPageAction={(path:string) => viewTypeSet(path)}
         />
-        <p className="text-black">{viewtype}</p>
         <main className="main">
-          {viewtype === "home " && <DataProvider><Home /></DataProvider> }
+          {viewtype === "home" && <DataProvider><Home /></DataProvider> }
           {viewtype === "structsmake" && <Structsmake /> }
           {viewtype === "tokenizer" && <Tokenizer /> }
           {viewtype === "memolinker" && <NotesProvider><MemoLinker /></NotesProvider> }
           {viewtype === "memo" && <NotesProvider><MemoMaker /></NotesProvider> }
           {viewtype === "windowchecker" && <WindowChecker /> }
+          {viewtype === "conceptsSearch" && <ConceptSearch /> }
         </main>
         <Footer />
       </div>

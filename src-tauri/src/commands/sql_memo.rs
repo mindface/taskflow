@@ -161,19 +161,22 @@ pub fn get_note_detail(note_id: i64) -> Result<NoteDetail, String> {
   let mut stmt = conn
     .prepare(
       "
-            SELECT
-                c.id,
-                c.name,
-                c.description,
-                c.tag,
-                c.infolink,
-                c.created_at,
-                c.updated_at,
-                nc.role
-            FROM concepts c
-            JOIN note_concepts nc ON c.id = nc.concept_id
-            WHERE nc.note_id = ?1
-            ",
+        SELECT
+            c.id,
+            c.name,
+            c.description,
+            c.tag,
+            c.infolink,
+            c.created_at,
+            c.updated_at,
+            nc.role
+            n.id,
+            n.title,
+        FROM concepts c
+        LEFT JOIN note_concepts nc ON c.id = nc.concept_id
+        LEFT JOIN notes n ON nc.note_id = n.id
+        WHERE nc.note_id = ?1
+        ",
     )
     .map_err(|e| format!("Prepare concepts error: {}", e))?;
 
@@ -188,6 +191,8 @@ pub fn get_note_detail(note_id: i64) -> Result<NoteDetail, String> {
         created_at: row.get(5)?,
         updated_at: row.get(6)?,
         role: row.get::<_, Option<String>>(7)?,
+        note_id: row.get::<_, Option<i64>>(8)?,
+        note_title: row.get::<_, Option<String>>(9)?,
       })
     })
     .map_err(|e| format!("QueryMap concepts error: {}", e))?;
@@ -201,20 +206,20 @@ pub fn get_note_detail(note_id: i64) -> Result<NoteDetail, String> {
   let mut stmt = conn
     .prepare(
       "
-            SELECT
-                cr.from_concept_id,
-                cr.to_concept_id,
-                cr.relation_type
-            FROM concept_relations cr
-            WHERE
-                cr.from_concept_id IN (
-                    SELECT concept_id FROM note_concepts WHERE note_id = ?1
-                )
-                AND
-                cr.to_concept_id IN (
-                    SELECT concept_id FROM note_concepts WHERE note_id = ?1
-                )
-            ",
+        SELECT
+            cr.from_concept_id,
+            cr.to_concept_id,
+            cr.relation_type
+        FROM concept_relations cr
+        WHERE
+            cr.from_concept_id IN (
+                SELECT concept_id FROM note_concepts WHERE note_id = ?1
+            )
+            AND
+            cr.to_concept_id IN (
+                SELECT concept_id FROM note_concepts WHERE note_id = ?1
+            )
+        ",
     )
     .map_err(|e| format!("Prepare relations error: {}", e))?;
 

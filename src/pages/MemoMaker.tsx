@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { Note, NoteData } from "../models/Notes";
-import { MemoMakerSidebar } from "../components/MemoMakerSidebar";
+import MemoMakerSidebar from "../components/MemoMakerSidebar";
 import CommonModal from "../components/CommonModal";
 import ReactMarkdown from "react-markdown";
 import { useWindowSync } from "../hooks/useWindowSync";

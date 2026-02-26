@@ -1,4 +1,4 @@
-import { VirtualDesktopView } from "../components/VirtualDesktopView";
+import VirtualDesktopView from "../components/VirtualDesktopView";
 
 export default function WindowChecker() {
   return (

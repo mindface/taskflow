@@ -44,7 +44,6 @@ export default function PreviewWindow() {
       height: '100vh', 
       overflow: 'auto',
       padding: '24px',
-      backgroundColor: '#ffffff'
     }}>
       {/* デバッグ情報 */}
       <div style={{ 
@@ -62,8 +61,8 @@ export default function PreviewWindow() {
         {debugInfo.map((info, i) => <div key={i}>{info}</div>)}
       </div>
 
-      <div className="header mb-4 pb-4 border-b">
-        <h1 className="text-3xl font-bold">{title}</h1>
+      <div className="header mb-4 pb-4">
+        <h2 className="text-3xl font-bold">{title}</h2>
       </div>
 
       <div className="markdown-body mb-6" style={{ minHeight: '200px' }}>

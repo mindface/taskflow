@@ -35,6 +35,8 @@ pub struct ConceptView {
   pub tag: String,
   pub created_at: Option<String>,
   pub updated_at: Option<String>,
+  pub note_id: Option<i64>,
+  pub note_title: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
