@@ -1,7 +1,7 @@
 // src/components/VirtualDesktopView.tsx
 import { useState, useEffect } from 'react';
 import { invoke } from '@tauri-apps/api/core';
-import { WindowManagerService, WindowInfo } from './VirtualDesktopViewService';
+import { ManageWindowService, WindowInfo } from '../service/ManageWindowService';
 import '../styles/virtualDesktop.css';
 
 export default function VirtualDesktopView() {
@@ -22,7 +22,7 @@ export default function VirtualDesktopView() {
       console.log('[VirtualDesktopView] Loading windows...');
       setLoading(true);
 
-      const windowsData = await WindowManagerService.getAllWindowsWithThumbnails(320, 180);
+      const windowsData = await ManageWindowService.getAllWindowsWithThumbnails(320, 180);
       console.log('[VirtualDesktopView] Received data:', windowsData);
       console.log('[VirtualDesktopView] Total windows:', windowsData.length);
 
@@ -54,7 +54,7 @@ export default function VirtualDesktopView() {
   const handleWindowClick = async (window: WindowInfo) => {
     setSelectedWindow(window);
     try {
-      await WindowManagerService.focusWindow(window.handle);
+      await ManageWindowService.focusWindow(window.handle);
     } catch (error) {
       console.error('Failed to focus window:', error);
     }
