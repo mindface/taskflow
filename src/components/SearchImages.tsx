@@ -6,18 +6,6 @@ export function SearchImages() {
   const [selectImageText, setSelectImageText] = useState<string>("");
 
   const searchApi = async () => {
-    try {
-      const res = await fetch("https://www.googleapis.com/customsearch/v1?key=AIzaSyDFwqNX4wFmKZ6hxOYF-KUoANk2YOGUc2w&cx=017484227221447008033:vgneaiity80&q=cats&searchType=image",{method:"GET"})
-      const data = await res.json()
-      console.log(data)
-      // curl -G "https://customsearch.googleapis.com/customsearch/v1" \
-      //      --data-urlencode "key=AIzaSyDFwqNX4wFmKZ6hxOYF-KUoANk2YOGUc2w" \
-      //      --data-urlencode "cx=017484227221447008033:vgneaiity80" \
-      //      --data-urlencode "q=cats" \
-      //      --data-urlencode "searchType=image"
-    } catch (error) {
-      console.log(error)
-    }
   }
 
   return (

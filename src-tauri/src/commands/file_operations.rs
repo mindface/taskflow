@@ -9,10 +9,7 @@ use std::path::{Path, PathBuf};
 use tauri::{AppHandle, Manager};
 
 fn desktop_path(app: &AppHandle) -> Result<PathBuf, String> {
-  let desktop = app
-    .path()
-    .desktop_dir()
-    .map_err(|e| e.to_string())?;
+  let desktop = app.path().desktop_dir().map_err(|e| e.to_string())?;
 
   Ok(desktop)
 }
@@ -45,18 +42,15 @@ pub fn list_files(directory: Option<String>) -> Result<Vec<String>, String> {
 
 #[tauri::command]
 pub fn list_image_files(app: AppHandle) -> Result<Vec<String>, String> {
-
   let desktop = desktop_path(&app)?;
 
   let directory = desktop.join("taskFllow").join("images");
   // ディレクトリが無ければ作る
-  fs::create_dir_all(&directory)
-    .map_err(|e| e.to_string())?;
-    
+  fs::create_dir_all(&directory).map_err(|e| e.to_string())?;
+
   println!("Reading directory: {:?}", directory);
 
-  let entries = fs::read_dir(&directory)
-    .map_err(|e| format!("Failed to read dir: {}", e))?;
+  let entries = fs::read_dir(&directory).map_err(|e| format!("Failed to read dir: {}", e))?;
 
   let mut files = Vec::new();
 
@@ -85,8 +79,7 @@ pub fn ensure_image_dir(app: AppHandle) -> Result<String, String> {
   let image_dir = app_dir.join("taskFllow").join("images");
 
   // フォルダ作成（存在していてもOK）
-  fs::create_dir_all(&image_dir)
-    .map_err(|e| format!("Failed to create directory: {}", e))?;
+  fs::create_dir_all(&image_dir).map_err(|e| format!("Failed to create directory: {}", e))?;
 
   Ok(image_dir.to_string_lossy().to_string())
 }
@@ -99,8 +92,7 @@ pub fn reading_file(file_path: String) -> Result<String, String> {
 
 #[tauri::command]
 pub fn read_binary_file(file_path: String) -> Result<Vec<u8>, String> {
-  fs::read(&file_path)
-    .map_err(|e| format!("Failed to read file: {}", e))
+  fs::read(&file_path).map_err(|e| format!("Failed to read file: {}", e))
 }
 
 #[tauri::command]
@@ -110,11 +102,7 @@ pub fn writing_file(directory: String, file_name: String, content: String) -> Re
 }
 
 #[tauri::command]
-pub fn write_binary_file(
-  app: AppHandle,
-  file_name: String,
-  data: Vec<u8>
-) -> Result<(), String> {
+pub fn write_binary_file(app: AppHandle, file_name: String, data: Vec<u8>) -> Result<(), String> {
   let base_dir = desktop_path(&app)?;
 
   // let base_dir = app
@@ -123,13 +111,11 @@ pub fn write_binary_file(
   //   .map_err(|e| e.to_string())?;
   let dir = base_dir.join("taskFllow").join("images");
 
-  fs::create_dir_all(&dir)
-    .map_err(|e| e.to_string())?;
+  fs::create_dir_all(&dir).map_err(|e| e.to_string())?;
 
   let path: PathBuf = dir.join(file_name);
 
-  fs::write(&path, data)
-    .map_err(|e| format!("Failed to write file: {}", e))
+  fs::write(&path, data).map_err(|e| format!("Failed to write file: {}", e))
 }
 
 #[tauri::command]

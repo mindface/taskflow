@@ -62,7 +62,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
       commands::file_operations::write_binary_file,
       commands::file_operations::ensure_image_dir,
       commands::file_operations::get_desktop_path,
-
       commands::file_operations::deleting_file,
       commands::file_operations::export_pdf,
       commands::file_operations::export_notes,
