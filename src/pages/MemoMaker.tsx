@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { Note, NoteData } from "../models/Notes";
 import MemoMakerSidebar from "../components/MemoMakerSidebar";
-import CommonModal from "../components/CommonModal";
+import Modal from "../components/core/Modal";
 import ReactMarkdown from "react-markdown";
 import { useWindowSync } from "../hooks/useWindowSync";
 
@@ -184,6 +184,7 @@ export default function MemoMaker() {
             <div className="preview">
               <ReactMarkdown
                 remarkPlugins={[remarkGfm]}
+                urlTransform={(url) => url}
               >{content}</ReactMarkdown>
             </div>
           </div>
@@ -204,7 +205,7 @@ export default function MemoMaker() {
                   >
                     <img src={EditIcon} alt="edit" style={{ width: 12, height: 12 }} />
                   </div>
-                  <CommonModal
+                  <Modal
                     isOpen={isOpen}
                     onClose={modalSwitchAction}
                     title="変更と調整"

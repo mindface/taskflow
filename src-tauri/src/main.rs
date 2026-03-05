@@ -25,12 +25,6 @@ impl std::fmt::Display for LinderaError {
   }
 }
 
-// Todo どこかで消す
-#[tauri::command]
-fn read_file(path: String) -> Result<String, String> {
-  fs::read_to_string(&path).map_err(|e| format!("Failed to read file: {}", e))
-}
-
 fn main() -> Result<(), Box<dyn std::error::Error>> {
   let dictionary = DictionaryConfig {
     kind: Some(DictionaryKind::IPADIC),
@@ -61,12 +55,18 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     .manage(Mutex::new(PreviewState::default()))
     .invoke_handler(tauri::generate_handler![
       commands::file_operations::list_files,
+      commands::file_operations::list_image_files,
       commands::file_operations::reading_file,
+      commands::file_operations::read_binary_file,
       commands::file_operations::writing_file,
-      commands::file_operations::add_file,
-      commands::file_operations::deleteing_file,
+      commands::file_operations::write_binary_file,
+      commands::file_operations::ensure_image_dir,
+      commands::file_operations::get_desktop_path,
+
+      commands::file_operations::deleting_file,
       commands::file_operations::export_pdf,
       commands::file_operations::export_notes,
+      commands::file_operations::import_notes,
       commands::file_operations::import_notes,
       // SQL Memo commands
       commands::sql_memo::init_db,
@@ -89,7 +89,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
       commands::preview::sync_content_to_preview,
       commands::preview::sync_note_data_to_preview,
       commands::preview::get_current_preview_content,
-      read_file,
       commands::window_manager::get_all_windows,
       commands::window_manager::get_all_windows_with_thumbnails,
       commands::window_manager::capture_window,

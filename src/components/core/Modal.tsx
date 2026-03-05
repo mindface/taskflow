@@ -8,7 +8,7 @@ interface Props {
   contentStyle?: React.CSSProperties,
 }
 
-export default function CommonModal({
+export default function Modal({
   isOpen,
   onClose,
   title,
