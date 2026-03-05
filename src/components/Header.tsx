@@ -1,6 +1,6 @@
 import paths from "../json/path.json";
 
-import ImageLink from "./modifier/imageLink";
+import ImageDialog from "./modifier/ImageDialog";
 
 type Props = {
   activePath: string;
@@ -17,7 +17,7 @@ function Header(props: Props) {
         key={k}
         className={["item","p-1","link", item.name === activePath ? "active" : "" ].join(" ")} onClick={() => pageAction(`${item.name}`)}>{item.name}</li>)}
         <li className="item">
-          <ImageLink />
+          <ImageDialog />
         </li>
       </ul>
     </header>

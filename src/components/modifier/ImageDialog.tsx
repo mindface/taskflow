@@ -4,7 +4,7 @@ import CoreDialog from "../core/Dialog"
 import { convertFileSrc } from "@tauri-apps/api/core"
 import ImageElement from "./ImageElement"
 
-export default function ImageLink() {
+export default function ImageDialog() {
 
   const [isOpen, setIsOpen] = useState(false);
   const [images, setImages] = useState<string[]>([]);
