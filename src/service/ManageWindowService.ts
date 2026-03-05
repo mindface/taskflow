@@ -13,7 +13,7 @@ export interface WindowInfo {
   thumbnail?: string;
 }
 
-export class WindowManagerService {
+export class ManageWindowService {
   static async getAllWindows(): Promise<WindowInfo[]> {
     try {
       const result = await invoke<WindowInfo[]>('get_all_windows');

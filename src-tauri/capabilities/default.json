@@ -1,0 +1,10 @@
+{
+  "identifier": "default",
+  "description": "Default permissions",
+  "permissions": [
+    {
+      "identifier": "fs:allow-read",
+      "allow": ["$DESKTOP/**"]
+    }
+  ]
+}

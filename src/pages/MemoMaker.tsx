@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { Note, NoteData } from "../models/Notes";
 import MemoMakerSidebar from "../components/MemoMakerSidebar";
-import CommonModal from "../components/CommonModal";
+import Dialog from "../components/core/Dialog";
 import ReactMarkdown from "react-markdown";
 import { useWindowSync } from "../hooks/useWindowSync";
 
@@ -124,7 +124,7 @@ export default function MemoMaker() {
     }
   }
 
-  const modalSwitchAction = () => {
+  const dialogSwitchAction = () => {
     isOpenSet(!isOpen);
   }
 
@@ -184,6 +184,7 @@ export default function MemoMaker() {
             <div className="preview">
               <ReactMarkdown
                 remarkPlugins={[remarkGfm]}
+                urlTransform={(url) => url}
               >{content}</ReactMarkdown>
             </div>
           </div>
@@ -200,13 +201,13 @@ export default function MemoMaker() {
                   <p>tag: {concept.tag}</p>
                   <div
                     className="hover inline-block shot-icon-btn"
-                    onClick={modalSwitchAction}
+                    onClick={dialogSwitchAction}
                   >
                     <img src={EditIcon} alt="edit" style={{ width: 12, height: 12 }} />
                   </div>
-                  <CommonModal
+                  <Dialog
                     isOpen={isOpen}
-                    onClose={modalSwitchAction}
+                    onClose={dialogSwitchAction}
                     title="変更と調整"
                     children={
                       <div className="content">
