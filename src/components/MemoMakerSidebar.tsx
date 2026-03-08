@@ -44,7 +44,11 @@ export default function MemoMakerSidebar({
       <div className="sidebar">
         <div>
           <div className="sidebar-btn">
-            <button className="box-shadow" onClick={switcherAction}>{switcher?"close":"open"}</button>
+            <button
+              className="box-shadow"
+              onClick={switcherAction}>
+                {switcher?"close":"open"}
+            </button>
           </div>
           <div className="p-2">
             <button className="mr-1" onClick={onLoadNotes}>情報をロード</button>

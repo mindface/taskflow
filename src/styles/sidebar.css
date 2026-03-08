@@ -10,6 +10,7 @@
   border-right: 1px solid #ddd;
   transform: translate(-100%,0);
   transition: transform 0.2s ease;
+  z-index: 1;
 }
 
 .sidebar-outer {

@@ -13,13 +13,14 @@ function Header(props: Props) {
   return (
     <header className="basic-header">
       <ul className="list flex">
-      {paths.map((item,k) => <li
-        key={k}
-        className={["item","p-1","link", item.name === activePath ? "active" : "" ].join(" ")} onClick={() => pageAction(`${item.name}`)}>{item.name}</li>)}
-        <li className="item">
-          <ImageDialog />
-        </li>
+        {paths.map((item,k) => <li
+            key={k}
+            className={["item","p-1","link", item.name === activePath ? "active" : "" ].join(" ")}
+            onClick={() => pageAction(`${item.name}`)}>{item.name}
+          </li>
+        )}
       </ul>
+      <ImageDialog />
     </header>
   );
 }
