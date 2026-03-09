@@ -5,5 +5,5 @@ pub mod sql_concept;
 pub mod sql_memo;
 pub mod window_manager;
 
-pub mod search;
 pub mod schedule;
+pub mod search;

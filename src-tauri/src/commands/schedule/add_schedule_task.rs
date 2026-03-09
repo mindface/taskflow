@@ -13,8 +13,9 @@ pub fn add_schedule_task(
 ) -> Result<i64, String> {
   let conn = get_conn()?;
 
-  conn.execute(
-    "
+  conn
+    .execute(
+      "
     INSERT INTO schedule_tasks
     (
       schedule_id,
@@ -27,17 +28,17 @@ pub fn add_schedule_task(
     )
     VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)
     ",
-    params![
-      schedule_id,
-      task_id,
-      title,
-      detail,
-      starttime,
-      endtime,
-      targetdate
-    ],
-  )
-  .map_err(|e| format!("insert schedule task error: {}", e))?;
+      params![
+        schedule_id,
+        task_id,
+        title,
+        detail,
+        starttime,
+        endtime,
+        targetdate
+      ],
+    )
+    .map_err(|e| format!("insert schedule task error: {}", e))?;
 
-    Ok(conn.last_insert_rowid())
+  Ok(conn.last_insert_rowid())
 }

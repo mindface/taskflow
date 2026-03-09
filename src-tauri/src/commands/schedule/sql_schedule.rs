@@ -3,10 +3,11 @@ use crate::models::schedule::{Schedule, ScheduleTask};
 
 #[tauri::command]
 pub fn init_schedule_db() -> Result<String, String> {
-    let conn = get_conn()?;
+  let conn = get_conn()?;
 
-    conn.execute_batch(
-        "
+  conn
+    .execute_batch(
+      "
         BEGIN;
 
         CREATE TABLE IF NOT EXISTS schedules (
@@ -48,5 +49,5 @@ pub fn init_schedule_db() -> Result<String, String> {
     )
     .map_err(|e| format!("schedule db init error: {}", e))?;
 
-    Ok("schedule db initialized".into())
+  Ok("schedule db initialized".into())
 }
