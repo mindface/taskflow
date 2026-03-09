@@ -21,18 +21,23 @@
   },
   {
     "id":"path5",
+    "name":"schedule",
+    "path":"/schedule"
+  },
+  {
+    "id":"path6",
     "name":"memo",
     "path":"/memo",
     "description":"メモページ"
   },
   {
-    "id":"path6",
+    "id":"path7",
     "name":"windowchecker",
     "path":"/windowchecker",
     "description":"ウィンドウチェックページ"
   },
   {
-    "id":"path7",
+    "id":"path8",
     "name":"conceptsSearch",
     "path":"/conceptsSearch",
     "description":"コンセプトサーチ"

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { Note, NoteData } from "../models/Notes";
 import MemoMakerSidebar from "../components/MemoMakerSidebar";
-import Dialog from "../components/core/Dialog";
+import Dialog from "../components/core/CoreDialog";
 import ReactMarkdown from "react-markdown";
 import { useWindowSync } from "../hooks/useWindowSync";
 

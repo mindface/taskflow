@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
-import CoreDialog from "../core/Dialog"
+import CoreDialog from "../core/CoreDialog"
 import { convertFileSrc } from "@tauri-apps/api/core"
 import ImageElement from "./ImageElement"
 import ImageIcon from "../../assets/image.svg";
 
 export default function ImageDialog() {
-
   const [isOpen, setIsOpen] = useState(false);
   const [images, setImages] = useState<string[]>([]);
   const directory = "taskFllow/images";
