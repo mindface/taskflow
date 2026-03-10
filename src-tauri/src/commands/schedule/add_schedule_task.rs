@@ -1,5 +1,5 @@
 use crate::commands::db_core::get_conn;
-use rusqlite::{params, Connection};
+use rusqlite::{params};
 
 #[tauri::command]
 pub fn add_schedule_task(
@@ -16,18 +16,18 @@ pub fn add_schedule_task(
   conn
     .execute(
       "
-    INSERT INTO schedule_tasks
-    (
-      schedule_id,
-      task_id,
-      title,
-      detail,
-      start_time,
-      end_time,
-      target_date
-    )
-    VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)
-    ",
+      INSERT INTO schedule_tasks
+      (
+        schedule_id,
+        task_id,
+        title,
+        detail,
+        start_time,
+        end_time,
+        target_date
+      )
+      VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)
+      ",
       params![
         schedule_id,
         task_id,

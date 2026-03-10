@@ -1,5 +1,4 @@
 use crate::commands::db_core::get_conn;
-use crate::models::schedule::{Schedule, ScheduleTask};
 
 #[tauri::command]
 pub fn init_schedule_db() -> Result<String, String> {

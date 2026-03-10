@@ -1,5 +1,5 @@
 use crate::commands::db_core::get_conn;
-use crate::models::schedule::{Schedule, ScheduleTask};
+use crate::models::schedule::{Schedule};
 
 #[tauri::command]
 pub fn list_schedules() -> Result<Vec<Schedule>, String> {
@@ -8,10 +8,10 @@ pub fn list_schedules() -> Result<Vec<Schedule>, String> {
   let mut stmt = conn
     .prepare(
       "
-            SELECT id, title, description, created_at, updated_at
-            FROM schedules
-            ORDER BY created_at DESC
-            ",
+        SELECT id, title, description, created_at, updated_at
+        FROM schedules
+        ORDER BY created_at DESC
+        ",
     )
     .map_err(|e| format!("prepare schedule error: {}", e))?;
 

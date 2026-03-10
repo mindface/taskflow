@@ -15,28 +15,22 @@ export default function ScheduleList() {
     loadSchedules()
   }, [])
 
-  const deleteSchedule = async (id: number) => {
-    if (!confirm("delete schedule?")) return
-    await invoke("delete_schedule", {
-      scheduleId: id
-    })
-    loadSchedules()
-  }
-
   return (
     <div className="space-y-2">
+      <h2 className="pb-4 text-xl font-bold">
+        Schedule List
+      </h2>
       {schedules.map(schedule => (
         <div
           key={schedule.id}
-          className="border p-3 rounded flex justify-between"
+          className="mb-4 p-3 border  rounded"
         >
           <ScheduleItem
+            loadSchedules={loadSchedules}
             schedule={schedule}
           />
         </div>
-
       ))}
-
     </div>
   )
 }

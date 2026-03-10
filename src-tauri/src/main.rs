@@ -53,6 +53,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     .plugin(tauri_plugin_dialog::init())
     .manage(Mutex::new(PreviewState::default()))
     .invoke_handler(tauri::generate_handler![
+      commands::file_operations::add_file,
       commands::file_operations::list_files,
       commands::file_operations::list_image_files,
       commands::file_operations::reading_file,

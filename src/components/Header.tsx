@@ -11,7 +11,7 @@ function Header(props: Props) {
   const { nextPageAction, activePath } = props
   const pageAction = nextPageAction ?? (() => {})
   return (
-    <header className="basic-header">
+    <header className="basic-header mb-4">
       <ul className="list flex">
         {paths.map((item,k) => <li
             key={k}

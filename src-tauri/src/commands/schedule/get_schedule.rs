@@ -84,10 +84,10 @@ pub fn get_schedule_detail_list() -> Result<Vec<Schedule>, String> {
   let mut stmt = conn
     .prepare(
       "
-            SELECT id, title, description, created_at, updated_at
-            FROM schedules
-            ORDER BY created_at DESC
-            ",
+        SELECT id, title, description, created_at, updated_at
+        FROM schedules
+        ORDER BY created_at DESC
+        ",
     )
     .map_err(|e| format!("prepare schedule list error: {}", e))?;
 
@@ -112,21 +112,21 @@ pub fn get_schedule_detail_list() -> Result<Vec<Schedule>, String> {
     let mut task_stmt = conn
       .prepare(
         "
-                SELECT
-                    id,
-                    schedule_id,
-                    task_id,
-                    title,
-                    detail,
-                    start_time,
-                    end_time,
-                    target_date,
-                    status,
-                    priority,
-                    elapsed_time
-                FROM schedule_tasks
-                WHERE schedule_id = ?1
-                ",
+          SELECT
+              id,
+              schedule_id,
+              task_id,
+              title,
+              detail,
+              start_time,
+              end_time,
+              target_date,
+              status,
+              priority,
+              elapsed_time
+          FROM schedule_tasks
+          WHERE schedule_id = ?1
+          ",
       )
       .map_err(|e| format!("prepare task error: {}", e))?;
 

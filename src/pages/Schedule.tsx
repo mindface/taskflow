@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
-import ScheduleDetail from "../components/ScheduleDetail";
+import Scheduler from "../components/Scheduler";
 
 function Schedule() {
   useEffect(() => {
@@ -14,7 +14,7 @@ function Schedule() {
   }, []);
   return (
     <div className="schedule">
-      <ScheduleDetail />
+      <Scheduler />
     </div>
   );
 }
