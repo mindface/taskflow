@@ -1,5 +1,5 @@
 use crate::commands::db_core::get_conn;
-use rusqlite::{params};
+use rusqlite::params;
 
 #[tauri::command]
 pub fn add_schedule_task(
