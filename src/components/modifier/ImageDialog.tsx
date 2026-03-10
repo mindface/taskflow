@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
-import CoreDialog from "../core/Dialog"
+import CoreDialog from "../core/CoreDialog"
 import { convertFileSrc } from "@tauri-apps/api/core"
 import ImageElement from "./ImageElement"
+import ImageIcon from "../../assets/image.svg";
 
 export default function ImageDialog() {
-
   const [isOpen, setIsOpen] = useState(false);
   const [images, setImages] = useState<string[]>([]);
   const directory = "taskFllow/images";
@@ -14,7 +14,6 @@ export default function ImageDialog() {
     setIsOpen(!isOpen);
   };
 
-  // 画像一覧取得
   const loadImages = async () => {
     try {
       const res = await invoke<string[]>("list_image_files", {
@@ -35,7 +34,6 @@ export default function ImageDialog() {
     })()
   }, []);
 
-  // 画像アップロード
   const uploadImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -48,7 +46,6 @@ export default function ImageDialog() {
     loadImages();
   };
 
-  // 削除
   const deleteImage = async (name: string) => {
     const pathArray = name.split("%2F")
     console.log(pathArray[pathArray.length-1])
@@ -60,23 +57,17 @@ export default function ImageDialog() {
     loadImages();
   };
 
-  const imagePath = async (imageName: string) => {
-    const desktop = await invoke<string>("get_desktop_path")
-    const path = `${desktop}/${imageName}`
-    return convertFileSrc(path);
-  }
-
   const imageCopyPath = (imagePath: string) => {
     navigator.clipboard.writeText(imagePath);
   }
 
   return (
-    <div className="p-4 space-y-4 max-w-md">
+    <div className="absolute top-0 right-0 space-y-4 max-w-md">
       <button
         onClick={DialogHandler}
-        className="btn"
+        className="shot-icon-btn"
       >
-        画像
+        <img src={ImageIcon} alt="image" style={{ width: 12, height: 12 }} />
       </button>
       <CoreDialog
         isOpen={isOpen}

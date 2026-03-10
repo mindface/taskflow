@@ -5,8 +5,7 @@ import { invoke } from "@tauri-apps/api/core";
 export function SearchImages() {
   const [selectImageText, setSelectImageText] = useState<string>("");
 
-  const searchApi = async () => {
-  }
+  const searchApi = async () => {}
 
   return (
     <div className="p-4 space-y-4 max-w-md">

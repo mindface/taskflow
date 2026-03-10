@@ -19,12 +19,9 @@ export default function VirtualDesktopView() {
 
   const loadWindows = async () => {
     try {
-      console.log('[VirtualDesktopView] Loading windows...');
       setLoading(true);
 
       const windowsData = await ManageWindowService.getAllWindowsWithThumbnails(320, 180);
-      console.log('[VirtualDesktopView] Received data:', windowsData);
-      console.log('[VirtualDesktopView] Total windows:', windowsData.length);
 
       // フィルタリング前のログ
       console.log('[VirtualDesktopView] Windows before filter:', 
@@ -39,9 +36,6 @@ export default function VirtualDesktopView() {
       const validWindows = windowsData.filter(
         (w: any) => !w.is_minimized && w.width > 0 && w.height > 0
       );
-
-      console.log('[VirtualDesktopView] Valid windows after filter:', validWindows.length);
-      console.log('[VirtualDesktopView] Valid windows:', validWindows);
 
       setWindows(validWindows);
     } catch (error) {

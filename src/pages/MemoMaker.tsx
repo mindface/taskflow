@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { Note, NoteData } from "../models/Notes";
 import MemoMakerSidebar from "../components/MemoMakerSidebar";
-import Dialog from "../components/core/Dialog";
+import Dialog from "../components/core/CoreDialog";
 import ReactMarkdown from "react-markdown";
 import { useWindowSync } from "../hooks/useWindowSync";
 
@@ -10,6 +10,7 @@ import remarkGfm from "remark-gfm";
 import { useNotes } from "../store/note";
 
 import EditIcon from "../assets/edit.svg";
+import PreviewIcon from "../assets/preview.svg";
 
 import "github-markdown-css/github-markdown.css";
 import "../styles/markdown.css";
@@ -103,6 +104,7 @@ export default function MemoMaker() {
 
       if (!csvPath) return;
       await invoke("export_notes",{ csvPath });
+      alert(`CSVが正常に保存されました: ${csvPath}`);
     } catch (e) {
       console.error("export error", e);
     }
@@ -157,23 +159,40 @@ export default function MemoMaker() {
       />
       <section>
         <div className="pb-2">
-          <input className="w-half mr-1" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="タイトル" />
-          <button onClick={selectedId == null ? createNote : saveNote} >
-            {selectedId == null ? "作成" : "保存"}
-          </button>
+          <div className="pb-2 flex gap-4">
+            <span className="flex-1 inline-block">
+              <input className="w-100 mr-1" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="タイトル" />
+            </span>
+            <button onClick={selectedId == null ? createNote : saveNote} >
+              {selectedId == null ? "作成" : "保存"}
+            </button>
+          </div>
           <button 
             onClick={togglePreview} 
             className="ml-2"
             style={{ 
-              backgroundColor: isPreviewOpen ? '#4CAF50' : '#666',
-              color: 'white',
+              backgroundColor: isPreviewOpen ? '#4CAF50' : '#fff',
+              color: '#333',
               padding: '8px 16px',
               border: 'none',
               borderRadius: '4px',
               cursor: 'pointer'
             }}
           >
-            {isPreviewOpen ? "プレビュー表示中" : "別ウィンドウでプレビュー"}
+            {isPreviewOpen ? 
+              "プレビュー表示中" : <span className="flex inline-block">
+                <span
+                  className="inline-block pl-4"
+                >
+                  プレビュー画面
+                </span>
+                <img
+                  src={PreviewIcon}
+                  className="inline-block"
+                  alt="image"
+                  style={{ width: 16, height: 16 }}
+                />
+              </span>}
           </button>
         </div>
         <div className="flex p-4">

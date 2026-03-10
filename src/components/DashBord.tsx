@@ -7,8 +7,8 @@ export default function Header() {
 
   return (
     <div className="DashBord">
-      ダッシュボード
-      {list.map((item,k) => <span key={`item${k}`}>{item.title}</span>)}
+      ダッシュボード11
+      {list.map((item,k) => <p key={`item${k}`} className="p-2">{item.title}</p>)}
     </div>
   );
 }

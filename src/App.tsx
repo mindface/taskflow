@@ -8,6 +8,7 @@ import MemoLinker from "./pages/MemoLinker";
 import MemoMaker from "./pages/MemoMaker";
 import WindowChecker from "./pages/WindowChecker";
 import ConceptSearchImage from "./pages/ConceptSearchImage";
+import Schedule from "./pages/Schedule";
 
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -33,6 +34,7 @@ function App() {
           {viewtype === "memo" && <NotesProvider><MemoMaker /></NotesProvider> }
           {viewtype === "windowchecker" && <WindowChecker /> }
           {viewtype === "conceptsSearch" && <ConceptSearchImage /> }
+          {viewtype === "schedule" && <Schedule /> }
         </main>
         <Footer />
       </div>
