@@ -1,0 +1,139 @@
+<svg width="900" height="420" xmlns="http://www.w3.org/2000/svg">
+
+<style>
+.node { fill:#2ca5d3; }
+.link { stroke:#2ca5d3; stroke-width:2; }
+.title { font-size:26px; font-family:sans-serif; font-weight:bold; }
+.subtitle { font-size:16px; font-family:sans-serif; }
+.label { font-size:18px; font-family:sans-serif; font-weight:bold; }
+.desc { font-size:13px; font-family:sans-serif; fill:#444; }
+</style>
+
+<!-- title -->
+<text x="450" y="40" text-anchor="middle" class="title">
+情報ネットワークの三つのモデル
+</text>
+
+<!-- ================= CENTRALIZED ================= -->
+
+<!-- links -->
+<g class="link">
+<line x1="150" y1="170" x2="150" y2="90"/>
+<line x1="150" y1="170" x2="210" y2="100"/>
+<line x1="150" y1="170" x2="230" y2="150"/>
+<line x1="150" y1="170" x2="210" y2="230"/>
+<line x1="150" y1="170" x2="150" y2="250"/>
+<line x1="150" y1="170" x2="90" y2="230"/>
+<line x1="150" y1="170" x2="70" y2="150"/>
+<line x1="150" y1="170" x2="90" y2="100"/>
+</g>
+
+<!-- nodes -->
+<circle cx="150" cy="170" r="9" class="node"/>
+<circle cx="150" cy="90" r="6" class="node"/>
+<circle cx="210" cy="100" r="6" class="node"/>
+<circle cx="230" cy="150" r="6" class="node"/>
+<circle cx="210" cy="230" r="6" class="node"/>
+<circle cx="150" cy="250" r="6" class="node"/>
+<circle cx="90" cy="230" r="6" class="node"/>
+<circle cx="70" cy="150" r="6" class="node"/>
+<circle cx="90" cy="100" r="6" class="node"/>
+
+<text x="150" y="300" text-anchor="middle" class="label">中央集権型</text>
+<text x="150" y="320" text-anchor="middle" class="desc">
+中央ノードに情報が集中
+</text>
+<text x="150" y="336" text-anchor="middle" class="desc">
+管理しやすいが障害に弱い
+</text>
+
+<!-- ================= DECENTRALIZED ================= -->
+
+<g class="link">
+<line x1="450" y1="110" x2="420" y2="140"/>
+<line x1="450" y1="110" x2="480" y2="140"/>
+
+<line x1="400" y1="200" x2="430" y2="230"/>
+<line x1="400" y1="200" x2="370" y2="230"/>
+
+<line x1="500" y1="200" x2="530" y2="230"/>
+<line x1="500" y1="200" x2="470" y2="230"/>
+
+<line x1="450" y1="160" x2="450" y2="110"/>
+<line x1="450" y1="160" x2="400" y2="200"/>
+<line x1="450" y1="160" x2="500" y2="200"/>
+</g>
+
+<g class="node">
+<circle cx="450" cy="160" r="8"/>
+<circle cx="450" cy="110" r="6"/>
+<circle cx="420" cy="140" r="6"/>
+<circle cx="480" cy="140" r="6"/>
+
+<circle cx="400" cy="200" r="6"/>
+<circle cx="430" cy="230" r="6"/>
+<circle cx="370" cy="230" r="6"/>
+
+<circle cx="500" cy="200" r="6"/>
+<circle cx="530" cy="230" r="6"/>
+<circle cx="470" cy="230" r="6"/>
+</g>
+
+<text x="450" y="300" text-anchor="middle" class="label">分権型</text>
+<text x="450" y="320" text-anchor="middle" class="desc">
+複数の中心ノード
+</text>
+<text x="450" y="336" text-anchor="middle" class="desc">
+一部障害でもネットワーク維持
+</text>
+
+<!-- ================= DISTRIBUTED ================= -->
+
+<g class="link">
+<line x1="700" y1="100" x2="740" y2="140"/>
+<line x1="700" y1="100" x2="670" y2="140"/>
+
+<line x1="670" y1="140" x2="720" y2="180"/>
+<line x1="740" y1="140" x2="720" y2="180"/>
+
+<line x1="720" y1="180" x2="690" y2="220"/>
+<line x1="720" y1="180" x2="760" y2="220"/>
+
+<line x1="690" y1="220" x2="730" y2="260"/>
+<line x1="760" y1="220" x2="730" y2="260"/>
+
+<line x1="690" y1="220" x2="650" y2="180"/>
+<line x1="760" y1="220" x2="780" y2="180"/>
+
+<line x1="650" y1="180" x2="700" y2="100"/>
+<line x1="780" y1="180" x2="740" y2="140"/>
+</g>
+
+<g class="node">
+<circle cx="700" cy="100" r="6"/>
+<circle cx="740" cy="140" r="6"/>
+<circle cx="670" cy="140" r="6"/>
+<circle cx="720" cy="180" r="6"/>
+<circle cx="690" cy="220" r="6"/>
+<circle cx="760" cy="220" r="6"/>
+<circle cx="730" cy="260" r="6"/>
+<circle cx="650" cy="180" r="6"/>
+<circle cx="780" cy="180" r="6"/>
+</g>
+
+<text x="720" y="300" text-anchor="middle" class="label">分散型</text>
+<text x="720" y="320" text-anchor="middle" class="desc">
+すべてのノードが相互接続
+</text>
+<text x="720" y="336" text-anchor="middle" class="desc">
+最も耐障害性が高い
+</text>
+
+<!-- legend -->
+<circle cx="60" cy="380" r="6" fill="#2ca5d3"/>
+<text x="75" y="385" class="subtitle">ノード（情報主体）</text>
+
+<line x1="230" y1="380" x2="260" y2="380" stroke="#2ca5d3" stroke-width="2"/>
+<text x="270" y="385" class="subtitle">リンク（通信経路）</text>
+
+</svg>
