@@ -4,3 +4,6 @@ pub mod delete_schedule;
 pub mod get_schedule;
 pub mod list_schedule_task;
 pub mod sql_schedule;
+pub mod update_list_schedule_task;
+pub mod update_schedule;
+pub mod update_schedule_task;

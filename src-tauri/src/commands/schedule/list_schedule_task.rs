@@ -2,7 +2,7 @@ use crate::commands::db_core::get_conn;
 use crate::models::schedule::Schedule;
 
 #[tauri::command]
-pub fn list_schedules() -> Result<Vec<Schedule>, String> {
+pub fn list_schedule_task() -> Result<Vec<Schedule>, String> {
   let conn = get_conn()?;
 
   let mut stmt = conn

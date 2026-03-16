@@ -11,10 +11,14 @@ export type Schedule = {
 }
 
 export type ScheduleTask = {
-  task_id: number
-  title: string
-  detail: string
-  starttime: string
-  endtime: string
-  targetdate: string
+  schedule_id: number;
+  task_id: number;
+  title: string;
+  detail: string;
+  starttime: string;
+  endtime: string;
+  targetdate: string;
+  status: string;
+  priority: string;
+  elapsedtime: string;
 }

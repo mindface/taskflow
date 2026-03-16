@@ -94,15 +94,16 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
       commands::window_manager::focus_window,
       commands::window_manager::test_enum_windows,
       commands::search::note_concepts::search_note_concepts,
-      commands::search::note_concepts::search_note_concepts,
-      commands::search::note_concepts::search_note_concepts,
       commands::schedule::sql_schedule::init_schedule_db,
       commands::schedule::add_schedule_task::add_schedule_task,
+      commands::schedule::update_schedule_task::update_schedule_task,
       commands::schedule::add_schedule::add_schedule,
+      commands::schedule::update_schedule::update_schedule,
       commands::schedule::delete_schedule::delete_schedule,
       commands::schedule::get_schedule::get_schedule_detail,
       commands::schedule::get_schedule::get_schedule_detail_list,
-      commands::schedule::list_schedule_task::list_schedules,
+      commands::schedule::list_schedule_task::list_schedule_task,
+      commands::schedule::update_list_schedule_task::update_list_schedule_task,
     ])
     .run(tauri::generate_context!())
     .expect("error while running tauri application");
