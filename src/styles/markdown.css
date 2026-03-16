@@ -12,6 +12,11 @@
   color: #333;
 }
 
+.preview h3 {
+  font-size: var(--font-size-title);
+  padding: 8px;
+}
+
 .preview li {
   padding-left: 10px;
   list-style-position: inside;

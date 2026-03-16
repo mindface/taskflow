@@ -1,0 +1,19 @@
+<svg width="400" height="400" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect x="140" y="80" width="120" height="200" rx="15" stroke="#2D2930" stroke-width="3" fill="#F7F5F0"/>
+  
+  <path d="M175 80C175 88 175 90 185 90H215C225 90 225 88 225 80" stroke="#2D2930" stroke-width="3" fill="none"/>
+  
+  <path d="M165 105L155 110L165 115" stroke="#2D2930" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  
+  <path d="M235 105L245 110L235 115" stroke="#2D2930" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  
+  <line x1="165" y1="135" x2="235" y2="135" stroke="#2D2930" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="165" y1="148" x2="235" y2="148" stroke="#2D2930" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="165" y1="161" x2="235" y2="161" stroke="#2D2930" stroke-width="2.5" stroke-linecap="round"/>
+  
+  <line x1="165" y1="185" x2="185" y2="185" stroke="#2D2930" stroke-width="3.5" stroke-linecap="round"/>
+  
+  <path d="M175 240C175 235 180 235 182 238M185 240C185 235 190 235 192 238M195 240V235M202 240C202 235 207 235 210 238" stroke="#2D2930" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+  
+  <line x1="160" y1="255" x2="240" y2="255" stroke="#2D2930" stroke-width="2.5" stroke-linecap="round"/>
+</svg>

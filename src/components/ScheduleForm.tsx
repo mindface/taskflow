@@ -1,26 +1,25 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { invoke } from "@tauri-apps/api/core"
+import { inputCheckered } from "../utils/inputCheckered";
+import { Schedule, ScheduleTask } from "../models/Schedule"
+import ScheduleTaskItem from "./modifier/ScheduleTaskItem";
 
 type Props = {
-  reload: () => void
+  stateSchedule?: Schedule;
+  loadListSchedule: () => void
 }
 
-type Task = {
-  title: string
-  detail: string
-  starttime: string
-  endtime: string
-  targetdate: string
-}
-
-export default function ScheduleForm({ reload }: Props) {
+export default function ScheduleForm({ stateSchedule, loadListSchedule }: Props) {
+  const { inputDateCheaker } = inputCheckered()
+  const [makeSwitcher, setMakeSwitcher] = useState(false)
+  const [scheduleId, setScheduleId] = useState<number | null>(null)
 
   const [title, setTitle] = useState("")
   const [description, setDescription] = useState("")
-  const [startTime, setStartTime] = useState("")
-  const [endTime, setEndTime] = useState("")
+  const [createTime, setCreateTime] = useState("")
+  const [updateTime, setUpdateTime] = useState("")
 
-  const [tasks, setTasks] = useState<Task[]>([])
+  const [tasks, setTasks] = useState<ScheduleTask[]>([])
 
   const [taskTitle, setTaskTitle] = useState("")
   const [taskDetail, setTaskDetail] = useState("")
@@ -28,17 +27,31 @@ export default function ScheduleForm({ reload }: Props) {
   const [taskEnd, setTaskEnd] = useState("")
   const [taskDate, setTaskDate] = useState("")
 
-  const addTask = () => {
-    const newTask: Task = {
-      title: taskTitle,
-      detail: taskDetail,
-      starttime: taskStart,
-      endtime: taskEnd,
-      targetdate: taskDate
+  useEffect(() => {
+    if(stateSchedule) {
+      switchHander(true)
+      setFromHandler(stateSchedule)
+      loadListSchedule()
+    } else {
+      resetFromHandler()
     }
+  },[stateSchedule])
 
-    setTasks([...tasks, newTask])
+  const setFromHandler = (item: Schedule) => {
+    setScheduleId(item.id)
+    setTitle(item.title)
+    setDescription(item.description)
+    setCreateTime(item.created_at)
+    setUpdateTime(item.updated_at)
+    setTasks(item.tasks)
+  }
 
+  const resetFromHandler = (type?: string) => {
+    if(type !== "task") {
+      setTitle("")
+      setDescription("")
+      setTasks([])
+    }
     setTaskTitle("")
     setTaskDetail("")
     setTaskStart("")
@@ -46,19 +59,68 @@ export default function ScheduleForm({ reload }: Props) {
     setTaskDate("")
   }
 
-  const removeTask = (index:number) => {
-    const newTasks = tasks.filter((_,i)=> i !== index)
-    setTasks(newTasks)
+  const addTask = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    const newTask: ScheduleTask = {
+      schedule_id: scheduleId || 0,
+      task_id: 0,
+      title: taskTitle,
+      detail: taskDetail,
+      starttime: taskStart,
+      endtime: taskEnd,
+      targetdate: taskDate,
+      status: "",
+      priority: "",
+      elapsedtime: "",
+    }
+    const taskStartCheck = inputDateCheaker(taskStart)
+    const taskEndCheck = inputDateCheaker(taskEnd)
+    if(!taskStartCheck || !taskEndCheck) return
+
+    setTasks([...tasks, newTask])
+
+    resetFromHandler("task")
   }
 
-  const submit = async () => {
-    try {
+  const switchHander = (switchValue: boolean) => {
+    setMakeSwitcher(switchValue)
+    resetFromHandler()
+  }
 
+  const updateSetHandler = async () => {
+    if (scheduleId == null) {
+      console.error("scheduleId not set")
+      return
+    }
+    try {
+      await invoke("update_list_schedule_task", {
+        id: scheduleId,
+        title,
+        description,
+        tasks: tasks.map(t => ({
+          task_id: 0,
+          title: t.title,
+          detail: t.detail,
+          starttime: t.starttime,
+          endtime: t.endtime,
+          targetdate: t.targetdate
+        }))
+      })
+      console.log("update success")
+
+    } catch (error) {
+      console.error(error)
+      throw("update schedule error")
+    }
+  }
+
+  const addSetHandler = async () => {
+    try {
       const scheduleId = await invoke<number>("add_schedule", {
         title,
         description,
-        startTime,
-        endTime
+        createTime,
+        updateTime
       })
 
       for (const task of tasks) {
@@ -73,138 +135,168 @@ export default function ScheduleForm({ reload }: Props) {
         })
       }
 
-      reload()
-
     } catch (error) {
-      console.error("create schedule error", error)
+      console.error(error)
+      throw("create schedule error")
     }
+  }
 
-    setTitle("")
-    setDescription("")
-    setStartTime("")
-    setEndTime("")
-    setTasks([])
+  const removeTask = (index:number) => {
+    const newTasks = tasks.filter((_,i)=> i !== index)
+    setTasks(newTasks)
+  }
+
+  const submit = async () => {
+    try {
+      if(makeSwitcher) {
+        await updateSetHandler()
+      } else {
+        await addSetHandler()
+      }
+      loadListSchedule()
+    } catch (e) {
+      // TODO throwの調整をする
+      console.error(e)
+    }
   }
 
   return (
     <div className="mb-4 p-4 border rounded space-y-4">
-      <h2 className="pb-4 text-xl font-bold">
-        Create Schedule Model
-      </h2>
-      <div className="pb-2">
-        <input
-          className="border p-2 w-full"
-          placeholder="title"
-          value={title}
-          onChange={(e)=>setTitle(e.target.value)}
-        />
+      <div className="form-header pb-4">
+        { makeSwitcher ? <button
+          className="btn"
+          onClick={() => {
+            switchHander(false)
+          }}
+        >
+          新規で作成する
+        </button> : <>更新する場合はタスクリストから表示</>}
       </div>
-      <div className="pb-2">
-        <textarea
-          className="border p-2 w-full"
-          placeholder="description"
-          value={description}
-          onChange={(e)=>setDescription(e.target.value)}
-        />
-      </div>
-      <div className="pb-2 flex gap-2">
-        <input
-          type="datetime-local"
-          className="border p-2"
-          value={startTime}
-          onChange={(e)=>setStartTime(e.target.value)}
-        />
-
-        <input
-          type="datetime-local"
-          className="border p-2"
-          value={endTime}
-          onChange={(e)=>setEndTime(e.target.value)}
-        />
-      </div>
-
-      <hr/>
-
-      <div className="p-4">
-          <h3 className="pb-4 font-bold">
-            Task
-          </h3>
-          <div className="pb-4">
-            <input
-              className="border p-2 w-full"
-              placeholder="task title"
-              value={taskTitle}
-              onChange={(e)=>setTaskTitle(e.target.value)}
-            />
-          </div>
-          <div className="pb-4">
-            <textarea
-              className="border p-2 w-full"
-              placeholder="task detail"
-              value={taskDetail}
-              onChange={(e)=>setTaskDetail(e.target.value)}
-            />
-          </div>
-
-          <div className="pb-4 flex gap-2">
-            <input
-              type="datetime-local"
-              className="border p-2"
-              value={taskStart}
-              onChange={(e)=>setTaskStart(e.target.value)}
-            />
-
-            <input
-              type="datetime-local"
-              className="border p-2"
-              value={taskEnd}
-              onChange={(e)=>setTaskEnd(e.target.value)}
-            />
-          </div>
-
-          <input
-            type="date"
-            className="border p-2"
-            value={taskDate}
-            onChange={(e)=>setTaskDate(e.target.value)}
-          />
-
-          <button
-            onClick={addTask}
-            className="bg-green-500 text-white px-4 py-2 rounded"
-          >
-            add task
-          </button>
-      </div>
-
-
-      <div className="space-y-2">
-        {tasks.map((task,index)=>(
-          <div
-            key={index}
-            className="border p-2 flex justify-between"
-          >
-            <div>
-              <p className="font-bold">{task.title}</p>
-              <p>{task.targetdate}</p>
-            </div>
-            <button
-              onClick={()=>removeTask(index)}
-              className="text-red-500"
-            >
-              delete
-            </button>
-          </div>
-        ))}
-      </div>
-
-
-      <button
-        onClick={submit}
-        className="bg-blue-500 text-white px-4 py-2 rounded"
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          if (!e.currentTarget.checkValidity()) {
+            alert("入力が正しくありません");
+            return;
+          }
+          (async () => {
+            await submit();
+          })()
+        }}
       >
-        create schedule
-      </button>
+        <h2 className="pb-4 text-xl font-bold">
+          Create Schedule Model
+        </h2>
+        <div className="pb-2">
+          <input
+            className="border p-2 w-full"
+            placeholder="title"
+            value={title}
+            required
+            onChange={(e)=>setTitle(e.target.value)}
+          />
+        </div>
+
+        <div className="pb-2">
+          <textarea
+            className="border p-2 w-full"
+            placeholder="description"
+            value={description}
+            required
+            onChange={(e)=>setDescription(e.target.value)}
+          />
+        </div>
+
+        <div className="pb-2 flex gap-2">
+          <div className="create_day">
+            作成 : {createTime}
+          </div>
+          <div className="create_day">
+            更新 : {updateTime}
+          </div>
+        </div>
+
+        <hr/>
+
+         <div className="p-4">
+            <h3 className="pb-4 font-bold">
+              Task
+            </h3>
+
+            <div className="pb-4">
+              <input
+                className="border p-2 w-full"
+                placeholder="task title"
+                value={taskTitle}
+                onChange={(e)=>setTaskTitle(e.target.value)}
+              />
+            </div>
+
+            <div className="pb-4">
+              <textarea
+                className="border p-2 w-full"
+                placeholder="task detail"
+                value={taskDetail}
+                onChange={(e)=>setTaskDetail(e.target.value)}
+              />
+            </div>
+
+            <div className="pb-4 flex gap-2">
+              <div className="input-box">
+                開始 : 
+                <input
+                  type="datetime-local"
+                  className="border p-2"
+                  value={taskStart}
+                  onChange={(e)=>setTaskStart(e.target.value)}
+                />
+              </div>
+
+              <div className="input-box">
+                終了 : 
+                <input
+                  type="datetime-local"
+                  className="border p-2"
+                  value={taskEnd}
+                  onChange={(e)=>setTaskEnd(e.target.value)}
+                />
+              </div>
+            </div>
+
+            <div className="pb-4 flex gap-2">
+              <input
+                type="date"
+                className="border p-2"
+                value={taskDate}
+                onChange={(e)=>setTaskDate(e.target.value)}
+              />
+              <button
+                onClick={(e: React.MouseEvent<HTMLButtonElement>) => {addTask(e)}}
+                className="bg-green-500 text-white px-4 py-2 rounded"
+              >
+                add task
+              </button>
+            </div>
+          </div>
+
+        <div className="mb-4 p-4 border rounded">
+          {tasks.map((task,index)=>(
+            <ScheduleTaskItem
+              key={index}
+              task={task}
+              itemNumber={index}
+              removeTask={(index) => removeTask(index)}
+            />
+          ))}
+        </div>
+
+        <button
+          type="submit"
+          className="bg-blue-500 text-white px-4 py-2 rounded"
+        >
+          { makeSwitcher ? <>update schedule</> : <>create schedule</> }
+        </button>
+      </form>
 
     </div>
   )

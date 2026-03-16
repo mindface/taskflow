@@ -28,3 +28,6 @@ src-tauri/data
 src-tauri/gen/
 
 memo
+
+src-tauri/icons/android/*
+src-tauri/icons/ios/*

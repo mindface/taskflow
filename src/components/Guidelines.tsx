@@ -18,7 +18,7 @@ export default function Guidelines() {
 
   return (
     <div className="DashBord">
-      <div className="p-4">
+      <div className="mb-4 p-4 preview">
         <ReactMarkdown
           remarkPlugins={[remarkGfm]}
         >{content}</ReactMarkdown>

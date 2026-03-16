@@ -1,15 +1,29 @@
-import { useEffect, useState } from "react"
+import { forwardRef, useImperativeHandle, useEffect, useState } from "react"
 import { invoke } from "@tauri-apps/api/core"
 import { Schedule } from "../models/Schedule"
 import ScheduleItem from "./modifier/ScheduleItem";
 
-export default function ScheduleList() {
+export interface ScheduleListHandle {
+  loadSchedules: () => void;
+}
+
+type Props = {
+  setScheduleAction: (schedule:Schedule) => void
+}
+
+const ScheduleList = forwardRef<ScheduleListHandle,Props>(({ setScheduleAction },ref) => {
   const [schedules, setSchedules] = useState<Schedule[]>([])
 
   const loadSchedules = async () => {
     const result = await invoke<Schedule[]>("get_schedule_detail_list")
     setSchedules(result)
   }
+
+  useImperativeHandle(ref, () => ({
+    loadSchedules() {
+      loadSchedules();
+    },
+  }));
 
   useEffect(() => {
     loadSchedules()
@@ -28,9 +42,12 @@ export default function ScheduleList() {
           <ScheduleItem
             loadSchedules={loadSchedules}
             schedule={schedule}
+            setScheduleAction={(schedule: Schedule) => {setScheduleAction(schedule)}}
           />
         </div>
       ))}
     </div>
   )
-}
+})
+
+export default ScheduleList;

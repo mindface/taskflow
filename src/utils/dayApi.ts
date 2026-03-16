@@ -17,8 +17,6 @@ export const formatDateTime = (
   const mi = String(date.getMinutes()).padStart(2, "0");
   const ss = String(date.getSeconds()).padStart(2, "0");
 
-  
-
   if (type === "MM/DD/YYYY") {
     return `${mm}/${dd}/${yyyy}`;
   }
