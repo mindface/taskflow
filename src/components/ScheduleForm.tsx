@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { invoke } from "@tauri-apps/api/core"
 import { inputCheckered } from "../utils/inputCheckered";
 import { Schedule, ScheduleTask } from "../models/Schedule"
-
+import ScheduleTaskItem from "./modifier/ScheduleTaskItem";
 
 type Props = {
   stateSchedule?: Schedule;
@@ -38,7 +38,6 @@ export default function ScheduleForm({ stateSchedule, loadListSchedule }: Props)
   },[stateSchedule])
 
   const setFromHandler = (item: Schedule) => {
-    console.log(item)
     setScheduleId(item.id)
     setTitle(item.title)
     setDescription(item.description)
@@ -163,7 +162,7 @@ export default function ScheduleForm({ stateSchedule, loadListSchedule }: Props)
 
   return (
     <div className="mb-4 p-4 border rounded space-y-4">
-      <div className="form-header">
+      <div className="form-header pb-4">
         { makeSwitcher ? <button
           className="btn"
           onClick={() => {
@@ -271,7 +270,6 @@ export default function ScheduleForm({ stateSchedule, loadListSchedule }: Props)
                 value={taskDate}
                 onChange={(e)=>setTaskDate(e.target.value)}
               />
-
               <button
                 onClick={(e: React.MouseEvent<HTMLButtonElement>) => {addTask(e)}}
                 className="bg-green-500 text-white px-4 py-2 rounded"
@@ -283,21 +281,12 @@ export default function ScheduleForm({ stateSchedule, loadListSchedule }: Props)
 
         <div className="mb-4 p-4 border rounded">
           {tasks.map((task,index)=>(
-            <div
+            <ScheduleTaskItem
               key={index}
-              className="flex justify-between mb-4 p-2 border rounded"
-            >
-              <div>
-                <p className="font-bold">{task.title}</p>
-                <p>{task.targetdate}</p>
-              </div>
-              <button
-                onClick={()=>removeTask(index)}
-                className="text-red-500"
-              >
-                delete
-              </button>
-            </div>
+              task={task}
+              itemNumber={index}
+              removeTask={(index) => removeTask(index)}
+            />
           ))}
         </div>
 

@@ -26,6 +26,7 @@ export default function ScheduleItem({
     <div className="p-8 space-y-4 max-w-md">
       <h3 className="pb-2">model schedule | {schedule.title}</h3>
       <div className="flex gap-2">
+        <ScheduleDialog schedule={schedule} />
         <button
           className="btn"
           onClick={() => setScheduleAction(schedule)}
@@ -36,7 +37,6 @@ export default function ScheduleItem({
           className="btn"
           onClick={() => deleteSchedule(schedule.id)}
         >delete</button>
-        <ScheduleDialog schedule={schedule} />
       </div>
     </div>
   );
