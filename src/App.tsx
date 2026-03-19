@@ -10,8 +10,8 @@ import WindowChecker from "./pages/WindowChecker";
 import ConceptSearch from "./pages/ConceptSearch";
 import Schedule from "./pages/Schedule";
 
-import Header from "./components/Header";
-import Footer from "./components/Footer";
+import Header from "./components/core/Header";
+import Footer from "./components/core/Footer";
 
 import { DataProvider } from "./store/dataBox";
 import { NotesProvider } from "./store/note";

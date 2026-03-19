@@ -5,6 +5,7 @@ import type { ConceptView } from '../models/ConceptView';
 
 import type { Note } from "../models/Notes";
 import { useWindowSync } from "../hooks/useWindowSync";
+import { useConceptSearch } from "../hooks/useConceptSearch";
 
 interface SearchParams {
   name?: string;
@@ -16,13 +17,16 @@ interface SearchParams {
 
 export function SearchMemo() {
   const { syncContent, syncNoteData, openPreview } = useWindowSync();
-  const [concepts, setConcepts] = useState<ConceptView[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [searchText, setSearchText] = useState("");
+  const {
+    concepts,
+    loading,
+    error,
+    name,
+    setName,
+    search,
+  } = useConceptSearch()
 
   // 検索内容
-  const [name, setName] = useState<string>("");
   const [noteId, setNoteId] = useState<number | undefined>(1);
   const [tag, setTag] = useState<string | undefined>();
   const [role, setRole] = useState<string | undefined>();
@@ -39,36 +43,7 @@ export function SearchMemo() {
   useEffect(() => {
     let cancelled = false;
 
-    const fetchConcepts = async () => {
-      setLoading(true);
-      setError(null);
-
-      try {
-        const result = await invoke<ConceptView[]>(
-          'search_note_concepts',
-          {
-            name: params.name,
-            noteId: params.noteId,
-            tag: params.tag ?? null,
-            role: params.role ?? null,
-            keyword: params.keyword ?? null,
-          }
-        );
-        if (!cancelled) {
-          setConcepts(result);
-        }
-      } catch (e) {
-        if (!cancelled) {
-          setError(String(e));
-        }
-      } finally {
-        if (!cancelled) {
-          setLoading(false);
-        }
-      }
-    }
-
-    fetchConcepts();
+    search();
     return () => {
       cancelled = true;
     };
@@ -81,29 +56,6 @@ export function SearchMemo() {
       await openPreview(true);
     } catch (e) {
       console.error("get_note error", e);
-    }
-  }
-
-  const searchFetchConcepts = async () => {
-    setLoading(true);
-    try {
-      const result = await invoke<ConceptView[]>(
-        "search_note_concepts",
-        {
-          name: name,
-          noteId,
-          tag: tag ?? null,
-          role: role ?? null,
-          keyword: keyword || null,
-        }
-      );
-        console.log("------@@@@^^^")
-        console.log(result)
-      setConcepts(result);
-    } catch (e) {
-      console.error(e)
-    } finally {
-      setLoading(false);
     }
   }
 
@@ -120,19 +72,19 @@ export function SearchMemo() {
             onChange={(e) => setName(e.target.value)}
           />
         </p>
-        <p className="p-2">
-          {/* <select
+        {/* <p className="p-2">
+          <select
             value={searchMode}
             onChange={(e) => setSearchMode(e.target.value)}
           >
             <option value="note">このノート内</option>
             <option value="all">全ノート</option>
-          </select> */}
-        </p>
+          </select>
+        </p> */}
         <p className="p-2">
           <button
             className="btn"
-            onClick={searchFetchConcepts}
+            onClick={search}
           >set</button>
         </p>
       </div>

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 
-
+// 画像の検索コンポーネント 調査内容に関しては別の文字を考慮する
 export function SearchImages() {
   const [selectImageText, setSelectImageText] = useState<string>("");
 
