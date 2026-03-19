@@ -1,7 +1,6 @@
 use crate::commands::db_core::get_conn;
 use rusqlite::params;
 
-
 #[tauri::command]
 pub fn add_note_concept(note_id: i64, concept_id: i64, role: String) -> Result<(), String> {
   let conn = get_conn()?;
