@@ -7,7 +7,7 @@ import Tokenizer from "./pages/Tokenizer";
 import MemoLinker from "./pages/MemoLinker";
 import MemoMaker from "./pages/MemoMaker";
 import WindowChecker from "./pages/WindowChecker";
-import ConceptSearchImage from "./pages/ConceptSearchImage";
+import ConceptSearch from "./pages/ConceptSearch";
 import Schedule from "./pages/Schedule";
 
 import Header from "./components/Header";
@@ -33,7 +33,7 @@ function App() {
           {viewtype === "memolinker" && <NotesProvider><MemoLinker /></NotesProvider> }
           {viewtype === "memo" && <NotesProvider><MemoMaker /></NotesProvider> }
           {viewtype === "windowchecker" && <WindowChecker /> }
-          {viewtype === "conceptsSearch" && <ConceptSearchImage /> }
+          {viewtype === "conceptsSearch" && <ConceptSearch /> }
           {viewtype === "schedule" && <Schedule /> }
         </main>
         <Footer />

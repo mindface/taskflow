@@ -97,6 +97,8 @@ export function SearchMemo() {
           keyword: keyword || null,
         }
       );
+        console.log("------@@@@^^^")
+        console.log(result)
       setConcepts(result);
     } catch (e) {
       console.error(e)
