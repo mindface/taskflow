@@ -1,6 +1,6 @@
-import paths from "../json/path.json";
+import paths from "../../json/path.json";
 
-import ImageDialog from "./modifier/ImageDialog";
+import ImageDialog from "../modifier/ImageDialog";
 
 type Props = {
   activePath: string;

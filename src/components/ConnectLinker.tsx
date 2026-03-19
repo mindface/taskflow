@@ -37,11 +37,16 @@ export default function ConnectLinker({ noteList }: Props) {
     }
   };
 
-  useEffect(() => {
-    (async () => {
-      const res = await invoke("list_concepts")
-    })();
-  }, [noteList]);
+  // useEffect(() => {
+  //   (async () => {
+  //     try {
+  //       const res = await invoke("list_concepts")
+  //     } catch (error) {
+  //       console.log(error)
+  //     }
+  //   })();
+  //   return () => {}
+  // }, [noteList]);
 
   return (
     <div className="p-4 space-y-4 max-w-md">
