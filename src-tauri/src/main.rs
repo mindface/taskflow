@@ -1,51 +1,21 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 mod commands;
+mod db;
+mod migrations;
 mod models;
 mod window_capture;
 
-use lindera_core::mode::Mode;
-use lindera_dictionary::{DictionaryConfig, DictionaryKind};
-use lindera_tokenizer::tokenizer::{Tokenizer, TokenizerConfig};
+use db::init_db::{init_db, init_schedule_db};
+use migrations::run_migrations::run_migrations;
 
 use crate::models::state::PreviewState;
 use std::sync::Mutex;
 
-#[derive(Debug)]
-pub enum LinderaError {
-  Custom(String),
-}
-
-impl std::fmt::Display for LinderaError {
-  fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-    match self {
-      LinderaError::Custom(s) => write!(f, "Custom error: {}", s),
-    }
-  }
-}
-
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-  let dictionary = DictionaryConfig {
-    kind: Some(DictionaryKind::IPADIC),
-    path: None,
-  };
-
-  let config = TokenizerConfig {
-    dictionary,
-    user_dictionary: None,
-    mode: Mode::Normal,
-  };
-
-  // create tokenizer
-  let tokenizer = Tokenizer::from_config(config)?;
-
-  // tokenize the text
-  let tokens = tokenizer.tokenize("関西国際空港限定トートバッグ")?;
-
-  // output the tokens
-  for token in tokens {
-    println!("{}", token.text);
-  }
+  init_db().unwrap();
+  init_schedule_db().unwrap();
+  run_migrations().unwrap();
 
   tauri::Builder::default()
     .plugin(tauri_plugin_fs::init())
@@ -66,9 +36,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
       commands::file_operations::export_pdf,
       commands::file_operations::export_notes,
       commands::file_operations::import_notes,
-      commands::file_operations::import_notes,
       // SQL Memo commands
-      commands::sql_memo::init_db,
       commands::sql_memo::add_note,
       commands::sql_memo::list_notes,
       commands::sql_memo::get_note,
@@ -94,9 +62,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
       commands::concept::add_note_concept::add_note_concept,
       commands::concept::list_concepts::list_concepts,
       commands::search::note_concepts::search_note_concepts,
-      commands::schedule::sql_schedule::init_schedule_db,
       commands::schedule::add_schedule_task::add_schedule_task,
       commands::schedule::update_schedule_task::update_schedule_task,
+      commands::schedule::update_schedule_task::update_start_task,
+      commands::schedule::update_schedule_task::update_end_task,
       commands::schedule::add_schedule::add_schedule,
       commands::schedule::update_schedule::update_schedule,
       commands::schedule::delete_schedule::delete_schedule,

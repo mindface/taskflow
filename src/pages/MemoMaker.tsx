@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { Note, NoteData } from "../models/Notes";
-import MemoMakerSidebar from "../components/MemoMakerSidebar";
+import MemoMakerDialog from "../components/modifier/MemoMakerDialog";
+
 import Dialog from "../components/core/CoreDialog";
 import ReactMarkdown from "react-markdown";
 import { useWindowSync } from "../hooks/useWindowSync";
@@ -148,7 +149,16 @@ export default function MemoMaker() {
 
   return (
     <div className="p-4">
-      <MemoMakerSidebar
+      {/* <MemoMakerSidebar
+        notes={notes}
+        onSelectNote={selectNote}
+        onCreateNote={newNote}
+        onDeleteNote={removeNote}
+        onLoadNotes={loadNotes}
+        onExportNotes={exportNotes}
+        onImportNotes={importsNotes}
+      /> */}
+      <MemoMakerDialog
         notes={notes}
         onSelectNote={selectNote}
         onCreateNote={newNote}

@@ -1,4 +1,4 @@
-use crate::commands::db_core::get_conn;
+use crate::db::db_core::get_conn;
 use crate::models::schedule::{Schedule, ScheduleTask};
 use rusqlite::params;
 
@@ -9,10 +9,10 @@ pub fn get_schedule_detail(schedule_id: i64) -> Result<Schedule, String> {
   let schedule = conn
     .query_row(
       "
-          SELECT id, title, description, created_at, updated_at
-          FROM schedules
-          WHERE id = ?1
-          ",
+      SELECT id, title, description, created_at, updated_at
+      FROM schedules
+      WHERE id = ?1
+      ",
       params![schedule_id],
       |row| {
         Ok(Schedule {
@@ -30,21 +30,21 @@ pub fn get_schedule_detail(schedule_id: i64) -> Result<Schedule, String> {
   let mut stmt = conn
     .prepare(
       "
-            SELECT
-                id,
-                schedule_id,
-                task_id,
-                title,
-                detail,
-                start_time,
-                end_time,
-                target_date,
-                status,
-                priority,
-                elapsed_time
-            FROM schedule_tasks
-            WHERE schedule_id = ?1
-            ",
+        SELECT
+            id,
+            schedule_id,
+            task_id,
+            title,
+            detail,
+            start_time,
+            end_time,
+            target_date,
+            status,
+            priority,
+            elapsed_time
+        FROM schedule_tasks
+        WHERE schedule_id = ?1
+        ",
     )
     .map_err(|e| format!("prepare tasks error: {}", e))?;
 

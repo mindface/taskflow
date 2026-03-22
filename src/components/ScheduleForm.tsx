@@ -3,6 +3,7 @@ import { invoke } from "@tauri-apps/api/core"
 import { inputCheckered } from "../utils/inputCheckered";
 import { Schedule, ScheduleTask } from "../models/Schedule"
 import ScheduleTaskItem from "./modifier/ScheduleTaskItem";
+import { formatDateTime } from "../utils/dayApi";
 
 type Props = {
   stateSchedule?: Schedule;
@@ -62,6 +63,7 @@ export default function ScheduleForm({ stateSchedule, loadListSchedule }: Props)
   const addTask = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     const newTask: ScheduleTask = {
+      id: 0,
       schedule_id: scheduleId || 0,
       task_id: 0,
       title: taskTitle,
@@ -209,10 +211,10 @@ export default function ScheduleForm({ stateSchedule, loadListSchedule }: Props)
 
         <div className="pb-2 flex gap-2">
           <div className="create_day">
-            作成 : {createTime}
+            作成 : {formatDateTime(createTime,"YYYY/MM/DD HH:mm:ss")}
           </div>
           <div className="create_day">
-            更新 : {updateTime}
+            更新 : {formatDateTime(updateTime,"YYYY/MM/DD HH:mm:ss")}
           </div>
         </div>
 

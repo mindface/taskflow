@@ -10,7 +10,7 @@ import WindowChecker from "./pages/WindowChecker";
 import ConceptSearch from "./pages/ConceptSearch";
 import Schedule from "./pages/Schedule";
 
-import Header from "./components/core/Header";
+import MenuLsitSidebar from "./components/modifier/MenuLsitSidebar";
 import Footer from "./components/core/Footer";
 
 import { DataProvider } from "./store/dataBox";
@@ -22,7 +22,7 @@ function App() {
   return (
     <BrowserRouter>
       <div className="div-outer">
-        <Header
+        <MenuLsitSidebar
           activePath={viewtype}
           nextPageAction={(path:string) => viewTypeSet(path)}
         />

@@ -1,4 +1,4 @@
-use crate::commands::db_core::get_conn;
+use crate::db::db_core::get_conn;
 use crate::models::note::ConceptView;
 
 #[tauri::command]
