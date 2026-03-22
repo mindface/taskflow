@@ -25,6 +25,8 @@ pub struct ScheduleTask {
 
   pub starttime: Option<String>,
   pub endtime: Option<String>,
+  pub run_starttime: Option<i64>,
+  pub run_endtime: Option<i64>,
   pub targetdate: Option<String>,
 
   pub status: String,

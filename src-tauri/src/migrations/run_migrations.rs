@@ -1,5 +1,5 @@
-use rusqlite::Connection;
 use crate::db::db_core::get_conn;
+use rusqlite::Connection;
 // use crate::migrations::v3;
 // use crate::migrations::v4;
 
@@ -32,52 +32,53 @@ pub fn run_migrations() -> Result<(), String> {
 }
 
 fn get_version(conn: &Connection) -> Result<i32, String> {
-    let mut stmt = conn
-      .prepare("SELECT version FROM schema_version LIMIT 1")
-      .map_err(|e| e.to_string())?;
+  let mut stmt = conn
+    .prepare("SELECT version FROM schema_version LIMIT 1")
+    .map_err(|e| e.to_string())?;
 
-    let result = stmt.query_row([], |row| row.get(0));
+  let result = stmt.query_row([], |row| row.get(0));
 
-    match result {
-      Ok(v) => Ok(v),
-      Err(_) => {
-        conn.execute(
-            "INSERT INTO schema_version (version) VALUES (0)",
-            [],
-        )
+  match result {
+    Ok(v) => Ok(v),
+    Err(_) => {
+      conn
+        .execute("INSERT INTO schema_version (version) VALUES (0)", [])
         .map_err(|e| e.to_string())?;
 
-        Ok(0)
-      }
+      Ok(0)
     }
+  }
 }
 
 fn set_version(conn: &Connection, v: i32) -> Result<(), String> {
-    conn.execute("UPDATE schema_version SET version = ?", [v])
-        .map_err(|e| e.to_string())?;
-    Ok(())
+  conn
+    .execute("UPDATE schema_version SET version = ?", [v])
+    .map_err(|e| e.to_string())?;
+  Ok(())
 }
 
 fn migration_v1(conn: &Connection) -> Result<(), String> {
-    conn.execute_batch(
-        "
+  conn
+    .execute_batch(
+      "
         ALTER TABLE schedule_tasks
         ADD COLUMN run_starttime INTEGER;
         ",
     )
     .map_err(|e| e.to_string())?;
 
-    Ok(())
+  Ok(())
 }
 
 fn migration_v2(conn: &Connection) -> Result<(), String> {
-    conn.execute_batch(
-        "
+  conn
+    .execute_batch(
+      "
         ALTER TABLE schedule_tasks
         ADD COLUMN run_endtime INTEGER;
         ",
     )
     .map_err(|e| e.to_string())?;
 
-    Ok(())
+  Ok(())
 }

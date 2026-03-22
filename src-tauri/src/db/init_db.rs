@@ -1,5 +1,5 @@
-use rusqlite::Connection;
 use crate::db::db_core::get_conn;
+use rusqlite::Connection;
 
 #[tauri::command]
 pub fn init_db() -> Result<String, String> {
@@ -57,7 +57,6 @@ pub fn init_db() -> Result<String, String> {
   Ok("initialized".into())
 }
 
-
 #[tauri::command]
 pub fn init_schedule_db() -> Result<String, String> {
   let conn = get_conn()?;
@@ -108,4 +107,3 @@ pub fn init_schedule_db() -> Result<String, String> {
 
   Ok("schedule db initialized".into())
 }
-

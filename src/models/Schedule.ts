@@ -18,10 +18,10 @@ export type ScheduleTask = {
   detail: string;
   starttime: string;
   endtime: string;
-  run_starttime?: string;
-  run_endtime?: string;
+  run_starttime?: number;
+  run_endtime?: number;
   targetdate: string;
   status: string;
   priority: string;
-  elapsedtime: string;
+  elapsed_time: number;
 }

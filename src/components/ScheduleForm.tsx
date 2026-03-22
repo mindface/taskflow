@@ -73,7 +73,7 @@ export default function ScheduleForm({ stateSchedule, loadListSchedule }: Props)
       targetdate: taskDate,
       status: "",
       priority: "",
-      elapsedtime: "",
+      elapsed_time: 0,
     }
     const taskStartCheck = inputDateCheaker(taskStart)
     const taskEndCheck = inputDateCheaker(taskEnd)

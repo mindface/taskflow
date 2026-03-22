@@ -29,17 +29,6 @@ export default function MemoMaker() {
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const { syncContent, syncNoteData, openPreview } = useWindowSync();
 
-  useEffect(() => {
-    (async () => {
-      try {
-        await invoke("init_db");
-        await loadNotes();
-      } catch (e) {
-        console.error("init_db error", e);
-      }
-    })();
-  }, []);
-
   // async function loadNotes() {
   //   try {
   //     const res = await invoke<Note[]>("list_notes");
