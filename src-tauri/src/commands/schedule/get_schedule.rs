@@ -1,19 +1,19 @@
-use crate::commands::db_core::get_conn;
+use crate::db::db_core::get_conn;
 use crate::models::schedule::{Schedule, ScheduleTask};
 use rusqlite::params;
 
 #[tauri::command]
-pub fn get_schedule_detail(schedule_id: i64) -> Result<Schedule, String> {
+pub fn get_schedule_detail(scheduleId: i64) -> Result<Schedule, String> {
   let conn = get_conn()?;
 
   let schedule = conn
     .query_row(
       "
-          SELECT id, title, description, created_at, updated_at
-          FROM schedules
-          WHERE id = ?1
-          ",
-      params![schedule_id],
+      SELECT id, title, description, created_at, updated_at
+      FROM schedules
+      WHERE id = ?1
+      ",
+      params![scheduleId],
       |row| {
         Ok(Schedule {
           id: row.get(0)?,
@@ -30,26 +30,28 @@ pub fn get_schedule_detail(schedule_id: i64) -> Result<Schedule, String> {
   let mut stmt = conn
     .prepare(
       "
-            SELECT
-                id,
-                schedule_id,
-                task_id,
-                title,
-                detail,
-                start_time,
-                end_time,
-                target_date,
-                status,
-                priority,
-                elapsed_time
-            FROM schedule_tasks
-            WHERE schedule_id = ?1
-            ",
+        SELECT
+            id,
+            schedule_id,
+            task_id,
+            title,
+            detail,
+            start_time,
+            end_time,
+            run_starttime,
+            run_endtime,
+            target_date,
+            status,
+            priority,
+            elapsed_time
+        FROM schedule_tasks
+        WHERE schedule_id = ?1
+      ",
     )
     .map_err(|e| format!("prepare tasks error: {}", e))?;
 
   let rows = stmt
-    .query_map(params![schedule_id], |row| {
+    .query_map(params![scheduleId], |row| {
       Ok(ScheduleTask {
         id: row.get(0)?,
         schedule_id: row.get(1)?,
@@ -59,10 +61,12 @@ pub fn get_schedule_detail(schedule_id: i64) -> Result<Schedule, String> {
         target_task_id: None,
         starttime: row.get(5)?,
         endtime: row.get(6)?,
-        targetdate: row.get(7)?,
-        status: row.get(8)?,
-        priority: row.get(9)?,
-        elapsed_time: row.get(10)?,
+        run_starttime: row.get(7)?,
+        run_endtime: row.get(8)?,
+        targetdate: row.get(9)?,
+        status: row.get(10)?,
+        priority: row.get(11)?,
+        elapsed_time: row.get(12)?,
         dependencies: None,
       })
     })
@@ -120,6 +124,8 @@ pub fn get_schedule_detail_list() -> Result<Vec<Schedule>, String> {
               detail,
               start_time,
               end_time,
+              run_starttime,
+              run_endtime,
               target_date,
               status,
               priority,
@@ -141,10 +147,12 @@ pub fn get_schedule_detail_list() -> Result<Vec<Schedule>, String> {
           target_task_id: None,
           starttime: row.get(5)?,
           endtime: row.get(6)?,
-          targetdate: row.get(7)?,
-          status: row.get(8)?,
-          priority: row.get(9)?,
-          elapsed_time: row.get(10)?,
+          run_starttime: row.get(7)?,
+          run_endtime: row.get(8)?,
+          targetdate: row.get(9)?,
+          status: row.get(10)?,
+          priority: row.get(11)?,
+          elapsed_time: row.get(12)?,
           dependencies: None,
         })
       })

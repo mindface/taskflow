@@ -118,17 +118,17 @@ const CoreDialog = ({
       aria-modal="true"
       style={{ padding: 0, border: "none", borderRadius: 6 }}
     >
-      <div className="modal-overlay" style={{ background: "transparent" }}>
-        <div className="modal-content" style={contentStyle} role="document">
+      <div className="dialog-overlay" style={{ background: "transparent" }}>
+        <div className="dialog-content" style={contentStyle} role="document">
           <div
-            className="modal-header"
+            className="dialog-header"
             style={{
               display: "flex",
               justifyContent: "space-between",
               alignItems: "center",
             }}
           >
-            <h2 className="modal-header-title">{title}</h2>
+            <h2 className="dialog-header-title">{title}</h2>
             <button
               onClick={() => {
                 try {
@@ -136,13 +136,13 @@ const CoreDialog = ({
                 } catch {}
                 onClose();
               }}
-              className="modal-close"
+              className="dialog-close"
               aria-label="Close dialog"
             >
               ×
             </button>
           </div>
-          <div className="modal-body">{children}</div>
+          <div className="dialog-body">{children}</div>
         </div>
       </div>
     </dialog>

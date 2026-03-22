@@ -3,7 +3,7 @@ import ReactDOM from "react-dom/client";
 import App from "./App";
 import PreviewWindow from './window/PreviewWindow';
 import "./styles.css";
-import "./styles/modal.css";
+import "./styles/dialog.css";
 
 const windowLabel = (window as any).__TAURI_WINDOW_LABEL__;
 const isPreview = windowLabel === 'preview';

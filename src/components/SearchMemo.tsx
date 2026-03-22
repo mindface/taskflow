@@ -1,7 +1,6 @@
 // src/components/VirtualDesktopView.tsx
 import { useState, useEffect } from "react";
 import { invoke } from '@tauri-apps/api/core';
-import type { ConceptView } from '../models/ConceptView';
 
 import type { Note } from "../models/Notes";
 import { useWindowSync } from "../hooks/useWindowSync";
@@ -25,12 +24,6 @@ export function SearchMemo() {
     setName,
     search,
   } = useConceptSearch()
-
-  // 検索内容
-  const [noteId, setNoteId] = useState<number | undefined>(1);
-  const [tag, setTag] = useState<string | undefined>();
-  const [role, setRole] = useState<string | undefined>();
-  const [keyword, setKeyword] = useState("");
 
   const params: SearchParams = {
     name: undefined,

@@ -1,58 +1,7 @@
-use crate::commands::db_core::get_conn;
+use crate::db::db_core::get_conn;
 use crate::models::note::{ConceptRelationView, ConceptView, Note, NoteDetail};
 use chrono::Utc;
 use rusqlite::params;
-
-#[tauri::command]
-pub fn init_db() -> Result<String, String> {
-  let conn = get_conn()?;
-  conn
-    .execute_batch(
-      "BEGIN;
-        CREATE TABLE IF NOT EXISTS notes (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            title TEXT NOT NULL,
-            content TEXT NOT NULL,
-            created_at TEXT NOT NULL,
-            updated_at TEXT NOT NULL
-        );
-
-        CREATE TABLE IF NOT EXISTS concepts (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL UNIQUE,
-            description TEXT,
-            infolink TEXT,
-            tag TEXT NOT NULL
-            -- created_at/updated_at handled by migration
-        );
-
-        CREATE TABLE IF NOT EXISTS concept_process_factors (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL UNIQUE,
-            description TEXT,
-            infolink TEXT
-            -- created_at/updated_at handled by migration
-        );
-
-        CREATE TABLE IF NOT EXISTS concept_relations (
-            from_concept_id INTEGER NOT NULL,
-            to_concept_id INTEGER NOT NULL,
-            relation_type TEXT NOT NULL,
-            PRIMARY KEY (from_concept_id, to_concept_id, relation_type)
-        );
-
-        CREATE TABLE IF NOT EXISTS note_concepts (
-            note_id INTEGER NOT NULL,
-            concept_id INTEGER NOT NULL,
-            role TEXT NOT NULL,
-            PRIMARY KEY (note_id, concept_id, role)
-        );
-
-        COMMIT;",
-    )
-    .map_err(|e| format!("DB init error: {}", e))?;
-  Ok("initialized".into())
-}
 
 #[tauri::command]
 pub fn add_note(title: String, content: String) -> Result<i64, String> {

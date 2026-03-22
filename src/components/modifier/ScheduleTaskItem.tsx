@@ -32,12 +32,12 @@ export default function ScheduleTaskItem({
         <details className="relative inline-block">
           <span className="invisible group-hover:visible absolute left-1/2 -translate-x-1/2 -top-10 
                        bg-black text-white text-xs p-4 px-2 py-1 rounded whitespace-nowrap opacity-0 
-                       group-hover:opacity-100 transition-opacity duration-200">
+                       transition-opacity duration-200">
           クリックすると内容が開きます
           {/* 矢印部分 */}
           <span className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-black"></span>
           </span>
-          <summary className="cursor-pointer list-none p-2 border border-color-blue-500 text-blue-500 rounded hover:bg-blue-600 focus:outline-none select-none">
+          <summary className="cursor-pointer list-none p-2 border border-color-blue-500 text-blue-500 rounded hover:text-white hover:bg-blue-600 focus:outline-none select-none">
             詳細の情報を開く ▼
           </summary>
           <div className="absolute right-0 mt-2 w-48 p-4 bg-white border border-gray-200 rounded-md shadow-xl z-50">
