@@ -50,10 +50,8 @@ pub fn update_schedule_task(
 }
 
 #[tauri::command]
-pub fn update_start_task(scheduleTaskId: i64) -> Result<(), String> {
+pub fn update_start_task(scheduletaskid: i64) -> Result<(), String> {
   let conn = get_conn()?;
-  println!("@@@");
-  println!("{}", scheduleTaskId);
 
   let now = chrono::Utc::now().timestamp();
   conn
@@ -63,7 +61,7 @@ pub fn update_start_task(scheduleTaskId: i64) -> Result<(), String> {
       SET run_starttime = ?
       WHERE id = ?
       ",
-      [now, scheduleTaskId],
+      [now, scheduletaskid],
     )
     .map_err(|e| e.to_string())?;
 
@@ -71,7 +69,7 @@ pub fn update_start_task(scheduleTaskId: i64) -> Result<(), String> {
 }
 
 #[tauri::command]
-pub fn update_end_task(scheduleTaskId: i64) -> Result<(), String> {
+pub fn update_end_task(scheduletaskid: i64) -> Result<(), String> {
   let conn = get_conn()?;
 
   let now = chrono::Utc::now().timestamp();
@@ -79,7 +77,7 @@ pub fn update_end_task(scheduleTaskId: i64) -> Result<(), String> {
   let start: i64 = conn
     .query_row(
       "SELECT run_starttime FROM schedule_tasks WHERE id = ?",
-      [scheduleTaskId],
+      [scheduletaskid],
       |row| row.get(0),
     )
     .unwrap_or(0);
@@ -93,7 +91,7 @@ pub fn update_end_task(scheduleTaskId: i64) -> Result<(), String> {
     SET run_endtime = ?, elapsed_time = ?
     WHERE id = ?
     ",
-      [now, elapsed, scheduleTaskId],
+      [now, elapsed, scheduletaskid],
     )
     .map_err(|e| e.to_string())?;
 

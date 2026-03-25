@@ -3,7 +3,7 @@ use crate::models::schedule::{Schedule, ScheduleTask};
 use rusqlite::params;
 
 #[tauri::command]
-pub fn get_schedule_detail(scheduleId: i64) -> Result<Schedule, String> {
+pub fn get_schedule_detail(scheduleid: i64) -> Result<Schedule, String> {
   let conn = get_conn()?;
 
   let schedule = conn
@@ -13,7 +13,7 @@ pub fn get_schedule_detail(scheduleId: i64) -> Result<Schedule, String> {
       FROM schedules
       WHERE id = ?1
       ",
-      params![scheduleId],
+      params![scheduleid],
       |row| {
         Ok(Schedule {
           id: row.get(0)?,
@@ -51,7 +51,7 @@ pub fn get_schedule_detail(scheduleId: i64) -> Result<Schedule, String> {
     .map_err(|e| format!("prepare tasks error: {}", e))?;
 
   let rows = stmt
-    .query_map(params![scheduleId], |row| {
+    .query_map(params![scheduleid], |row| {
       Ok(ScheduleTask {
         id: row.get(0)?,
         schedule_id: row.get(1)?,
