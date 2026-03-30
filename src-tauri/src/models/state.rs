@@ -1,5 +1,5 @@
 use crate::models::schedule::Schedule;
-use serde::{Serialize};
+use serde::Serialize;
 
 #[derive(Default)]
 pub struct PreviewState {
@@ -11,4 +11,3 @@ pub struct PreviewState {
 pub struct ScheduleState {
   pub schedule: Schedule,
 }
-

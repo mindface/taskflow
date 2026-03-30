@@ -1,7 +1,7 @@
 use crate::db::db_core::get_conn;
 use rusqlite::Connection;
-// use crate::migrations::v3;
-// use crate::migrations::v4;
+use crate::migrations::v1;
+use crate::migrations::v2;
 
 pub fn run_migrations() -> Result<(), String> {
   let conn = get_conn()?;
@@ -9,12 +9,12 @@ pub fn run_migrations() -> Result<(), String> {
   let version = get_version(&conn)?;
 
   if version < 1 {
-    migration_v1(&conn)?;
+    v1::up(&conn)?;
     set_version(&conn, 1)?;
   }
 
   if version < 2 {
-    migration_v2(&conn)?;
+    v2::up(&conn)?;
     set_version(&conn, 2)?;
   }
 
@@ -54,31 +54,5 @@ fn set_version(conn: &Connection, v: i32) -> Result<(), String> {
   conn
     .execute("UPDATE schema_version SET version = ?", [v])
     .map_err(|e| e.to_string())?;
-  Ok(())
-}
-
-fn migration_v1(conn: &Connection) -> Result<(), String> {
-  conn
-    .execute_batch(
-      "
-        ALTER TABLE schedule_tasks
-        ADD COLUMN run_starttime INTEGER;
-        ",
-    )
-    .map_err(|e| e.to_string())?;
-
-  Ok(())
-}
-
-fn migration_v2(conn: &Connection) -> Result<(), String> {
-  conn
-    .execute_batch(
-      "
-        ALTER TABLE schedule_tasks
-        ADD COLUMN run_endtime INTEGER;
-        ",
-    )
-    .map_err(|e| e.to_string())?;
-
   Ok(())
 }

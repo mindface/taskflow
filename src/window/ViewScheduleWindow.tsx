@@ -11,7 +11,7 @@ export default function ViewScheduleWindow() {
   const [debugInfo, setDebugInfo] = useState<string[]>([]);
 
   const addDebugRef = useRef((msg: string) => {
-    setDebugInfo(prev => [...prev.slice(-4), `${new Date().toLocaleTimeString()}: ${msg}`]);
+    setDebugInfo((prev) => [...prev.slice(-4), `${new Date().toLocaleTimeString()}: ${msg}`]);
   });
 
   useEffect(() => {

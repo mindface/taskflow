@@ -1,9 +1,9 @@
+use crate::models::schedule::Schedule;
 use crate::models::state::PreviewState;
+use crate::models::state::ScheduleState;
 use std::sync::Mutex;
 use std::time::{SystemTime, UNIX_EPOCH};
 use tauri::{Emitter, Manager};
-use crate::models::schedule::Schedule;
-use crate::models::state::ScheduleState;
 
 #[tauri::command]
 pub fn sync_schedule_to_preview(
@@ -15,20 +15,16 @@ pub fn sync_schedule_to_preview(
     let mut state = state.lock().unwrap();
     state.schedule = schedule.clone();
   }
-  app.emit_to(
-    "preview",
-    "schedule-update",
-    serde_json::json!(schedule),
-  )
-  .map_err(|e: tauri::Error| {
-    let err = format!("Failed to emit event: {}", e);
-    println!("[Rust] ERROR: {}", err);
-    e.to_string()
-  })?;
+  app
+    .emit_to("preview", "schedule-update", serde_json::json!(schedule))
+    .map_err(|e: tauri::Error| {
+      let err = format!("Failed to emit event: {}", e);
+      println!("[Rust] ERROR: {}", err);
+      e.to_string()
+    })?;
 
   Ok(())
 }
-
 
 #[tauri::command]
 pub fn open_schedule_window(
@@ -36,12 +32,11 @@ pub fn open_schedule_window(
   state: tauri::State<Mutex<PreviewState>>,
   open_continuous: bool,
 ) -> Result<(), String> {
-
   if let Some(window) = app.get_webview_window("preview") {
     if open_continuous {
       return Ok(());
     }
-    let _ = window.close().ok();;
+    let _ = window.close().ok();
   }
 
   let now = SystemTime::now()
@@ -81,4 +76,3 @@ pub fn get_target_schedule_content(
 
   Ok(state.schedule.clone())
 }
-
