@@ -1,7 +1,7 @@
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, Default)]
 pub struct Schedule {
   pub id: i64,
   pub title: String,
@@ -11,7 +11,7 @@ pub struct Schedule {
   pub tasks: Vec<ScheduleTask>,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, Default)]
 pub struct ScheduleTask {
   pub id: i64,
   pub schedule_id: i64,

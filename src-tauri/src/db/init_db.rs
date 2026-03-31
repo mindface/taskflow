@@ -1,5 +1,4 @@
 use crate::db::db_core::get_conn;
-use rusqlite::Connection;
 
 #[tauri::command]
 pub fn init_db() -> Result<String, String> {

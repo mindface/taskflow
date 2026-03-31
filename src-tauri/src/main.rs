@@ -10,6 +10,7 @@ use db::init_db::{init_db, init_schedule_db};
 use migrations::run_migrations::run_migrations;
 
 use crate::models::state::PreviewState;
+use crate::models::state::ScheduleState;
 use std::sync::Mutex;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -22,6 +23,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     .plugin(tauri_plugin_shell::init())
     .plugin(tauri_plugin_dialog::init())
     .manage(Mutex::new(PreviewState::default()))
+    .manage(Mutex::new(ScheduleState::default()))
     .invoke_handler(tauri::generate_handler![
       commands::file_operations::add_file,
       commands::file_operations::list_files,
@@ -49,6 +51,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
       commands::preview::open_preview_window,
       commands::preview::sync_content_to_preview,
       commands::preview::sync_note_data_to_preview,
+      commands::view_schedule_window::sync_schedule_to_preview,
+      commands::view_schedule_window::open_schedule_window,
+      commands::view_schedule_window::get_target_schedule_content,
       commands::preview::get_current_preview_content,
       commands::window_manager::get_all_windows,
       commands::window_manager::get_all_windows_with_thumbnails,

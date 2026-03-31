@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Note } from "../../models/Notes";
 import CoreDialog from "../core/CoreDialog";
 import EditIcon from "../../assets/edit.svg";
+import WindowIcon from "../../assets/window.svg";
 import DeleteIcon from "../../assets/delete.svg";
 
 import "../../styles/sidebar.css";
@@ -41,12 +42,13 @@ export default function MemoMakerDialog({
   return (
     <>
       <div className="mb-4 flex gap-4">
-        <button
+        <div
           onClick={DialogHandler}
-          className="px-1"
+          className="hover shot-icon-btn p-2 flex gap-2"
         >
+          <img src={WindowIcon} className="text-white" alt="windowIcon" style={{ width: 12, height: 12 }} />
           メモを確認する
-        </button>
+        </div>
         <button
           onClick={onCreateNote}
           className="px-1"

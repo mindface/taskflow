@@ -24,7 +24,7 @@ export default function ScheduleDialog({ schedule }: Props) {
   const loadSchedule = async () => {
     if(scheduleData) {
       console.log(scheduleData)
-      const res = await invoke("get_schedule_detail", { scheduleId: scheduleData.id })
+      const res = await invoke("get_schedule_detail", { scheduleid: scheduleData.id })
       console.log("@@@@")
       console.log(res)
       // setScheduleData(res))
@@ -32,10 +32,10 @@ export default function ScheduleDialog({ schedule }: Props) {
   }
 
   const startTaskAction = async (id: number) => {
-    await invoke("update_start_task", { scheduleTaskId: id })
+    await invoke("update_start_task", { scheduletaskid: id })
   }
   const endTaskAction = async (id: number) => {
-    await invoke("update_end_task", { scheduleTaskId: id })
+    await invoke("update_end_task", { scheduletaskid: id })
   }
 
   const changeTime = (time: number) => {
