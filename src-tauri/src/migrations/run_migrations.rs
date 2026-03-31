@@ -1,7 +1,7 @@
 use crate::db::db_core::get_conn;
-use rusqlite::Connection;
 use crate::migrations::v1;
 use crate::migrations::v2;
+use rusqlite::Connection;
 
 pub fn run_migrations() -> Result<(), String> {
   let conn = get_conn()?;
