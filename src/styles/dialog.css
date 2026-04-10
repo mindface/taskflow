@@ -23,7 +23,7 @@
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 .daialog-content-wide {
-  max-width: max(500px, 80vw);
+  max-width: max(800px, 80vw);
 }
 .dialog-header {
   display: flex;
