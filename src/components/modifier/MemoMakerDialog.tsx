@@ -70,7 +70,7 @@ export default function MemoMakerDialog({
             </div>
             <ul className="memo-list-dialog-list overflow-auto" style={{ maxHeight: "70vh" }}>
               {notes.map((n,index) => (
-                <li className="memo-list-dialog-item p-2 border-b border-gray-200" key={n.id}>
+                <li className="memo-list-dialog-item relative p-2 border-b border-gray-200" key={n.id}>
                   <h3 className="inline-block mb-2" onClick={() => onSelectNote(n.id)}>No{index+1}:{n.title || "(無題)"}</h3>
                   <div className="action-items flex gap-2">
                     <div

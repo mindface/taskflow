@@ -25,8 +25,6 @@ export default function ScheduleDialog({ schedule }: Props) {
     if(scheduleData) {
       console.log(scheduleData)
       const res = await invoke("get_schedule_detail", { scheduleid: scheduleData.id })
-      console.log("@@@@")
-      console.log(res)
       // setScheduleData(res))
     }
   }

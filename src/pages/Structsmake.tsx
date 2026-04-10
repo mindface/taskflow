@@ -24,14 +24,14 @@ function Structsmake() {
           </div> :
           <div className="systemer-info">
             <h3 className="systemer-info__title text-black">システム系</h3>
-            {erpInfo.map((item) => <div key={item.id} className="p-4 text-black">
-              <h3>{item.ja}</h3>
+            {erpInfo.map((item) => <div key={item.id} className="mb-4 p-2 text-black border rounded">
+              <h3 className="p-2">{item.ja}</h3>
               <div className="p-2">{item.children.map((child) => <div key={child.numberId}>
                 <h3>{child.title}</h3>
-                <p>{child.detail}</p>
                 <div>{(child?.infoList ?? []).map((info: any) => <div className="p-2" key={info.systemName}>
-                  <h4>{info.systemName}</h4>
-                  <ul>{(info.systemInfoList ?? []).map((item:any) => <li key={item}>{item}</li>)}</ul>
+                  <h4 className="mb-4 p-2 border-b-2 border-gray-300">{info.systemName}</h4>
+                  <p>{info.detail}</p>
+                  <ul>{(info.systemInfoList ?? []).map((item:any) => <li key={item} className="pb-2">{item}</li>)}</ul>
                 </div>)}</div>
                 </div>)}
               </div>

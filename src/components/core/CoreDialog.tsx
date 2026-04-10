@@ -112,14 +112,14 @@ const CoreDialog = ({
   return (
     <dialog
       ref={dialogRef}
-      className={`common-dialog ${className}`}
+      className="common-dialog"
       aria-label={ariaLabel || title}
       role="dialog"
       aria-modal="true"
       style={{ padding: 0, border: "none", borderRadius: 6 }}
     >
       <div className="dialog-overlay" style={{ background: "transparent" }}>
-        <div className="dialog-content" style={contentStyle} role="document">
+        <div className={`dialog-content ${className}`} style={contentStyle} role="document">
           <div
             className="dialog-header"
             style={{
