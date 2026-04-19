@@ -7,3 +7,4 @@ pub mod window_manager;
 pub mod concept;
 pub mod schedule;
 pub mod search;
+pub mod firestore;

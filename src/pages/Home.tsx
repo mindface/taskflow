@@ -1,5 +1,6 @@
 import DashBord from "../components/DashBord";
 import Guidelines from "../components/Guidelines";
+import ViewAndroidMemo from "./ViewAndroidMemo";
 
 function Home() {
 
@@ -8,6 +9,7 @@ function Home() {
       <main className="main">
         <Guidelines />
         <DashBord />
+        <ViewAndroidMemo />
       </main>
     </div>
   );
