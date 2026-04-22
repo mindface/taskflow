@@ -14,3 +14,12 @@ export type NoteData = {
   concepts: ConceptView[];
   relations: RelationView[];
 }
+
+export type AndroidNote = {
+  id: string;
+  userId: string;
+  title: string;
+  content: string;
+  created_at: string;
+  updated_at: string;
+}
