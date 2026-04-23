@@ -29,7 +29,7 @@ pub fn sync_schedule_to_preview(
 #[tauri::command]
 pub fn open_schedule_window(
   app: tauri::AppHandle,
-  state: tauri::State<Mutex<PreviewState>>,
+  _state: tauri::State<Mutex<PreviewState>>,
   open_continuous: bool,
 ) -> Result<(), String> {
   if let Some(window) = app.get_webview_window("preview") {

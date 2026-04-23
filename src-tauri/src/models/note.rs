@@ -9,6 +9,17 @@ pub struct Note {
   pub updated_at: String,
 }
 
+#[derive(Serialize, Deserialize, Debug, Clone, Default)]
+#[serde(rename_all = "camelCase")]
+pub struct AndroidNote {
+  pub id: String,
+  pub user_id: Option<String>,
+  pub title: Option<String>,
+  pub content: Option<String>,
+  pub created_at: Option<String>,
+  pub updated_at: Option<String>,
+}
+
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct NoteDetail {
   pub note: Note,

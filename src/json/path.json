@@ -41,5 +41,11 @@
     "name":"conceptsSearch",
     "path":"/conceptsSearch",
     "description":"コンセプトサーチ"
+  },
+  {
+    "id":"path9",
+    "name":"viewAndroidMemo",
+    "path":"/viewAndroidMemo",
+    "description":"Androidメモ表示ページ"
   }
 ]

@@ -9,6 +9,7 @@ import MemoMaker from "./pages/MemoMaker";
 import WindowChecker from "./pages/WindowChecker";
 import ConceptSearch from "./pages/ConceptSearch";
 import Schedule from "./pages/Schedule";
+import ViewAndroidMemo from "./pages/ViewAndroidMemo";
 
 import MenuLsitSidebar from "./components/modifier/MenuLsitSidebar";
 import Footer from "./components/core/Footer";
@@ -35,6 +36,7 @@ function App() {
           {viewtype === "windowchecker" && <WindowChecker /> }
           {viewtype === "conceptsSearch" && <ConceptSearch /> }
           {viewtype === "schedule" && <Schedule /> }
+          {viewtype === "viewAndroidMemo" && <ViewAndroidMemo /> }
         </main>
         <Footer />
       </div>
