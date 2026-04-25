@@ -11,34 +11,38 @@ import ConceptSearch from "./pages/ConceptSearch";
 import Schedule from "./pages/Schedule";
 import ViewAndroidMemo from "./pages/ViewAndroidMemo";
 
-import MenuLsitSidebar from "./components/modifier/MenuLsitSidebar";
+import MenuLsit from "./components/modifier/MenuLsit";
 import Footer from "./components/core/Footer";
+import HoverFollow from "./components/modifier/HoverFollow";
 
 import { DataProvider } from "./store/dataBox";
 import { NotesProvider } from "./store/note";
+import { useUIContext } from "./store/ui";
 
 function App() {
-  const [viewtype, viewTypeSet] = useState("home");
+  const { state } = useUIContext();
+  const viewtype = state.viewtype;
 
   return (
     <BrowserRouter>
-      <div className="div-outer">
-        <MenuLsitSidebar
-          activePath={viewtype}
-          nextPageAction={(path:string) => viewTypeSet(path)}
-        />
-        <main className="main">
-          {viewtype === "home" && <DataProvider><Home /></DataProvider> }
-          {viewtype === "structsmake" && <Structsmake /> }
-          {viewtype === "tokenizer" && <Tokenizer /> }
-          {viewtype === "memolinker" && <NotesProvider><MemoLinker /></NotesProvider> }
-          {viewtype === "memo" && <NotesProvider><MemoMaker /></NotesProvider> }
-          {viewtype === "windowchecker" && <WindowChecker /> }
-          {viewtype === "conceptsSearch" && <ConceptSearch /> }
-          {viewtype === "schedule" && <Schedule /> }
-          {viewtype === "viewAndroidMemo" && <ViewAndroidMemo /> }
-        </main>
-        <Footer />
+      <div className="div-outer">{viewtype}
+          <HoverFollow
+            className="app-main-follow" glowClassName="app-main-follow__orb"
+          >
+            <main className="main">
+            {viewtype === "home" && <DataProvider><Home /></DataProvider> }
+            {viewtype === "structsmake" && <Structsmake /> }
+            {viewtype === "tokenizer" && <Tokenizer /> }
+            {viewtype === "memolinker" && <NotesProvider><MemoLinker /></NotesProvider> }
+            {viewtype === "memo" && <NotesProvider><MemoMaker /></NotesProvider> }
+            {viewtype === "windowchecker" && <WindowChecker /> }
+            {viewtype === "conceptsSearch" && <ConceptSearch /> }
+            {viewtype === "schedule" && <Schedule /> }
+            {viewtype === "viewAndroidMemo" && <ViewAndroidMemo /> }
+            </main>
+            <MenuLsit />
+          </HoverFollow>
+          <Footer />
       </div>
     </BrowserRouter>
   );

@@ -5,6 +5,8 @@ import PreviewWindow from './window/PreviewWindow';
 import ViewScheduleWindow from './window/ViewScheduleWindow';
 import "./styles.css";
 import "./styles/dialog.css";
+import "./styles/follow.css";
+import { UIProvider } from "./store/ui";
 
 const windowLabel = (window as any).__TAURI_WINDOW_LABEL__;
 
@@ -15,7 +17,7 @@ const renderSelectDom = () => {
     case 'preview':
       return <PreviewWindow />;
     default:
-      return <App />;
+      return <UIProvider><App /></UIProvider>;
   }
 } 
 

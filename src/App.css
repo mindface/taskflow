@@ -44,11 +44,25 @@ body {
   margin: 0;
   padding: 16px;
   font-size: 14px;
-  background-color: #fff;
+  background:
+    radial-gradient(circle at top, rgba(54, 139, 242, 0.12), transparent 38%),
+    linear-gradient(180deg, #f7fbff 0%, #ffffff 100%);
   color: #333;
+  overflow-x: hidden;
 }
+.div-outer {
+  position: relative;
+  min-height: calc(100vh - 32px);
+}
+
 .main {
   min-height: min(100vh, 650px);
+  transition: transform 200ms ease, opacity 200ms ease;
+}
+
+.main-compact {
+  transform: scale(0.985);
+  opacity: 0.92;
 }
 .row {
   display: flex;
@@ -113,4 +127,10 @@ button {
 }
 img {
   max-width: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hover-follow__glow {
+    transition: none;
+  }
 }
