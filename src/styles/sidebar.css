@@ -1,4 +1,4 @@
-
+.mainbar,
 .sidebar {
   position: fixed;
   top: 0;
@@ -13,14 +13,26 @@
   z-index: 1;
 }
 
-.sidebar-outer {
+.mainbar {
+  right: 0;
+  bottom: 0;
+  max-height: 80%;
+  margin: auto;
+  transform: scale(0);
+}
+
+.sidebar-outer , .mainbar-outer {
   position: relative;
 }
 
+.mainbar-on .mainbar {
+  transform: scale(1);
+}
 .sidebar-on .sidebar {
   transform: translate(0,0);
-  transform: translate(0,0);
 }
+
+.mainbar-on .mainbar-on-overlay,
 .sidebar-on .sidebar-on-overlay {
   position: fixed;
   content: "";
