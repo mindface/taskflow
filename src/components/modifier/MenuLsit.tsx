@@ -22,7 +22,7 @@ export default function MenuLsitDialog() {
   return (
     <div className={ switcher ? "mainbar-outer mainbar-on p-4" : "sidebar-outer p-4" }>
       <div className="mainbar-on-overlay"></div>
-      <div className="mainbar relative">
+      <div className="mainbar relative rounded-lg bg-white shadow-lg p-4">
         <div>
           <ul className="list">
             {paths.map((item,k) => <li
@@ -34,7 +34,7 @@ export default function MenuLsitDialog() {
               </li>
             )}
           </ul>
-          <div className="absolute left-0 bottom-0">
+          <div className="absolute left-0 bottom-5 w-full">
             <ImageDialog />
           </div>
         </div>

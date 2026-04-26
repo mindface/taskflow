@@ -3,8 +3,6 @@ import { useState } from "react";
 
 import { useUIContext } from "../../store/ui";
 
-import MenuLsit from "./MenuLsit";
-
 type Props = PropsWithChildren<{
   className?: string;
   glowClassName?: string;
