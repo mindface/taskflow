@@ -47,5 +47,11 @@
     "name":"viewAndroidMemo",
     "path":"/viewAndroidMemo",
     "description":"Androidメモ表示ページ"
+  },
+  {
+    "id":"path10",
+    "name":"llmMemo",
+    "path":"/llmMemo",
+    "description":"LLMメモページ"
   }
 ]

@@ -1,4 +1,5 @@
 pub mod file_operations;
+pub mod llm_memo;
 pub mod preview;
 pub mod sql_memo;
 pub mod view_schedule_window;

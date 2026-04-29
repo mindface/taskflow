@@ -10,6 +10,7 @@ import WindowChecker from "./pages/WindowChecker";
 import ConceptSearch from "./pages/ConceptSearch";
 import Schedule from "./pages/Schedule";
 import ViewAndroidMemo from "./pages/ViewAndroidMemo";
+import LlmMemoPage from "./pages/LlmMemo";
 
 import MenuLsit from "./components/modifier/MenuLsit";
 import Footer from "./components/core/Footer";
@@ -39,6 +40,7 @@ function App() {
             {viewtype === "conceptsSearch" && <ConceptSearch /> }
             {viewtype === "schedule" && <Schedule /> }
             {viewtype === "viewAndroidMemo" && <ViewAndroidMemo /> }
+            {viewtype === "llmMemo" && <LlmMemoPage /> }
             </main>
             <MenuLsit />
           </HoverFollow>
