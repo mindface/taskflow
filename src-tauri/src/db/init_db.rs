@@ -19,6 +19,16 @@ pub fn init_db() -> Result<String, String> {
             updated_at TEXT NOT NULL
         );
 
+        CREATE TABLE IF NOT EXISTS llm_memos (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            title TEXT NOT NULL,
+            content TEXT NOT NULL,
+            created_at TEXT NOT NULL,
+            updated_at TEXT NOT NULL,
+            tag TEXT NOT NULL,
+            role TEXT NOT NULL
+        );
+
         CREATE TABLE IF NOT EXISTS concepts (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL UNIQUE,
