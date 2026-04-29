@@ -23,9 +23,8 @@ export default function ScheduleDialog({ schedule }: Props) {
 
   const loadSchedule = async () => {
     if(scheduleData) {
-      console.log(scheduleData)
-      const res = await invoke("get_schedule_detail", { scheduleid: scheduleData.id })
-      // setScheduleData(res))
+      const res = await invoke<Schedule>("get_schedule_detail", { scheduleid: scheduleData.id })
+      setScheduleData(res);
     }
   }
 
@@ -79,19 +78,24 @@ export default function ScheduleDialog({ schedule }: Props) {
                 <div className="text p-2">{item.detail}</div>
               </div>
               <div className="flex">
-                <div className="p-2">開始: {formatDateTime(item.starttime,"YYYY/MM/DD HH:mm:ss")}</div>
-                <div className="p-2">終了: {formatDateTime(item.endtime,"YYYY/MM/DD HH:mm:ss")}</div>
+                <div className="p-2">開始: {formatDateTime(item.starttime,"YYYY/MM/DD HH:mm")}</div>
+                <div className="p-2">終了: {formatDateTime(item.endtime,"YYYY/MM/DD HH:mm")}</div>
               </div>
-              <div className="actions flex gap-2">
-                <div className="flex">
-                  {item.run_starttime && formatUnixDateTime(item.run_starttime,"YYYY/MM/DD HH:mm:ss")} | 
-                  <button
-                    onClick={() => startTaskAction(item.id)}
-                    className="btn">start
-                  </button>
+              <div className="actions gap-2">
+                <div className="">
+                  <div className="p-1 flex">
+                    <p className="p-2">
+                      {item.run_starttime && formatDateTime(item.run_starttime,"YYYY/MM/DD HH:mm", true)}</p>
+                    <button
+                      onClick={() => startTaskAction(item.id)}
+                      className="btn">start
+                    </button>
+                  </div>
                 </div>
-                <div className="flex">
-                  {item.run_endtime && formatUnixDateTime(item.run_endtime,"YYYY/MM/DD HH:mm:ss")} | 
+                <div className="p-1 flex">
+                  <p className="p-2">
+                    {item.run_endtime && formatDateTime(item.run_endtime,"YYYY/MM/DD HH:mm", true)}
+                  </p>
                   <button
                     onClick={() => endTaskAction(item.id)}
                     className="btn">end
@@ -99,7 +103,7 @@ export default function ScheduleDialog({ schedule }: Props) {
                 </div>
               </div>
               <div className="total-time p-4">
-                {changeTime(item.elapsed_time)} 時間 | 
+                タスクの経過時間: {changeTime(item.elapsed_time)} 
               </div>
             </div>
             )}

@@ -54,6 +54,7 @@ pub fn update_start_task(scheduletaskid: i64) -> Result<(), String> {
   let conn = get_conn()?;
 
   let now = chrono::Utc::now().timestamp();
+  println!("Update start task: id={}, starttime={}", scheduletaskid, now);
   conn
     .execute(
       "
