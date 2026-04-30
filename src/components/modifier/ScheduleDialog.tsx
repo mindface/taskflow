@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Schedule } from "../../models/Schedule"
 import CoreDialog from "../core/CoreDialog";
-import { formatDateTime, formatUnixDateTime } from "../../utils/dayApi";
+import { formatDateTime } from "../../utils/dayApi";
 import { invoke } from "@tauri-apps/api/core";
 
 
@@ -82,7 +82,7 @@ export default function ScheduleDialog({ schedule }: Props) {
                 <div className="p-2">終了: {formatDateTime(item.endtime,"YYYY/MM/DD HH:mm")}</div>
               </div>
               <div className="actions gap-2">
-                <div className="">
+                <div>
                   <div className="p-1 flex">
                     <p className="p-2">
                       {item.run_starttime && formatDateTime(item.run_starttime,"YYYY/MM/DD HH:mm", true)}</p>
