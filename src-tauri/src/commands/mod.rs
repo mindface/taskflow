@@ -8,4 +8,4 @@ pub mod concept;
 pub mod firestore;
 pub mod schedule;
 pub mod search;
-pub mod llm_memo;
+pub mod search_memo;
