@@ -51,13 +51,13 @@ pub async fn andoroid_update_note(note: AndroidNote) -> Result<(), String> {
 
   // Firestore ドキュメントの更新
   db.fluent()
-      .update()
-      .in_col("notes")
-      .document_id(&update_data["id"].as_str().unwrap_or(""))
-      .object(&update_data)
-      .execute::<()>()
-      .await
-      .map_err(|e| format!("Firestore Update Error: {}", e))?;
+    .update()
+    .in_col("notes")
+    .document_id(&update_data["id"].as_str().unwrap_or(""))
+    .object(&update_data)
+    .execute::<()>()
+    .await
+    .map_err(|e| format!("Firestore Update Error: {}", e))?;
 
   Ok(())
 }
