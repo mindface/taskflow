@@ -1,5 +1,5 @@
 use crate::db::db_core::get_conn;
-use crate::models::llmMemo::LlmMemo;
+use crate::models::llm_memo::LlmMemo;
 use rusqlite::params;
 
 #[tauri::command]

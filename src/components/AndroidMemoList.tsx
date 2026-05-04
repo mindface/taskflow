@@ -1,31 +1,47 @@
 import { useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { AndroidNote } from "../models/Notes";
-import MemoDialog from "./modifier/MemoDialog";
+import AndroidMemoDialog from "./modifier/AndroidMemoDialog";
 
 const AndroidMemoList = () => {
   const [notes, setNotes] = useState<AndroidNote[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchNotes = async () => {
-      try {
-        setLoading(true);
-        // Rust側のコマンドを呼び出し
-        const result = await invoke<AndroidNote[]>("list_android_notes");
-        setNotes(result);
-        setError(null);
-      } catch (err) {
-        console.error("Failed to fetch notes:", err);
-        setError(err as string);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchNotes = async () => {
+    try {
+      setLoading(true);
+      // Rust側のコマンドを呼び出し
+      const result = await invoke<AndroidNote[]>("andoroid_list_note");
+      setNotes(result);
+      console.log("Fetched Notes:", result);
+      setError(null);
+    } catch (err) {
+      console.error("Failed to fetch notes:", err);
+      setError(err as string);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    fetchNotes();
-  }, []);
+  const updateNote = (updatedNote: AndroidNote) => {
+    setNotes((prevNotes) =>
+      prevNotes.map((note) => (note.id === updatedNote.id ? updatedNote : note))
+    );
+  }
+
+  const updateNoteAction = async (note: AndroidNote) => {
+    try {
+      const updatedNote = await invoke<AndroidNote>("update_android_note", {
+        id: note.id,
+        title: note.title,
+        content: note.content,
+      });
+      updateNote(updatedNote);
+    } catch (err) {
+      console.error("Failed to update note:", err);
+    }
+  }
 
   const textSettngs = (text: string) => {
     if (text.length > 100) {
@@ -34,12 +50,16 @@ const AndroidMemoList = () => {
     return text;
   }
 
+  useEffect(() => {
+    fetchNotes();
+  }, []);
+
   if (loading) return <div className="p-4 text-center">読み込み中...</div>;
   if (error) return <div className="p-4 text-red-500 text-center">エラー: {error}</div>;
 
   return (
     <div className="p-4">
-      <h1 className="text-2xl font-bold mb-6 text-gray-800">Android メモ一覧 (Firestore)</h1>
+      <h3 className="text-2xl font-bold mb-6 text-gray-800">Android メモ一覧 (Firestore)</h3>
       {notes.length === 0 ? (
         <p className="text-gray-500">メモが見つかりませんでした。</p>
       ) : (
@@ -53,7 +73,9 @@ const AndroidMemoList = () => {
               <p className="text-gray-600 text-sm mb-4 line-clamp-3">
                 {textSettngs(note.content) || "内容なし"}
               </p>
-              <MemoDialog note={note} />
+              <AndroidMemoDialog
+                note={note}
+              />
             </div>
           ))}
         </div>

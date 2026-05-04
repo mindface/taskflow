@@ -9,6 +9,6 @@ This template should help get you started developing with Tauri, React and Types
 cargo tauri dev 
 cargo tauri build --target aarch64-apple-darwin
 
-export GOOGLE_APPLICATION_CREDENTIALS="/Users/asdfghjkl/program/rust/taskflow/taskapp-256390a262.json"
+export GOOGLE_APPLICATION_CREDENTIALS="/Users/asdfghjkl/program/rust/taskflow/mymodular-256390a262.json"
 
-export GOOGLE_APPLICATION_CREDENTIALS="./taskapp-256390a262.json"
+export GOOGLE_APPLICATION_CREDENTIALS="./mymodular-256390a262.json"
