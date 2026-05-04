@@ -199,7 +199,6 @@ export default function ScheduleForm({ stateSchedule, loadListSchedule }: Props)
             onChange={(e)=>setTitle(e.target.value)}
           />
         </div>
-
         <div className="pb-2">
           <textarea
             className="border p-2 w-full"

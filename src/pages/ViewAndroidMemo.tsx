@@ -1,12 +1,4 @@
 import AndroidMemoList from "../components/AndroidMemoList";
-interface AndroidNote {
-  id: string;
-  userId: string;
-  title: string;
-  content: string;
-  created_at: string;
-  updated_at: string;
-}
 
 const ViewAndroidMemo: React.FC = () => {
   return (

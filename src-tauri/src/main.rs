@@ -83,7 +83,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
       commands::schedule::get_schedule::get_schedule_detail_list,
       commands::schedule::list_schedule_task::list_schedule_task,
       commands::schedule::update_list_schedule_task::update_list_schedule_task,
-      commands::firestore::andoroid_notes::list_android_notes,
+      commands::firestore::andoroid_list_note::andoroid_list_note,
+      commands::firestore::andoroid_update_note::andoroid_update_note,
     ])
     .run(tauri::generate_context!())
     .expect("error while running tauri application");
