@@ -30,10 +30,10 @@ export default function LlmMemoPage() {
   async function loadMemos() {
     setLoading(true);
     try {
-      const result = await invoke<LlmMemo[]>("list_llm_memos");
+      const result = await invoke<LlmMemo[]>("list_llm_memo");
       setMemos(result ?? []);
     } catch (error) {
-      console.error("list_llm_memos error", error);
+      console.error("list_llm_memo error", error);
     } finally {
       setLoading(false);
     }
@@ -244,7 +244,7 @@ export default function LlmMemoPage() {
               {filteredMemos.map((memo) => (
                 <li
                   key={memo.id}
-                  className="sidebar-item relative p-2 border-b border-gray-200"
+                  className="sidebar-item relative p-4 border-b border-gray-200"
                 >
                   <div className="flex justify-between items-center pb-2">
                     <strong
