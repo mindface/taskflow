@@ -2,6 +2,7 @@ import { invoke } from "@tauri-apps/api/core";
 import { useEffect, useState } from "react";
 import type { LlmMemo } from "../models/LlmMemo";
 import CoreDialog from "../components/core/CoreDialog";
+import { useUIContext } from "../store/ui";
 
 const initialForm = {
   title: "",
@@ -11,6 +12,7 @@ const initialForm = {
 };
 
 export default function LlmMemoPage() {
+  const { dispatch } = useUIContext();
   const [memos, setMemos] = useState<LlmMemo[]>([]);
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [title, setTitle] = useState(initialForm.title);
@@ -26,6 +28,22 @@ export default function LlmMemoPage() {
   const [editContent, setEditContent] = useState("");
   const [editTag, setEditTag] = useState("");
   const [editRole, setEditRole] = useState("");
+
+  useEffect(() => {
+    dispatch({
+      type: "SET_INPUT_CHECK_VALUE",
+      payload: {
+        value: `${title}${content}${tag}${role}`,
+        label: "LLMメモの入力値",
+      },
+    });
+  }, [content, dispatch, role, tag, title]);
+
+  useEffect(() => {
+    return () => {
+      dispatch({ type: "CLEAR_INPUT_CHECK_VALUE" });
+    };
+  }, [dispatch]);
 
   async function loadMemos() {
     setLoading(true);
@@ -159,6 +177,7 @@ export default function LlmMemoPage() {
   useEffect(() => {
     void loadMemos();
   }, []);
+
 
   const filteredMemos = memos.filter((memo) => {
     const tagMatched =

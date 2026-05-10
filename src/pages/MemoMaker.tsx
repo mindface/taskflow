@@ -9,6 +9,7 @@ import { useWindowSync } from "../hooks/useWindowSync";
 
 import remarkGfm from "remark-gfm";
 import { useNotes } from "../store/note";
+import { useUIContext } from "../store/ui";
 
 import EditIcon from "../assets/edit.svg";
 import PreviewIcon from "../assets/preview.svg";
@@ -21,6 +22,7 @@ import { open } from "@tauri-apps/plugin-dialog";
 
 export default function MemoMaker() {
   const { loadNotes, notes } = useNotes();
+  const { dispatch } = useUIContext();
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -28,6 +30,22 @@ export default function MemoMaker() {
   const [isOpen,isOpenSet] = useState(false);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const { syncContent, syncNoteData, openPreview } = useWindowSync();
+
+  useEffect(() => {
+    dispatch({
+      type: "SET_INPUT_CHECK_VALUE",
+      payload: {
+        value: `${title}${content}`,
+        label: "メモのタイトルまたは本文",
+      },
+    });
+  }, [content, dispatch, title]);
+
+  useEffect(() => {
+    return () => {
+      dispatch({ type: "CLEAR_INPUT_CHECK_VALUE" });
+    };
+  }, [dispatch]);
 
   // async function loadNotes() {
   //   try {

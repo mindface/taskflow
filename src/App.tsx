@@ -1,4 +1,3 @@
-import { useState } from "react";
 import "./App.css";
 import { BrowserRouter } from "react-router-dom";
 import Home from "./pages/Home";
@@ -15,13 +14,14 @@ import LlmMemoPage from "./pages/LlmMemo";
 import MenuLsit from "./components/modifier/MenuLsit";
 import Footer from "./components/core/Footer";
 import HoverFollow from "./components/modifier/HoverFollow";
+import CoreDialog from "./components/core/CoreDialog";
 
 import { DataProvider } from "./store/dataBox";
 import { NotesProvider } from "./store/note";
 import { useUIContext } from "./store/ui";
 
 function App() {
-  const { state } = useUIContext();
+  const { state, dispatch } = useUIContext();
   const viewtype = state.viewtype;
 
   return (
@@ -45,6 +45,25 @@ function App() {
             <MenuLsit />
           </HoverFollow>
           <Footer />
+          <CoreDialog
+            isOpen={state.isInputConfirmOpen}
+            onClose={() => dispatch({ type: "CANCEL_VIEWTYPE_CHANGE" })}
+            title="入力値の確認"
+          >
+            <div className="p-2">
+              <div className="pb-4">
+                {state.inputCheckLabel}が入力されています。ページを移動してよろしいですか？
+              </div>
+              <div className="flex gap-4">
+                <button onClick={() => dispatch({ type: "CONFIRM_VIEWTYPE_CHANGE" })}>
+                  移動する
+                </button>
+                <button onClick={() => dispatch({ type: "CANCEL_VIEWTYPE_CHANGE" })}>
+                  キャンセル
+                </button>
+              </div>
+            </div>
+          </CoreDialog>
       </div>
     </BrowserRouter>
   );
