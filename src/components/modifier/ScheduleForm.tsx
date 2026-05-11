@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react"
 import { invoke } from "@tauri-apps/api/core"
-import { inputCheckered } from "../utils/inputCheckered";
-import { Schedule, ScheduleTask } from "../models/Schedule"
-import ScheduleTaskItem from "./modifier/ScheduleTaskItem";
-import { formatDateTime } from "../utils/dayApi";
+import { inputCheckered } from "../../utils/inputCheckered";
+import { Schedule, ScheduleTask } from "../../models/Schedule"
+import ScheduleTaskItem from "./ScheduleTaskItem";
+import { formatDateTime } from "../../utils/dayApi";
+import { useUIContext } from "../../store/ui";
 
 
 type Props = {
@@ -13,6 +14,7 @@ type Props = {
 
 export default function ScheduleForm({ stateSchedule, loadListSchedule }: Props) {
   const { inputDateCheaker } = inputCheckered()
+  const { state, dispatch } = useUIContext();
   const [makeSwitcher, setMakeSwitcher] = useState(false)
   const [scheduleId, setScheduleId] = useState<number | null>(null)
 
@@ -28,6 +30,33 @@ export default function ScheduleForm({ stateSchedule, loadListSchedule }: Props)
   const [taskStart, setTaskStart] = useState("")
   const [taskEnd, setTaskEnd] = useState("")
   const [taskDate, setTaskDate] = useState("")
+
+  useEffect(() => {
+    console.log(state)
+    dispatch({
+      type: "SET_INPUT_CHECK_VALUE",
+      payload: {
+        value: `${title}${description}`,
+        label: "スケジュールのタイトルまたは説明",
+      },
+    });
+  }, [description, dispatch, title]);
+
+  useEffect(() => {
+    dispatch({
+      type: "SET_INPUT_CHECK_VALUE",
+      payload: {
+        value: `${taskTitle}${taskDetail}`,
+        label: "スケジュールタスクのタイトルまたは詳細",
+      },
+    });
+  }, [taskDetail, dispatch, taskTitle]);
+
+  useEffect(() => {
+    return () => {
+      dispatch({ type: "CLEAR_INPUT_CHECK_VALUE" });
+    };
+  }, [dispatch]);
 
   useEffect(() => {
     if(stateSchedule) {
@@ -81,8 +110,9 @@ export default function ScheduleForm({ stateSchedule, loadListSchedule }: Props)
     if(!taskStartCheck || !taskEndCheck) return
 
     setTasks([...tasks, newTask])
-
     resetFromHandler("task")
+    dispatch({ type: "SET_SAVE_CONFIRM_OPEN", payload: false });
+    
   }
 
   const switchHander = (switchValue: boolean) => {
@@ -157,6 +187,7 @@ export default function ScheduleForm({ stateSchedule, loadListSchedule }: Props)
         await addSetHandler()
       }
       loadListSchedule()
+      dispatch({ type: "SET_SAVE_CONFIRM_OPEN", payload: true });
     } catch (e) {
       // TODO throwの調整をする
       console.error(e)

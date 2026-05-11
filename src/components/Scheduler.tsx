@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
-import ScheduleForm from "./ScheduleForm";
-import ScheduleList from "./ScheduleList";
-import type { ScheduleListHandle } from "./ScheduleList";
+import ScheduleForm from "./modifier/ScheduleForm";
+import ScheduleList from "./modifier/ScheduleList";
+import type { ScheduleListHandle } from "./modifier/ScheduleList";
 import { Schedule } from "../models/Schedule"
 
 export default function Scheduler() {

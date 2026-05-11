@@ -1,52 +1,66 @@
-import { useState } from "react";
 import "./App.css";
-import { BrowserRouter } from "react-router-dom";
-import Home from "./pages/Home";
-import Structsmake from "./pages/Structsmake";
-import Tokenizer from "./pages/Tokenizer";
-import MemoLinker from "./pages/MemoLinker";
-import MemoMaker from "./pages/MemoMaker";
-import WindowChecker from "./pages/WindowChecker";
-import ConceptSearch from "./pages/ConceptSearch";
-import Schedule from "./pages/Schedule";
-import ViewAndroidMemo from "./pages/ViewAndroidMemo";
-import LlmMemoPage from "./pages/LlmMemo";
+import { Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
+import { useEffect } from "react";
 
 import MenuLsit from "./components/modifier/MenuLsit";
 import Footer from "./components/core/Footer";
 import HoverFollow from "./components/modifier/HoverFollow";
+import CoreDialog from "./components/core/CoreDialog";
 
-import { DataProvider } from "./store/dataBox";
-import { NotesProvider } from "./store/note";
 import { useUIContext } from "./store/ui";
+import { pathToViewType, viewTypeToPath } from "./utils/pageRoutes";
 
 function App() {
-  const { state } = useUIContext();
+  const { state, dispatch } = useUIContext();
+  const navigate = useNavigate();
+  const pathname = useRouterState({
+    select: (routerState) => routerState.location.pathname,
+  });
   const viewtype = state.viewtype;
 
+  useEffect(() => {
+    dispatch({ type: "SET_VIEWTYPE", payload: pathToViewType(pathname) });
+  }, [dispatch, pathname]);
+
+  const confirmViewtypeChange = () => {
+    const pendingViewtype = state.pendingViewtype;
+    dispatch({ type: "CONFIRM_VIEWTYPE_CHANGE" });
+    if (pendingViewtype) {
+      void navigate({ to: viewTypeToPath(pendingViewtype) });
+    }
+  };
+
   return (
-    <BrowserRouter>
       <div className="div-outer">{viewtype}
           <HoverFollow
             className="app-main-follow" glowClassName="app-main-follow__orb"
           >
             <main className="main">
-            {viewtype === "home" && <DataProvider><Home /></DataProvider> }
-            {viewtype === "structsmake" && <Structsmake /> }
-            {viewtype === "tokenizer" && <Tokenizer /> }
-            {viewtype === "memolinker" && <NotesProvider><MemoLinker /></NotesProvider> }
-            {viewtype === "memo" && <NotesProvider><MemoMaker /></NotesProvider> }
-            {viewtype === "windowchecker" && <WindowChecker /> }
-            {viewtype === "conceptsSearch" && <ConceptSearch /> }
-            {viewtype === "schedule" && <Schedule /> }
-            {viewtype === "viewAndroidMemo" && <ViewAndroidMemo /> }
-            {viewtype === "llmMemo" && <LlmMemoPage /> }
+              <Outlet />
             </main>
             <MenuLsit />
           </HoverFollow>
           <Footer />
+          <CoreDialog
+            isOpen={state.isInputConfirmOpen}
+            onClose={() => dispatch({ type: "CANCEL_VIEWTYPE_CHANGE" })}
+            title="入力値の確認"
+          >
+            <div className="p-2">
+              <div className="pb-4">
+                {state.inputCheckLabel}が入力されています。ページを移動してよろしいですか？
+              </div>
+              <div className="flex gap-4">
+                <button onClick={confirmViewtypeChange}>
+                  移動する
+                </button>
+                <button onClick={() => dispatch({ type: "CANCEL_VIEWTYPE_CHANGE" })}>
+                  キャンセル
+                </button>
+              </div>
+            </div>
+          </CoreDialog>
       </div>
-    </BrowserRouter>
   );
 }
 
