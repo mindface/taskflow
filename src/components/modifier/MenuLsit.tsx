@@ -1,9 +1,12 @@
 import paths from "../../json/path.json";
 import ImageDialog from "./ImageDialog";
 import { useUIContext } from "../../store/ui";
+import { useNavigate } from "@tanstack/react-router";
+import { viewTypeToPath } from "../../utils/pageRoutes";
 
 export default function MenuLsitDialog() {
   const { state, dispatch } = useUIContext();
+  const navigate = useNavigate();
   const { viewtype: activePath, isSidebarOpen: switcher } = state;
 
   const switcherAction = () => {
@@ -13,10 +16,19 @@ export default function MenuLsitDialog() {
   };
 
   const pageAction = (path: string) => {
+    const shouldConfirm =
+      activePath !== path &&
+      (!state.isSaveConfirmOpen ||
+        (state.inputCheckEnabled && state.inputCheckValue.trim() !== ""));
+
     dispatch({
-      type: "SET_VIEWTYPE",
+      type: "REQUEST_VIEWTYPE_CHANGE",
       payload: path,
     });
+
+    if (!shouldConfirm) {
+      void navigate({ to: viewTypeToPath(path) });
+    }
   };
 
   return (

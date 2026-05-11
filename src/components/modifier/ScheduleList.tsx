@@ -1,7 +1,7 @@
 import { forwardRef, useImperativeHandle, useEffect, useState } from "react"
 import { invoke } from "@tauri-apps/api/core"
-import { Schedule } from "../models/Schedule"
-import ScheduleItem from "./modifier/ScheduleItem";
+import { Schedule } from "../../models/Schedule"
+import ScheduleItem from "./ScheduleItem";
 
 export interface ScheduleListHandle {
   loadSchedules: () => void;

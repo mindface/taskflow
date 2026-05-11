@@ -8,6 +8,7 @@ type UIState = {
   inputCheckLabel: string;
   inputCheckEnabled: boolean;
   isInputConfirmOpen: boolean;
+  isSaveConfirmOpen: boolean;
   pendingViewtype: string | null;
 };
 
@@ -24,6 +25,7 @@ type UIAction =
         enabled?: boolean;
       };
     }
+  | { type: "SET_SAVE_CONFIRM_OPEN"; payload: boolean }
   | { type: "CLEAR_INPUT_CHECK_VALUE" }
   | { type: "TOGGLE_SIDEBAR" }
   | { type: "SET_SIDEBAR_OPEN"; payload: boolean };
@@ -35,7 +37,9 @@ const initialState: UIState = {
   inputCheckLabel: "入力値",
   inputCheckEnabled: false,
   isInputConfirmOpen: false,
+  isSaveConfirmOpen: true,
   pendingViewtype: null,
+  
 };
 
 function reducer(state: UIState, action: UIAction): UIState {
@@ -50,7 +54,9 @@ function reducer(state: UIState, action: UIAction): UIState {
         return state;
       }
 
-      if (state.inputCheckEnabled && state.inputCheckValue.trim() !== "") {
+      if (
+        !state.isSaveConfirmOpen ||
+        (state.inputCheckEnabled && state.inputCheckValue.trim() !== "")) {
         return {
           ...state,
           isInputConfirmOpen: true,
@@ -95,12 +101,18 @@ function reducer(state: UIState, action: UIAction): UIState {
         inputCheckLabel: inputCheckLabel,
         inputCheckEnabled: enabled ?? true,
       };
+    case "SET_SAVE_CONFIRM_OPEN":
+      return {
+        ...state,
+        isSaveConfirmOpen: action.payload,
+      };
     case "CLEAR_INPUT_CHECK_VALUE":
       return {
         ...state,
         inputCheckValue: "none",
         inputCheckLabel: "入力値",
         inputCheckEnabled: false,
+        isSaveConfirmOpen: true,
       };
     case "TOGGLE_SIDEBAR":
       return {
