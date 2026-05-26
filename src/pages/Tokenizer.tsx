@@ -26,13 +26,15 @@ function Tokenizer() {
   return (
     <div className="main-box">
       <div className="main-title">形態素解析</div>
-      <main className="main">
+      <main className="main p-4">
+        <div className="pb-4">
         <a href="https://zenn.dev/furharu/articles/ece72dac5feffe">github</a>
-        <input type="text"
-          value={text}
-          onChange={(e) => textSet(e.target.value)}
-        />
-        <button onClick={loadFile}>loadFile</button>
+          <input type="text"
+            value={text}
+            onChange={(e) => textSet(e.target.value)}
+          />
+          <button onClick={loadFile}>loadFile</button>
+        </div>
         <div className="list-box">
         <button onClick={fetchFiles}>Load Files</button>
         <ul>
