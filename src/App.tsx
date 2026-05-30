@@ -20,7 +20,7 @@ function App() {
 
   useEffect(() => {
     dispatch({ type: "SET_VIEWTYPE", payload: pathToViewType(pathname) });
-  }, [dispatch, pathname]);
+  }, [dispatch, pathname,viewtype]);
 
   const confirmViewtypeChange = () => {
     const pendingViewtype = state.pendingViewtype;

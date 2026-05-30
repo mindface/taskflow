@@ -48,7 +48,7 @@ export default function LlmMemoPage() {
   async function loadMemos() {
     setLoading(true);
     try {
-      const result = await invoke<LlmMemo[]>("list_llm_memos");
+      const result = await invoke<LlmMemo[]>("list_llm_memo");
       setMemos(result ?? []);
     } catch (error) {
       console.error("list_llm_memos error", error);
@@ -263,15 +263,17 @@ export default function LlmMemoPage() {
               {filteredMemos.map((memo) => (
                 <li
                   key={memo.id}
-                  className="sidebar-item relative p-2 border-b border-gray-200"
+                  className="sidebar-item border rounded mb-4 relative p-2 bg-white border-b border-gray-200"
                 >
                   <div className="flex justify-between items-center pb-2">
-                    <strong
-                      className="inline-block hover"
-                      onClick={() => selectMemo(memo.id)}
-                    >
-                      {memo.title}
-                    </strong>
+                    <p className="pb-2 border-b border-gray-400">
+                      <strong
+                        className="inline-block hover"
+                        onClick={() => selectMemo(memo.id)}
+                      >
+                        {memo.title}
+                      </strong>
+                    </p>
                     <small>{memo.updated_at}</small>
                   </div>
                   <div className="pb-2">tag: {memo.tag || "-"}</div>
