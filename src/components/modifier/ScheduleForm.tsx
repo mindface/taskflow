@@ -3,6 +3,7 @@ import { invoke } from "@tauri-apps/api/core"
 import { inputCheckered } from "../../utils/inputCheckered";
 import { Schedule, ScheduleTask } from "../../models/Schedule"
 import ScheduleTaskItem from "./ScheduleTaskItem";
+import DateTimePicker from "./base/DateTimePicker";
 import { formatDateTime } from "../../utils/dayApi";
 import { useUIContext } from "../../store/ui";
 
@@ -277,6 +278,18 @@ export default function ScheduleForm({ stateSchedule, loadListSchedule }: Props)
             <div className="pb-4 flex gap-2">
               <div className="input-box">
                 開始 : 
+                <DateTimePicker
+                  value={new Date(taskStart)}
+                  onChange={(date) => {
+                    if (date) {
+                      setTaskStart(date.toISOString());
+                    }
+                  }}
+                />
+              </div>
+
+              <div className="input-box">
+
                 <input
                   type="datetime-local"
                   className="border p-2"
