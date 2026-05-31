@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { Note, NoteData } from "../models/Notes";
-import MemoMakerDialog from "../components/modifier/MemoMakerDialog";
+import MemoList from "../components/modifier/MemoList";
 
 import Dialog from "../components/core/CoreDialog";
 import ReactMarkdown from "react-markdown";
@@ -46,6 +46,10 @@ export default function MemoMaker() {
       dispatch({ type: "CLEAR_INPUT_CHECK_VALUE" });
     };
   }, [dispatch]);
+
+  useEffect(() => {
+    loadNotes();
+  }, []);
 
   // async function loadNotes() {
   //   try {
@@ -155,74 +159,59 @@ export default function MemoMaker() {
   };
 
   return (
-    <div className="p-4">
-      {/* <MemoMakerSidebar
-        notes={notes}
-        onSelectNote={selectNote}
-        onCreateNote={newNote}
-        onDeleteNote={removeNote}
-        onLoadNotes={loadNotes}
-        onExportNotes={exportNotes}
-        onImportNotes={importsNotes}
-      /> */}
-      <MemoMakerDialog
-        notes={notes}
-        onSelectNote={selectNote}
-        onCreateNote={newNote}
-        onDeleteNote={removeNote}
-        onLoadNotes={loadNotes}
-        onExportNotes={exportNotes}
-        onImportNotes={importsNotes}
-      />
+    <div className="memo-maker">
       <section>
-        <div className="pb-2">
-          <div className="pb-2 flex gap-4">
-            <span className="flex-1 inline-block">
-              <input className="w-100 mr-1" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="タイトル" />
-            </span>
-            <button onClick={selectedId == null ? createNote : saveNote} >
-              {selectedId == null ? "作成" : "保存"}
-            </button>
+        <div className="flex">
+          <div className="w-[300px] flex-none">
+            <MemoList
+              notes={notes}
+              onSelectNote={selectNote}
+              onCreateNote={newNote}
+              onDeleteNote={removeNote}
+              onLoadNotes={loadNotes}
+              onExportNotes={exportNotes}
+              onImportNotes={importsNotes}
+            />
           </div>
-          <button 
-            onClick={togglePreview} 
-            className="ml-2"
-            style={{ 
-              backgroundColor: isPreviewOpen ? '#4CAF50' : '#fff',
-              color: '#333',
-              padding: '8px 16px',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: 'pointer'
-            }}
-          >
-            {isPreviewOpen ? 
-              "プレビュー表示中" : <span className="flex inline-block">
-                <span
-                  className="inline-block pl-4"
-                >
-                  プレビュー画面
+          <div className="writer flex-1 p-4">
+            <div className="pb-2">
+              <div className="pb-2 flex gap-4">
+                <span className="flex-1 inline-block">
+                  <input className="w-100 mr-1" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="タイトル" />
                 </span>
-                <img
-                  src={PreviewIcon}
-                  className="inline-block"
-                  alt="image"
-                  style={{ width: 16, height: 16 }}
-                />
-              </span>}
-          </button>
-        </div>
-        <div className="flex p-4">
-          <div className="writer w-half p-4">
-            <textarea className="p-4" value={content} onChange={(e) => setContent(e.target.value)} style={{ width: "100%", height: "60vh" }} />
-          </div>
-          <div className="w-half p-4">
-            <div className="preview">
-              <ReactMarkdown
-                remarkPlugins={[remarkGfm]}
-                urlTransform={(url) => url}
-              >{content}</ReactMarkdown>
+                <button onClick={selectedId == null ? createNote : saveNote} >
+                  {selectedId == null ? "作成" : "保存"}
+                </button>
+              </div>
             </div>
+            <textarea className="p-4 mb-4" value={content} onChange={(e) => setContent(e.target.value)} style={{ width: "100%", height: "60vh" }} />
+            <button 
+              onClick={togglePreview} 
+              className="ml-2"
+              style={{ 
+                backgroundColor: isPreviewOpen ? '#4CAF50' : '#fff',
+                color: '#333',
+                padding: '8px 16px',
+                border: 'none',
+                borderRadius: '4px',
+                cursor: 'pointer'
+              }}
+            >
+              {isPreviewOpen ? 
+                "プレビュー表示中" : <span className="flex inline-block">
+                  <span
+                    className="inline-block pl-4"
+                  >
+                    プレビュー画面
+                  </span>
+                  <img
+                    src={PreviewIcon}
+                    className="inline-block"
+                    alt="image"
+                    style={{ width: 16, height: 16 }}
+                  />
+                </span>}
+            </button>
           </div>
         </div>
         {noteData && (<div className="note-data p-4 mt-4 border-t">
