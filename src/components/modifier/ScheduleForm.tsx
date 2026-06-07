@@ -7,10 +7,9 @@ import DateTimePicker from "./base/DateTimePicker";
 import { formatDateTime } from "../../utils/dayApi";
 import { useUIContext } from "../../store/ui";
 
-
 type Props = {
   stateSchedule?: Schedule;
-  loadListSchedule: () => void
+  loadListSchedule: () => void;
 }
 
 export default function ScheduleForm({ stateSchedule, loadListSchedule }: Props) {
@@ -33,7 +32,6 @@ export default function ScheduleForm({ stateSchedule, loadListSchedule }: Props)
   const [taskDate, setTaskDate] = useState("")
 
   useEffect(() => {
-    console.log(state)
     dispatch({
       type: "SET_INPUT_CHECK_VALUE",
       payload: {
@@ -289,22 +287,14 @@ export default function ScheduleForm({ stateSchedule, loadListSchedule }: Props)
               </div>
 
               <div className="input-box">
-
-                <input
-                  type="datetime-local"
-                  className="border p-2"
-                  value={taskStart}
-                  onChange={(e)=>setTaskStart(e.target.value)}
-                />
-              </div>
-
-              <div className="input-box">
                 終了 : 
-                <input
-                  type="datetime-local"
-                  className="border p-2"
-                  value={taskEnd}
-                  onChange={(e)=>setTaskEnd(e.target.value)}
+                <DateTimePicker
+                  value={new Date(taskEnd)}
+                  onChange={(date) => {
+                    if (date) {
+                      setTaskEnd(date.toISOString());
+                    }
+                  }}
                 />
               </div>
             </div>

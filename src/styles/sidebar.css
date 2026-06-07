@@ -62,6 +62,7 @@
   display: none;
 }
 
+.memo-list-item:hover .action-items,
 .memo-list-dialog-item:hover .action-items,
 .sidebar-item:hover .action-items:hover {
   display: flex;

@@ -2,14 +2,25 @@ import paths from "../../json/path.json";
 
 import ImageDialog from "../modifier/ImageDialog";
 
-type Props = {
-  activePath: string;
-  nextPageAction: (path: string) => void
-}
+import { useUIContext } from "../../store/ui";
+import { useRouterActions } from "../../hooks/useRouterActions";
+
+type Props = {}
 
 function Header(props: Props) {
-  const { nextPageAction, activePath } = props
-  const pageAction = nextPageAction ?? (() => {})
+  const { state } = useUIContext();
+  const { requestViewtypeChange, toggleSidebar } = useRouterActions();
+  const { viewtype: activePath } = state;
+
+  const pageAction = (path: string) => {
+    const shouldConfirm =
+      activePath !== path &&
+      (!state.isSaveConfirmOpen ||
+        (state.inputCheckEnabled && state.inputCheckValue.trim() !== ""));
+
+    requestViewtypeChange(path, shouldConfirm);
+  }
+
   return (
     <header className="basic-header mb-4">
       <ul className="list flex">
