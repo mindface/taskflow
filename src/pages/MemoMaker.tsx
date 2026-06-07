@@ -4,10 +4,8 @@ import { Note, NoteData } from "../models/Notes";
 import MemoList from "../components/modifier/MemoList";
 
 import Dialog from "../components/core/CoreDialog";
-import ReactMarkdown from "react-markdown";
 import { useWindowSync } from "../hooks/useWindowSync";
 
-import remarkGfm from "remark-gfm";
 import { useNotes } from "../store/note";
 import { useUIContext } from "../store/ui";
 

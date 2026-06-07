@@ -2,6 +2,7 @@ import type { CSSProperties, MouseEvent, PointerEvent, PropsWithChildren, ReactN
 import { useState } from "react";
 
 import { useUIContext } from "../../store/ui";
+import { useRouterActions } from "../../hooks/useRouterActions";
 
 type Props = PropsWithChildren<{
   className?: string;
@@ -15,6 +16,7 @@ const orbSize = 40;
 export default function HoverFollow(props: Props) {
   const { state, dispatch } = useUIContext();
   const { viewtype: activePath, isSidebarOpen: switcher } = state;
+  const { toggleSidebar } = useRouterActions();
 
   const {
     children,
@@ -49,9 +51,7 @@ export default function HoverFollow(props: Props) {
   const onButtonClick = (event: MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
     onGlowClick?.();
-    dispatch({
-      type: "TOGGLE_SIDEBAR",
-    });
+    toggleSidebar();
   };
 
   return (

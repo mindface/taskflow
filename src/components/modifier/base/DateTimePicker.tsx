@@ -29,8 +29,7 @@ function DateTimePicker({
 
     const [hours, minutes] = time
       .split(":")
-      .map(Number)
-    
+      .map(Number)    
       console.log("time", time, hours, minutes)
 
     setTimeValue(time)
@@ -39,24 +38,22 @@ function DateTimePicker({
   const handleDaySelect = (
     date: Date | undefined
   ) => {
-    if (!date) {
-      onChange(undefined)
-      return
-    }
+    if (!date) return
 
-    const [hours, minutes] = timeValue
-      .split(":")
-      .map(Number);
+    const timeYear = date.getFullYear()
+    const timeMonth = date.getMonth() + 1
+    const timeDay = date.getDate()
+    const [setHours, setMinutes] = timeValue.split(":").map(Number)
 
-    const seelectedDate = `${date.getFullYear()}/${date.getMonth()}/${date.getDate()} ${hours}:${minutes}`
+    const seelectedDate = `${date.getFullYear()}/${date.getMonth()}/${date.getDate()} ${setHours}時間${setMinutes}分`
     setSelectDate(seelectedDate);
 
     onChange(new Date(
-        date.getFullYear(),
-        date.getMonth(),
-        date.getDate(),
-        hours,
-        minutes
+      timeYear,
+      timeMonth - 1,
+      timeDay,
+      setHours,
+      setMinutes
       ));
   }
 
@@ -99,6 +96,7 @@ function DateTimePicker({
                 mode="single"
                 selected={value}
                 onSelect={(date) => {
+                  console.log("selected date", date)
                   handleDaySelect(date)
                   setOpen(false)
                 }}
