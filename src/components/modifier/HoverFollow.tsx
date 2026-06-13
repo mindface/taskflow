@@ -1,5 +1,5 @@
 import type { CSSProperties, MouseEvent, PointerEvent, PropsWithChildren, ReactNode } from "react";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { useUIContext } from "../../store/ui";
 import { useRouterActions } from "../../hooks/useRouterActions";
@@ -17,6 +17,7 @@ export default function HoverFollow(props: Props) {
   const { state, dispatch } = useUIContext();
   const { viewtype: activePath, isSidebarOpen: switcher } = state;
   const { toggleSidebar } = useRouterActions();
+  const [isMover,setIsMover] = useState(false);
 
   const {
     children,
@@ -32,6 +33,16 @@ export default function HoverFollow(props: Props) {
   });
 
   const onPointerMove = (event: PointerEvent<HTMLDivElement>) => {
+    if(!isMover) {
+      const setX = window.innerWidth /2 - orbSize;
+      if(setX === pointer.x) return;
+      const nextPointer = {
+        x: setX,
+        y: window.innerHeight - 160,
+      }
+      setPointer(nextPointer);
+      return;
+    }
     const rect = event.currentTarget.getBoundingClientRect();
     const nextPointer = {
       x: event.clientX - rect.left,
@@ -54,12 +65,42 @@ export default function HoverFollow(props: Props) {
     toggleSidebar();
   };
 
+  const onTapToggle = (e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>) => {
+  // if (e.touches.length === 2) {
+  //   console.log("2本指タップ");
+  // }
+    console.log("tap toggle");
+    // onGlowClick?.();
+    // toggleSidebar();
+    setIsMover(isMover => !isMover);
+  };
+
+  const handleKeyDown = useCallback((event: globalThis.KeyboardEvent) => {
+    const key = event.key.toLowerCase();
+    if ((event.ctrlKey || event.metaKey) && key === "m") {
+      event.preventDefault();
+      toggleSidebar();
+    }
+    if (key === "escape") {
+      event.preventDefault();
+      toggleSidebar();
+    }
+  }, [toggleSidebar]);
+
+  useEffect(() => {
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [handleKeyDown]);
+
   return (
     <div
       className={`hover-follow ${isActive ? "is-active" : ""} ${className}`.trim()}
       onPointerEnter={() => setIsActive(true)}
       onPointerLeave={() => setIsActive(false)}
       onPointerMove={onPointerMove}
+      onDoubleClick={onTapToggle}
       style={
         {
           "--hover-x": `${pointer.x + orbSize}px`,
