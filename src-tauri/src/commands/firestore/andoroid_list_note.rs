@@ -1,7 +1,7 @@
 // use std::env;
+use crate::commands::firestore::google_credentials;
 use crate::models::note::AndroidNote;
 use firestore::*;
-use crate::commands::firestore::google_credentials;
 
 #[tauri::command]
 pub async fn andoroid_list_note(user_id: Option<String>) -> Result<Vec<AndroidNote>, String> {
@@ -29,7 +29,6 @@ pub async fn andoroid_list_note(user_id: Option<String>) -> Result<Vec<AndroidNo
 
   Ok(notes)
 }
-
 
 // #[tauri::command]
 // pub async fn andoroid_list_note(user_id: Option<String>) -> Result<Vec<AndroidNote>, String> {

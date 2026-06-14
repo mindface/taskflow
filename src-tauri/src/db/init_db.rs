@@ -60,6 +60,18 @@ pub fn init_db() -> Result<String, String> {
             PRIMARY KEY (note_id, concept_id, role)
         );
 
+        CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            firebase_uid TEXT NOT NULL UNIQUE,
+            email TEXT NOT NULL UNIQUE,
+            display_name TEXT NOT NULL,
+            activated INTEGER NOT NULL DEFAULT 1,
+            roles TEXT,
+            ui_selection TEXT,
+            created_at TEXT NOT NULL,
+            updated_at TEXT NOT NULL
+        );
+
         COMMIT;",
     )
     .map_err(|e| format!("DB init error: {}", e))?;
