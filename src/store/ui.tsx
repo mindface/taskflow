@@ -1,9 +1,16 @@
 import type { Dispatch, ReactNode } from "react";
 import { createContext, useContext, useReducer } from "react";
 
+type UISelection = {
+  theme?: string;
+  sidebarOpen?: boolean;
+  [key: string]: unknown;
+};
+
 type UIState = {
   viewtype: string;
   isSidebarOpen: boolean;
+  uiSelection: UISelection | null;
   inputCheckValue: string;
   inputCheckLabel: string;
   inputCheckEnabled: boolean;
@@ -28,18 +35,19 @@ type UIAction =
   | { type: "SET_SAVE_CONFIRM_OPEN"; payload: boolean }
   | { type: "CLEAR_INPUT_CHECK_VALUE" }
   | { type: "TOGGLE_SIDEBAR" }
-  | { type: "SET_SIDEBAR_OPEN"; payload: boolean };
+  | { type: "SET_SIDEBAR_OPEN"; payload: boolean }
+  | { type: "SET_UI_SELECTION"; payload: UISelection | null };
 
 const initialState: UIState = {
   viewtype: "home",
   isSidebarOpen: false,
+  uiSelection: null,
   inputCheckValue: "",
   inputCheckLabel: "入力値",
   inputCheckEnabled: false,
   isInputConfirmOpen: false,
   isSaveConfirmOpen: true,
   pendingViewtype: null,
-  
 };
 
 function reducer(state: UIState, action: UIAction): UIState {
@@ -123,6 +131,15 @@ function reducer(state: UIState, action: UIAction): UIState {
       return {
         ...state,
         isSidebarOpen: action.payload,
+      };
+    case "SET_UI_SELECTION":
+      return {
+        ...state,
+        uiSelection: action.payload,
+        isSidebarOpen:
+          typeof action.payload?.sidebarOpen === "boolean"
+            ? action.payload.sidebarOpen
+            : state.isSidebarOpen,
       };
     default:
       return state;

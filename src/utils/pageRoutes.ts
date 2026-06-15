@@ -9,6 +9,7 @@ export const pageRoutes = [
   { viewtype: "conceptsSearch", path: "/conceptsSearch" },
   { viewtype: "viewAndroidMemo", path: "/viewAndroidMemo" },
   { viewtype: "llmMemo", path: "/llmMemo" },
+  { viewtype: "userRegister", path: "/user-register" },
 ] as const;
 
 export type AppViewType = (typeof pageRoutes)[number]["viewtype"];
