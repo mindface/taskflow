@@ -15,9 +15,11 @@ const orbSize = 40;
 
 export default function HoverFollow(props: Props) {
   const { state, dispatch } = useUIContext();
-  const { viewtype: activePath, isSidebarOpen: switcher } = state;
+  const { viewtype: activePath, isSidebarOpen: switcher, uiSelection } = state;
   const { toggleSidebar } = useRouterActions();
-  const [isMover,setIsMover] = useState(false);
+  const [isMover, setIsMover] = useState(false);
+
+  const isMoverFromSelection = uiSelection?.moveUi === "2";
 
   const {
     children,
@@ -33,9 +35,9 @@ export default function HoverFollow(props: Props) {
   });
 
   const onPointerMove = (event: PointerEvent<HTMLDivElement>) => {
-    if(!isMover) {
+    if(!isMover && !isMoverFromSelection) {
       const setX = window.innerWidth /2 - orbSize;
-      if(setX === pointer.x) return;
+      if(setX === pointer.x ) return;
       const nextPointer = {
         x: setX,
         y: window.innerHeight - 160,
