@@ -53,5 +53,11 @@
     "name":"llmMemo",
     "path":"/llmMemo",
     "description":"LLMメモページ"
+  },
+  {
+    "id":"path11",
+    "name":"userRegister",
+    "path":"/user-register",
+    "description":"ユーザー登録ページ"
   }
 ]

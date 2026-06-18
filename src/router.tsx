@@ -14,6 +14,7 @@ import ConceptSearch from "./pages/ConceptSearch";
 import Schedule from "./pages/Schedule";
 import ViewAndroidMemo from "./pages/ViewAndroidMemo";
 import LlmMemoPage from "./pages/LlmMemo";
+import UserRegister from "./pages/UserRegister";
 import { DataProvider } from "./store/dataBox";
 import { NotesProvider } from "./store/note";
 
@@ -93,6 +94,12 @@ const llmMemoRoute = createRoute({
   component: LlmMemoPage,
 });
 
+const userRegisterRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/user-register",
+  component: UserRegister,
+});
+
 const routeTree = rootRoute.addChildren([
   indexRoute,
   structsmakeRoute,
@@ -104,6 +111,7 @@ const routeTree = rootRoute.addChildren([
   conceptsSearchRoute,
   viewAndroidMemoRoute,
   llmMemoRoute,
+  userRegisterRoute,
 ]);
 
 export const router = createRouter({ routeTree });

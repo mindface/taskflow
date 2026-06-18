@@ -26,12 +26,7 @@ function DateTimePicker({
     e
   ) => {
     const time = e.target.value
-
-    const [hours, minutes] = time
-      .split(":")
-      .map(Number)    
-      console.log("time", time, hours, minutes)
-
+    setSelectDate(time)
     setTimeValue(time)
   }
 
