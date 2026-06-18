@@ -88,6 +88,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
       commands::user::add_user,
       commands::user::list_users,
       commands::user::update_user,
+      db::db_stats::get_db_stats,
     ])
     .run(tauri::generate_context!())
     .expect("error while running tauri application");
