@@ -8,10 +8,6 @@ export default function MenuLsitDialog() {
   const { requestViewtypeChange, toggleSidebar } = useRouterActions();
   const { viewtype: activePath, isSidebarOpen: switcher } = state;
 
-  const switcherAction = () => {
-    toggleSidebar();
-  };
-
   const pageAction = (path: string) => {
     const shouldConfirm =
       activePath !== path &&
