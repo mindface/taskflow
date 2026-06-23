@@ -15,6 +15,7 @@ type Props = {
   onLoadNotes: () => void;
   onExportNotes: () => void;
   onImportNotes: () => void;
+  onViewList: (type: "list" | "grid") => void;
 }
 
 export default function MemoList({
@@ -24,7 +25,8 @@ export default function MemoList({
   onDeleteNote,
   onLoadNotes,
   onExportNotes,
-  onImportNotes
+  onImportNotes,
+  onViewList
 }: Props) {
   const { syncContent, openPreview } = useWindowSync();
   const [displayMode, setDisplayMode] = useState<"list" | "grid">("list");
@@ -35,7 +37,11 @@ export default function MemoList({
   }
 
   const toggleDisplayMode = () => {
-    setDisplayMode((prev) => (prev === "list" ? "grid" : "list"));
+    setDisplayMode((prev) => {
+      const next = prev === "list" ? "grid" : "list";
+      onViewList(next);
+      return next;
+    });
   };
 
   return (

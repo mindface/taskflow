@@ -22,6 +22,7 @@ export default function MemoMaker() {
   const { loadNotes, notes } = useNotes();
   const { dispatch } = useUIContext();
   const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [viewType, setViewType] = useState("list");
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [noteData, setNoteData] = useState<NoteData | null>(null)
@@ -160,7 +161,7 @@ export default function MemoMaker() {
     <div className="memo-maker">
       <section>
         <div className="flex">
-          <div className="w-[300px] flex-none">
+          <div className={viewType === "list" ? "w-[300px] flex-none" : "w-full"}>
             <MemoList
               notes={notes}
               onSelectNote={selectNote}
@@ -169,90 +170,94 @@ export default function MemoMaker() {
               onLoadNotes={loadNotes}
               onExportNotes={exportNotes}
               onImportNotes={importsNotes}
+              onViewList={(type) => { setViewType(type) }}
             />
           </div>
-          <div className="writer flex-1 p-4">
-            <div className="pb-2">
-              <div className="pb-2 flex gap-4">
-                <span className="flex-1 inline-block">
-                  <input className="w-100 mr-1" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="タイトル" />
-                </span>
-                <button onClick={selectedId == null ? createNote : saveNote} >
-                  {selectedId == null ? "作成" : "保存"}
-                </button>
-              </div>
-            </div>
-            <textarea className="p-4 mb-4" value={content} onChange={(e) => setContent(e.target.value)} style={{ width: "100%", height: "60vh" }} />
-            <button 
-              onClick={togglePreview} 
-              className="ml-2"
-              style={{ 
-                backgroundColor: isPreviewOpen ? '#4CAF50' : '#fff',
-                color: '#333',
-                padding: '8px 16px',
-                border: 'none',
-                borderRadius: '4px',
-                cursor: 'pointer'
-              }}
-            >
-              {isPreviewOpen ? 
-                "プレビュー表示中" : <span className="flex inline-block">
-                  <span
-                    className="inline-block pl-4"
-                  >
-                    プレビュー画面
+          { viewType === "list" && <>
+            <div className="writer flex-1 p-4">
+              <div className="pb-2">
+                <div className="pb-2 flex gap-4">
+                  <span className="flex-1 inline-block">
+                    <input className="w-100 mr-1" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="タイトル" />
                   </span>
-                  <img
-                    src={PreviewIcon}
-                    className="inline-block"
-                    alt="image"
-                    style={{ width: 16, height: 16 }}
-                  />
-                </span>}
-            </button>
-          </div>
-        </div>
-        {noteData && (<div className="note-data p-4 mt-4 border-t">
-          <h3 className="pb-2">Note Data</h3>
-          <div>
-            <h4>Concepts</h4>
-            <ul>
-              {noteData.concepts.map((concept) => (
-                <li key={concept.id}>
-                  <p>name: {concept.name} </p>
-                  <div>description: {concept.description}</div>
-                  <p>tag: {concept.tag}</p>
-                  <div
-                    className="hover inline-block shot-icon-btn"
-                    onClick={dialogSwitchAction}
-                  >
-                    <img src={EditIcon} alt="edit" style={{ width: 12, height: 12 }} />
-                  </div>
-                  <Dialog
-                    isOpen={isOpen}
-                    onClose={dialogSwitchAction}
-                    title="変更と調整"
-                    children={
-                      <div className="content">
-                        入力
-                      </div>
-                    }
+                  <button onClick={selectedId == null ? createNote : saveNote} >
+                    {selectedId == null ? "作成" : "保存"}
+                  </button>
+                </div>
+              </div>
+              <textarea className="p-4 mb-4" value={content} onChange={(e) => setContent(e.target.value)} style={{ width: "100%", height: "60vh" }} />
+              <button 
+                onClick={togglePreview} 
+                className="ml-2"
+                style={{ 
+                  backgroundColor: isPreviewOpen ? '#4CAF50' : '#fff',
+                  color: '#333',
+                  padding: '8px 16px',
+                  border: 'none',
+                  borderRadius: '4px',
+                  cursor: 'pointer'
+                }}
+              >
+                {isPreviewOpen ? 
+                  "プレビュー表示中" : <span className="flex inline-block">
+                    <span
+                      className="inline-block pl-4"
+                    >
+                      プレビュー画面
+                    </span>
+                    <img
+                      src={PreviewIcon}
+                      className="inline-block"
+                      alt="image"
+                      style={{ width: 16, height: 16 }}
                     />
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div>
-            <h4>Relations</h4>
-            <ul>
-              {noteData.relations.map((relation, index) => (
-                <li className="flex" key={index}>
-                  From Concept ID: {relation.from_concept_id} - To Concept ID: {relation.to_concept_id} (Type: {relation.relation_type})
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>)}
+                  </span>}
+              </button>
+            </div>
+            {noteData && (
+              <div className="note-data p-4 mt-4 border-t">
+                <h3 className="pb-2">Note Data</h3>
+                <div>
+                  <h4>Concepts</h4>
+                  <ul>
+                  {noteData.concepts.map((concept) => (
+                    <li key={concept.id}>
+                      <p>name: {concept.name} </p>
+                      <div>description: {concept.description}</div>
+                      <p>tag: {concept.tag}</p>
+                      <div
+                        className="hover inline-block shot-icon-btn"
+                        onClick={dialogSwitchAction}
+                      >
+                        <img src={EditIcon} alt="edit" style={{ width: 12, height: 12 }} />
+                      </div>
+                      <Dialog
+                        isOpen={isOpen}
+                        onClose={dialogSwitchAction}
+                        title="変更と調整"
+                        children={
+                          <div className="content">
+                            入力
+                          </div>
+                        }
+                        />
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div>
+                <h4>Relations</h4>
+                <ul>
+                  {noteData.relations.map((relation, index) => (
+                    <li className="flex" key={index}>
+                      From Concept ID: {relation.from_concept_id} - To Concept ID: {relation.to_concept_id} (Type: {relation.relation_type})
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>)}
+          </>}
+        </div>
       </section>
     </div>
   );
