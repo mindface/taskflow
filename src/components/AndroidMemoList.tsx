@@ -11,7 +11,6 @@ const AndroidMemoList = () => {
   const fetchNotes = async () => {
     try {
       setLoading(true);
-      // Rust側のコマンドを呼び出し
       const result = await invoke<AndroidNote[]>("andoroid_list_note");
       setNotes(result);
       console.log("Fetched Notes:", result);
