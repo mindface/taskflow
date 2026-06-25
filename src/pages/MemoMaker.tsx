@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { Note, NoteData } from "../models/Notes";
-import MemoList from "../components/modifier/MemoList";
+import MemoList from "../components/modifier/MemoGridList";
 
 import Dialog from "../components/core/CoreDialog";
 import { useWindowSync } from "../hooks/useWindowSync";
@@ -20,7 +20,7 @@ import { open } from "@tauri-apps/plugin-dialog";
 
 export default function MemoMaker() {
   const { loadNotes, notes } = useNotes();
-  const { dispatch } = useUIContext();
+  const { state, dispatch } = useUIContext();
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [viewType, setViewType] = useState("list");
   const [title, setTitle] = useState("");
@@ -28,7 +28,62 @@ export default function MemoMaker() {
   const [noteData, setNoteData] = useState<NoteData | null>(null)
   const [isOpen,isOpenSet] = useState(false);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const [isVoiceListening, setIsVoiceListening] = useState(false);
+  const recognitionRef = useRef<any>(null);
   const { syncContent, syncNoteData, openPreview } = useWindowSync();
+
+  const voiceInputEnabled = state.uiSelection?.voiceInputEnabled === true;
+
+  const startVoiceInput = () => {
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      alert("お使いの環境は音声認識をサポートしていません。");
+      return;
+    }
+
+    const recognition = new SpeechRecognition();
+    recognition.lang = "ja-JP";
+    recognition.interimResults = false;
+    recognition.continuous = false;
+
+    recognition.onresult = (event: any) => {
+      const transcript = Array.from(event.results)
+        .slice(event.resultIndex)
+        .map((result: any) => result[0]?.transcript || "")
+        .join("");
+      setContent((prev) => (prev ? `${prev}\n${transcript}` : transcript));
+    };
+
+    recognition.onerror = (event: any) => {
+      console.error("Speech recognition error", event);
+      alert("音声認識でエラーが発生しました。");
+      setIsVoiceListening(false);
+    };
+
+    recognition.onend = () => {
+      setIsVoiceListening(false);
+    };
+
+    recognition.start();
+    recognitionRef.current = recognition;
+    setIsVoiceListening(true);
+  };
+
+  const stopVoiceInput = () => {
+    recognitionRef.current?.stop();
+    setIsVoiceListening(false);
+  };
+
+  const disableVoiceInput = () => {
+    stopVoiceInput();
+    dispatch({
+      type: "SET_UI_SELECTION",
+      payload: {
+        ...state.uiSelection,
+        voiceInputEnabled: false,
+      },
+    });
+  };
 
   useEffect(() => {
     dispatch({
@@ -176,16 +231,39 @@ export default function MemoMaker() {
           { viewType === "list" && <>
             <div className="writer flex-1 p-4">
               <div className="pb-2">
-                <div className="pb-2 flex gap-4">
+                <div className="pb-2 flex gap-4 items-center">
                   <span className="flex-1 inline-block">
                     <input className="w-100 mr-1" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="タイトル" />
                   </span>
-                  <button onClick={selectedId == null ? createNote : saveNote} >
+                  <button onClick={selectedId == null ? createNote : saveNote}>
                     {selectedId == null ? "作成" : "保存"}
                   </button>
+                  {voiceInputEnabled && (
+                    <div className="flex gap-2">
+                      <button
+                        type="button"
+                        onClick={isVoiceListening ? stopVoiceInput : startVoiceInput}
+                        className="rounded border border-gray-300 bg-white px-3 py-1 text-sm hover:bg-gray-100"
+                      >
+                        {isVoiceListening ? "音声入力停止" : "音声入力開始"}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={disableVoiceInput}
+                        className="rounded border border-red-300 bg-red-50 px-3 py-1 text-sm text-red-700 hover:bg-red-100"
+                      >
+                        やめる
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
               <textarea className="p-4 mb-4" value={content} onChange={(e) => setContent(e.target.value)} style={{ width: "100%", height: "60vh" }} />
+              {voiceInputEnabled && (
+                <div className="mb-3 text-sm text-gray-500">
+                  音声入力が有効になっています。マイクで話すと、認識結果が本文に追加されます。
+                </div>
+              )}
               <button 
                 onClick={togglePreview} 
                 className="ml-2"
