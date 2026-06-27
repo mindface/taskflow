@@ -8,6 +8,7 @@ import { useWindowSync } from "../hooks/useWindowSync";
 
 import { useNotes } from "../store/note";
 import { useUIContext } from "../store/ui";
+import { inputSaved } from "../utils/inputSave";
 
 import EditIcon from "../assets/edit.svg";
 import PreviewIcon from "../assets/preview.svg";
@@ -31,6 +32,7 @@ export default function MemoMaker() {
   const [isVoiceListening, setIsVoiceListening] = useState(false);
   const recognitionRef = useRef<any>(null);
   const { syncContent, syncNoteData, openPreview } = useWindowSync();
+  const { basedInputEvent } = inputSaved();
 
   const voiceInputEnabled = state.uiSelection?.voiceInputEnabled === true;
 
@@ -233,7 +235,17 @@ export default function MemoMaker() {
               <div className="pb-2">
                 <div className="pb-2 flex gap-4 items-center">
                   <span className="flex-1 inline-block">
-                    <input className="w-100 mr-1" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="タイトル" />
+                    <input
+                      className="w-100 mr-1"
+                      value={title}
+                      onKeyDown={(e) => basedInputEvent(e, "blur", () => {
+                        if (selectedId != null) {
+                          saveNote();
+                        }
+                      })}
+                      onChange={(e) => setTitle(e.target.value)}
+                      placeholder="タイトル"
+                    />
                   </span>
                   <button onClick={selectedId == null ? createNote : saveNote}>
                     {selectedId == null ? "作成" : "保存"}
@@ -258,7 +270,17 @@ export default function MemoMaker() {
                   )}
                 </div>
               </div>
-              <textarea className="p-4 mb-4" value={content} onChange={(e) => setContent(e.target.value)} style={{ width: "100%", height: "60vh" }} />
+              <p>{selectedId} | {title}</p>
+              <textarea
+                className="p-4 mb-4" value={content}
+                onKeyDown={(e) => basedInputEvent(e, "blur", () => {
+                  if (selectedId != null) {
+                    saveNote();
+                  }
+                })}
+                onChange={(e) => setContent(e.target.value)}
+                style={{ width: "100%", height: "60vh" }}
+              />
               {voiceInputEnabled && (
                 <div className="mb-3 text-sm text-gray-500">
                   音声入力が有効になっています。マイクで話すと、認識結果が本文に追加されます。
