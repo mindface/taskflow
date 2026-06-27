@@ -270,6 +270,7 @@ export default function MemoMaker() {
                   )}
                 </div>
               </div>
+
               <textarea
                 className="p-4 mb-4" value={content}
                 onKeyDown={(e) => basedInputEvent(e, "blur", () => {
