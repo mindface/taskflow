@@ -4,16 +4,16 @@ import ScheduleDialog from "./ScheduleDialog";
 import { useScheduleWindowSync } from "../../hooks/useSchedlueWindowSync"
 
 type ViewButtons = {
-  dialog?: boolean
-  update?: boolean
-  delete?: boolean
-  view?: boolean
+  dialog?: boolean;
+  update?: boolean;
+  delete?: boolean;
+  view?: boolean;
 }
 
 type Props = {
   schedule: Schedule;
-  loadSchedules: () => void
-  setScheduleAction: (schedule:Schedule) => void
+  loadSchedules: () => void;
+  setScheduleAction: (schedule:Schedule) => void;
   viewBtons?: ViewButtons;
 }
 

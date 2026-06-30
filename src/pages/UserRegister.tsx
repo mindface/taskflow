@@ -14,7 +14,7 @@ export default function UserRegister() {
   const [displayName, setDisplayName] = useState("");
   const [activated, setActivated] = useState(true);
   const [roles, setRoles] = useState("");
-  const [uiSelection, setUiSelection] = useState("{\n  \"theme\": \"light\",\n  \"sidebarOpen\": true\n}");
+  const [uiSelection, setUiSelection] = useState("{\n  \"theme\": \"light\",\n  \"sidebarOpen\": true,\n  \"voiceInputEnabled\": false\}");
   const [users, setUsers] = useState<User[]>([]);
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
 
@@ -32,9 +32,15 @@ export default function UserRegister() {
     }
   };
 
-  const setUiSelectionValue = (taget: string, value: string) => {
-    const uiSelectionValue = JSON.stringify({ [taget]: value }, null, 2);
-    setUiSelection(uiSelectionValue);
+  const setUiSelectionValue = (taget: string, value: unknown) => {
+    const currentSelection = parseUiSelection(uiSelection) || {};
+    const nextSelection = {
+      ...currentSelection,
+      [taget]: value,
+    };
+    const nextSelectionString = JSON.stringify(nextSelection, null, 2);
+    setUiSelection(nextSelectionString);
+    dispatch({ type: "SET_UI_SELECTION", payload: nextSelection });
   };
 
   const parseUiSelection = (value: string | null | undefined): UiSelectionPayload | null => {
@@ -72,6 +78,9 @@ export default function UserRegister() {
     window.alert("ユーザーの UI 情報を適用しました。");
   };
 
+  const parsedUiSelection = parseUiSelection(uiSelection) || {};
+  const voiceInputEnabled = parsedUiSelection.voiceInputEnabled === true;
+
   const populateFormWithUser = (user: User) => {
     setSelectedUserId(user.id);
     setFirebaseUid(user.firebase_uid);
@@ -97,7 +106,7 @@ export default function UserRegister() {
     setDisplayName("");
     setActivated(true);
     setRoles("");
-    setUiSelection("{\n  \"theme\": \"light\",\n  \"sidebarOpen\": true\n}");
+    setUiSelection("{\n  \"theme\": \"light\",\n  \"sidebarOpen\": true,\n  \"voiceInputEnabled\": false\}");
   };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -185,15 +194,32 @@ export default function UserRegister() {
             placeholder="admin,editor"
           />
         </div>
-        <div>
-          Select UI:
-          <select name="ui-select" id="pet-select"
-            onChange={(e) => setUiSelectionValue("moveUi",e.target.value)}
-          >
-            <option value="">--1 つ選択してください--</option>
-            <option value="1">nomal</option>
-            <option value="2">mover</option>
-          </select>
+        <div className="space-y-3">
+          <div>
+            Select UI:
+            <select
+              name="ui-select"
+              id="pet-select"
+              onChange={(e) => setUiSelectionValue("moveUi", e.target.value)}
+              value={String(parsedUiSelection.moveUi ?? "")}
+              className="mt-1 block w-full rounded border px-3 py-2"
+            >
+              <option value="">--1 つ選択してください--</option>
+              <option value="1">nomal</option>
+              <option value="2">mover</option>
+            </select>
+          </div>
+          <div className="flex items-center gap-2">
+            <input
+              id="voice-input-enabled"
+              type="checkbox"
+              checked={voiceInputEnabled}
+              onChange={(e) => setUiSelectionValue("voiceInputEnabled", e.target.checked)}
+            />
+            <label htmlFor="voice-input-enabled" className="text-sm">
+              音声入力を有効化
+            </label>
+          </div>
         </div>
         <div>
           <label className="block text-sm font-medium">UI Selection JSON</label>

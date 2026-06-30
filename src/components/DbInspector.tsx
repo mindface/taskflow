@@ -50,7 +50,7 @@ export default function DbInspector() {
   }, []);
 
   return (
-    <div className="bg-white border border-gray-200 rounded-lg p-5 shadow-sm mt-6">
+    <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm mt-6">
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-lg font-bold text-gray-800 flex items-center gap-2">
           <span className={`w-3 h-3 rounded-full ${
@@ -69,7 +69,7 @@ export default function DbInspector() {
         </button>
       </div>
 
-      <div className="flex flex-col gap-1 mb-4">
+      <div className="flex flex-col gap-1 p-4 mb-4">
         <div className="text-xs text-gray-500 font-mono break-all">
           <span className="font-bold text-gray-700">Path:</span> {info?.path || "Loading..."}
         </div>
@@ -81,7 +81,7 @@ export default function DbInspector() {
       {loading ? (
         <div className="text-sm text-center py-8 text-gray-400">Checking database structure...</div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-2">
           {info?.tables.map((table) => (
             <div 
               key={table.name} 
