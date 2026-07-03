@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "tdev": "GOOGLE_APPLICATION_CREDENTIALS=/Users/asdfghjkl/program/rust/taskflow/mymodular-256390a262.json tauri dev",
     "build": "tsc && vite build",
     "preview": "vite preview",
     "tauri": "tauri"
