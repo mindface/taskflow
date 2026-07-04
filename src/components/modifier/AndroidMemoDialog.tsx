@@ -1,4 +1,3 @@
-import { useState } from "react";
 import BaseMakerDialog from "./base/BaseMakerDialog";
 import { AndroidNote } from "../../models/Notes";
 

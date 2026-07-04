@@ -1,5 +1,5 @@
 // use std::env;
-use crate::commands::firestore::google_credentials;
+// use crate::commands::firestore::google_credentials;
 use crate::models::note::AndroidNote;
 use firestore::*;
 
