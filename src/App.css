@@ -2,8 +2,8 @@
 
 * {
   margin: 0;
-  margin-block-start: 0;
   padding: 0;
+  margin-block-start: 0;
   box-sizing: border-box;
   line-height: 1;
 }
@@ -42,7 +42,7 @@
 body {
   height: 100%;
   margin: 0;
-  padding: 16px;
+  padding: 0;
   font-size: 14px;
   background:
     radial-gradient(circle at top, rgba(54, 139, 242, 0.12), transparent 38%),
