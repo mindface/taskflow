@@ -41,7 +41,8 @@ pub async fn andoroid_create_symbol(symbol: AndroidSymbol) -> Result<AndroidSymb
 
   let payload = build_create_payload(&symbol);
 
-  db.fluent()
+  let resp = db
+    .fluent()
     .insert()
     .into("symbols")
     .generate_document_id()
@@ -50,7 +51,19 @@ pub async fn andoroid_create_symbol(symbol: AndroidSymbol) -> Result<AndroidSymb
     .await
     .map_err(|e| format!("Firestore Create Error: {}", e))?;
 
-  Ok(symbol)
+  // Firestore returns a Document with a `name` field like
+  // "projects/<proj>/databases/(default)/documents/symbols/<doc_id>"
+  let doc_id = resp
+    .get("name")
+    .and_then(|v| v.as_str())
+    .and_then(|s| s.rsplit('/').next())
+    .unwrap_or("")
+    .to_string();
+
+  let mut out = symbol.clone();
+  out.id = doc_id;
+
+  Ok(out)
 }
 
 #[cfg(test)]

@@ -5,6 +5,8 @@ import { AndroidSymbol } from "../../models/Symbol";
 
 import "../../styles/sidebar.css";
 
+const FIREBASE_USER_ID = import.meta.env.VITE_FIREBASE_USER_ID || "";
+
 type Props = {
   data?: AndroidSymbol;
   onSaved?: (symbol: AndroidSymbol) => void;
@@ -12,7 +14,7 @@ type Props = {
 
 const createInitialSymbol = (data?: AndroidSymbol): AndroidSymbol => ({
   id: data?.id || "",
-  user_id: data?.user_id || "noid",
+  user_id: data?.user_id || FIREBASE_USER_ID,
   title: data?.title || "",
   content: data?.content || "",
   created_at: data?.created_at ? String(data.created_at) : Date.now().toString(),
@@ -39,7 +41,7 @@ export default function AndroidSymbolDialog({ data, onSaved }: Props) {
       const nowString = Date.now().toString();
       const payload: AndroidSymbol = {
         ...symbol,
-        user_id: symbol.user_id || "noid",
+        user_id: symbol.user_id || FIREBASE_USER_ID,
         title: symbol.title || "",
         content: symbol.content || "",
         symbol_type: symbol.symbol_type || "",
