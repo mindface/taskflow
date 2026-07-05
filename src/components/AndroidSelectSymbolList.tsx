@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { AndroidSymbol } from "../models/Symbol";
-import AndroidMemoDialog from "./modifier/AndroidMemoDialog";
+import AndroidSymbolDialog from "./modifier/AndroidSymbolDialog";
 
 const AndroidSelectSymbolList = () => {
   const [symbols, setSymbols] = useState<AndroidSymbol[]>([]);
@@ -23,30 +23,24 @@ const AndroidSelectSymbolList = () => {
     }
   };
 
-  const updateSymbol = (updatedSymbol: AndroidSymbol) => {
-    setSymbols((prevSymbols) =>
-      prevSymbols.map((symbol) => (symbol.id === updatedSymbol.id ? updatedSymbol : symbol))
-    );
-  }
+  const upsertSymbol = (symbol: AndroidSymbol) => {
+    setSymbols((prevSymbols) => {
+      const existingIndex = prevSymbols.findIndex((item) => item.id === symbol.id);
+      if (existingIndex >= 0) {
+        const nextSymbols = [...prevSymbols];
+        nextSymbols[existingIndex] = symbol;
+        return nextSymbols;
+      }
+      return [symbol, ...prevSymbols];
+    });
+  };
 
-  const updateSymbolAction = async (symbol: AndroidSymbol) => {
-    try {
-      const updatedSymbol = await invoke<AndroidSymbol>("update_android_symbol", {
-        id: symbol.id,
-        title: symbol.title,
-        content: symbol.content,
-      });
-      updateSymbol(updatedSymbol);
-    } catch (err) {
-      console.error("Failed to update symbol:", err);
+  const textSettngs = (text?: string) => {
+    const normalized = text || "";
+    if (normalized.length > 100) {
+      return normalized.substring(0, 100) + "...";
     }
-  }
-
-  const textSettngs = (text: string) => {
-    if (text.length > 100) {
-      return text.substring(0, 100) + "...";
-    }
-    return text;
+    return normalized;
   }
 
   useEffect(() => {
@@ -58,7 +52,10 @@ const AndroidSelectSymbolList = () => {
 
   return (
     <div className="p-4">
-      <h3 className="text-2xl font-bold mb-6 text-gray-800">Android シンボル一覧 (Firestore)</h3>
+      <div className="flex items-center justify-between mb-6">
+        <h3 className="text-2xl font-bold text-gray-800">Android シンボル一覧 (Firestore)</h3>
+        <AndroidSymbolDialog onSaved={upsertSymbol} />
+      </div>
       {symbols.length === 0 ? (
         <p className="text-gray-500">シンボルが見つかりませんでした。</p>
       ) : (
@@ -72,8 +69,9 @@ const AndroidSelectSymbolList = () => {
               <p className="text-gray-600 text-sm mb-4 line-clamp-3">
                 {textSettngs(symbol.content) || "内容なし"}
               </p>
-              <AndroidMemoDialog
-                note={symbol}
+              <AndroidSymbolDialog
+                data={symbol}
+                onSaved={upsertSymbol}
               />
             </div>
           ))}

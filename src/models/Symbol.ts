@@ -20,9 +20,12 @@ export type Symbol = {
 
 export type AndroidSymbol = {
   id: string;
-  user_id: string;
-  title: string;
-  content: string;
-  created_at: number;
-  updated_at: number;
+  user_id?: string;
+  title?: string;
+  content?: string;
+  created_at?: string;
+  updated_at?: string;
+  symbol_type?: string;
+  extension?: string;
+  language?: string;
 }
