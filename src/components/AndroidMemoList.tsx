@@ -73,7 +73,7 @@ const AndroidMemoList = () => {
                 {textSettngs(note.content) || "内容なし"}
               </p>
               <AndroidMemoDialog
-                note={note}
+                data={note}
               />
             </div>
           ))}

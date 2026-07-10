@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import CoreDialog from "../../core/CoreDialog";
 
 type CommonData = {
-  title: string;
-  content: string;
+  title?: string;
+  content?: string;
 }
 
 type MakerDialogProps<T extends CommonData> = {

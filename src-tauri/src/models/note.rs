@@ -26,6 +26,24 @@ pub struct NoteDetail {
   pub relations: Vec<ConceptRelationView>,
 }
 
+#[derive(Serialize, Deserialize, Debug, Clone, Default)]
+pub struct AndroidSymbol {
+  #[serde(rename = "_firestore_id", default)]
+  pub id: String,
+  pub _id: Option<String>,
+  pub user_id: Option<String>,
+  pub title: Option<String>,
+  pub content: Option<String>,
+  pub created_at: Option<String>,
+  pub updated_at: Option<String>,
+  #[serde(default)]
+  pub symbol_type: Option<String>,
+  #[serde(default)]
+  pub extension: Option<String>,
+  #[serde(default)]
+  pub language: Option<String>,
+}
+
 // #[derive(Serialize, Deserialize, Debug, Clone)]
 // pub struct ConceptProcessFactor {
 //   pub id: i64,

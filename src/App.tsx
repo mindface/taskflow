@@ -11,6 +11,7 @@ import { useUIContext } from "./store/ui";
 import { pathToViewType, viewTypeToPath } from "./utils/pageRoutes";
 
 function App() {
+  const isProduction = import.meta.env.VITE_APP_ENV === "production";
   const { state, dispatch } = useUIContext();
   const navigate = useNavigate();
   const pathname = useRouterState({
@@ -28,10 +29,16 @@ function App() {
     if (pendingViewtype) {
       void navigate({ to: viewTypeToPath(pendingViewtype) });
     }
+    console.log(import.meta.env)
   };
 
+  const backendClass = isProduction ? "min-h-screen bg-gradient-to-br from-green-100 via-white to-blue-100" : "bg-slate-100";
+
   return (
-      <div className="div-outer">{viewtype}
+      <div
+        className={`div-outer p-4 ${backendClass}`}
+      >
+          {viewtype}
           <HoverFollow
             className="app-main-follow" glowClassName="app-main-follow__orb"
           >

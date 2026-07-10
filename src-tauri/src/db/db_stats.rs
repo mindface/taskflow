@@ -1,5 +1,4 @@
 use crate::db::db_core::{db_path, get_conn};
-use serde::Serialize;
 
 use crate::models::stats::{ColumnInfo, DbInfo, TableStats};
 

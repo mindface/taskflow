@@ -1,13 +1,13 @@
 // use std::env;
-use crate::commands::firestore::google_credentials;
+// use crate::commands::firestore::google_credentials;
 use crate::models::note::AndroidNote;
 use firestore::*;
 
 #[tauri::command]
 pub async fn andoroid_list_note(user_id: Option<String>) -> Result<Vec<AndroidNote>, String> {
-  let creds_path = google_credentials::google_application_credentials_path();
-  // env::set_var("GOOGLE_APPLICATION_CREDENTIALS", &creds_path);
-  println!("GOOGLE_APPLICATION_CREDENTIALS={}", creds_path.display());
+  // let creds_path = google_credentials::google_application_credentials_path();
+  // std::env::set_var("GOOGLE_APPLICATION_CREDENTIALS", &creds_path);
+  // println!("GOOGLE_APPLICATION_CREDENTIALS={}", creds_path.display());
 
   let db = FirestoreDb::new("mymodular-5b5b5")
     .await
