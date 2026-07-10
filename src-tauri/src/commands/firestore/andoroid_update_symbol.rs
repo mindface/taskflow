@@ -4,11 +4,12 @@ use serde_json::json;
 
 fn build_symbol_update_data(symbol: &AndroidSymbol) -> serde_json::Value {
   let mut update_data = json!({});
+  println!("Building update data for symbol: {:?}", symbol);
 
-  let symbol_id = symbol.id.clone();
-  if symbol_id.is_empty() {
-    return update_data;
-  }
+  let symbol_id = symbol._id.clone();
+  // if symbol_id.is_empty() {
+  //   return update_data;
+  // }
 
   update_data["id"] = json!(symbol_id);
 
@@ -37,16 +38,16 @@ fn build_symbol_update_data(symbol: &AndroidSymbol) -> serde_json::Value {
     update_data["language"] = json!(language);
   }
 
-  update_data
+  return update_data;
 }
 
 #[tauri::command]
-pub async fn andoroid_update_symbol(symbol: AndroidSymbol) -> Result<AndroidSymbol, String> {
+pub async fn andoroid_update_symbol(symbol_info: AndroidSymbol) -> Result<AndroidSymbol, String> {
   let db = FirestoreDb::new("mymodular-5b5b5")
     .await
     .map_err(|e| format!("Firestore Client Initialization Error: {}", e))?;
 
-  let update_data = build_symbol_update_data(&symbol);
+  let update_data = build_symbol_update_data(&symbol_info);
   let symbol_id = update_data["id"].as_str().unwrap_or("").to_string();
 
   if symbol_id.is_empty() {
@@ -62,7 +63,7 @@ pub async fn andoroid_update_symbol(symbol: AndroidSymbol) -> Result<AndroidSymb
     .await
     .map_err(|e| format!("Firestore Update Error: {}", e))?;
 
-  Ok(symbol)
+  Ok(symbol_info)
 }
 
 #[cfg(test)]

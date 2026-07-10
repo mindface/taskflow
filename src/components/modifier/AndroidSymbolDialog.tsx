@@ -5,15 +5,17 @@ import { AndroidSymbol } from "../../models/Symbol";
 
 import "../../styles/sidebar.css";
 
-const FIREBASE_USER_ID = import.meta.env.VITE_FIREBASE_USER_ID || "";
+const FIREBASE_USER_ID = import.meta.env.VITE_FIREBASE_USER_ID || "eH0KbeUS6hVpFBU4sAwT153lejL2";
+
+type EditAndroidSymbol = AndroidSymbol & { _firestore_id?: string };
 
 type Props = {
-  data?: AndroidSymbol;
+  data?: EditAndroidSymbol;
   onSaved?: (symbol: AndroidSymbol) => void;
 };
 
-const createInitialSymbol = (data?: AndroidSymbol): AndroidSymbol => ({
-  id: data?.id || "",
+const createInitialSymbol = (data?: EditAndroidSymbol): AndroidSymbol => ({
+  id: data?._firestore_id || "",
   user_id: data?.user_id || FIREBASE_USER_ID,
   title: data?.title || "",
   content: data?.content || "",
@@ -27,6 +29,7 @@ const createInitialSymbol = (data?: AndroidSymbol): AndroidSymbol => ({
 export default function AndroidSymbolDialog({ data, onSaved }: Props) {
   const [isOpen, setIsOpen] = useState(false);
   const [symbol, setSymbol] = useState<AndroidSymbol>(createInitialSymbol(data));
+  const [isEditing, setIsEditing] = useState(data?._firestore_id !== undefined);
 
   useEffect(() => {
     setSymbol(createInitialSymbol(data));
@@ -39,8 +42,9 @@ export default function AndroidSymbolDialog({ data, onSaved }: Props) {
   const handleSave = async () => {
     try {
       const nowString = Date.now().toString();
-      const payload: AndroidSymbol = {
+      const symbol_info: AndroidSymbol = {
         ...symbol,
+        _id: symbol.id,
         user_id: symbol.user_id || FIREBASE_USER_ID,
         title: symbol.title || "",
         content: symbol.content || "",
@@ -52,8 +56,8 @@ export default function AndroidSymbolDialog({ data, onSaved }: Props) {
       };
 
       const savedSymbol = symbol.id
-        ? await invoke<AndroidSymbol>("andoroid_update_symbol", { symbol: payload })
-        : await invoke<AndroidSymbol>("andoroid_create_symbol", { symbol: payload });
+        ? await invoke<AndroidSymbol>("andoroid_update_symbol", { symbolInfo: symbol_info })
+        : await invoke<AndroidSymbol>("andoroid_create_symbol", { symbolInfo: symbol_info });
 
       onSaved?.(savedSymbol);
       setIsOpen(false);
@@ -61,8 +65,6 @@ export default function AndroidSymbolDialog({ data, onSaved }: Props) {
       console.error("Failed to save symbol:", err);
     }
   };
-
-  const isEditing = Boolean(symbol.id);
 
   return (
     <>

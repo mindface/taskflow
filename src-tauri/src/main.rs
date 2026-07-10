@@ -14,6 +14,17 @@ use crate::models::state::ScheduleState;
 use std::sync::Mutex;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
+  if let Ok(current_dir) = std::env::current_dir() {
+    let dotenv_path = current_dir.join("../.env");
+    let _ = dotenvy::from_path(dotenv_path);
+  }
+
+  if let Ok(path) = std::env::var("GOOGLE_APPLICATION_CREDENTIALS") {
+    println!("認証ファイルを読み込みました: {}", path);
+  } else {
+    println!("警告: GOOGLE_APPLICATION_CREDENTIALS が設定されていません");
+  }
+
   init_db().unwrap();
   init_schedule_db().unwrap();
   run_migrations().unwrap();
@@ -98,18 +109,3 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
   Ok(())
 }
-
-// #[tauri::command]
-// fn tokening(name: &str) -> String {
-//     let text = "関西国際空港限定トートバッグ";
-
-//     let mut user_dict = UserDictionary::default();
-//     let mut tokenizer = Tokenizer::new(Mode::Normal, "", &mut user_dict).unwrap();
-//     let tokens = tokenizer.tokenize(text).unwrap();
-
-//     for token in tokens {
-//         println!("{:?}", token.text);
-//     }
-
-//     format!("Hello, {}! use Lindera!", name)
-// }

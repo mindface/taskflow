@@ -11,6 +11,7 @@ type SymbolStruct = {
 
 export type Symbol = {
   id: number;
+  _id?: string;
   title: string;
   content: string;
   structs: SymbolStruct[];
@@ -20,6 +21,7 @@ export type Symbol = {
 
 export type AndroidSymbol = {
   id: string;
+  _id?: string;
   user_id?: string;
   title?: string;
   content?: string;

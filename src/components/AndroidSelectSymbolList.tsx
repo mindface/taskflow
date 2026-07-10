@@ -4,7 +4,7 @@ import { AndroidSymbol } from "../models/Symbol";
 import AndroidSymbolDialog from "./modifier/AndroidSymbolDialog";
 
 const AndroidSelectSymbolList = () => {
-  const [symbols, setSymbols] = useState<AndroidSymbol[]>([]);
+  const [symbols, setSymbols] = useState<(AndroidSymbol & { _firestore_id?: string })[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -24,14 +24,22 @@ const AndroidSelectSymbolList = () => {
   };
 
   const upsertSymbol = (symbol: AndroidSymbol) => {
+    // fetchSymbols();
+    // return;
     setSymbols((prevSymbols) => {
       const existingIndex = prevSymbols.findIndex((item) => item.id === symbol.id);
-      if (existingIndex >= 0) {
-        const nextSymbols = [...prevSymbols];
-        nextSymbols[existingIndex] = symbol;
-        return nextSymbols;
-      }
-      return [symbol, ...prevSymbols];
+      // if (existingIndex >= 0) {
+      //   const nextSymbols = [...prevSymbols];
+      //   nextSymbols[existingIndex] = symbol;
+      //   return nextSymbols;
+      // }
+      console.log("Adding new symbol:", symbol);
+      console.log("Previous symbols:", prevSymbols);
+      return prevSymbols.map(item =>
+        item._firestore_id === symbol.id
+          ? { ...symbol }
+          : { ...item }
+      );
     });
   };
 
@@ -60,9 +68,9 @@ const AndroidSelectSymbolList = () => {
         <p className="text-gray-500">シンボルが見つかりませんでした。</p>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {symbols.map((symbol) => (
+          {symbols.map((symbol,index) => (
             <div 
-              key={symbol.id} 
+              key={`symbol-${index}-${symbol._id}`} 
               className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow"
             >
               <h2 className="text-lg font-semibold text-blue-600 mb-2">{symbol.title || "無題"}</h2>

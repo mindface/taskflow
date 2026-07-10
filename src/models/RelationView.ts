@@ -4,4 +4,3 @@ export type RelationView = {
   to_concept_id: number;
   relation_type: number;
 };
-

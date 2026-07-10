@@ -2,31 +2,31 @@ use crate::models::note::AndroidSymbol;
 use firestore::*;
 use serde_json::json;
 
-fn build_create_payload(symbol: &AndroidSymbol) -> serde_json::Value {
+fn build_create_payload(symbol_info: &AndroidSymbol) -> serde_json::Value {
   let mut obj = json!({});
 
-  if let Some(u) = &symbol.user_id {
+  if let Some(u) = &symbol_info.user_id {
     obj["user_id"] = json!(u);
   }
-  if let Some(t) = &symbol.title {
+  if let Some(t) = &symbol_info.title {
     obj["title"] = json!(t);
   }
-  if let Some(c) = &symbol.content {
+  if let Some(c) = &symbol_info.content {
     obj["content"] = json!(c);
   }
-  if let Some(cr) = &symbol.created_at {
+  if let Some(cr) = &symbol_info.created_at {
     obj["created_at"] = json!(cr);
   }
-  if let Some(up) = &symbol.updated_at {
+  if let Some(up) = &symbol_info.updated_at {
     obj["updated_at"] = json!(up);
   }
-  if let Some(st) = &symbol.symbol_type {
+  if let Some(st) = &symbol_info.symbol_type {
     obj["symbol_type"] = json!(st);
   }
-  if let Some(ex) = &symbol.extension {
+  if let Some(ex) = &symbol_info.extension {
     obj["extension"] = json!(ex);
   }
-  if let Some(l) = &symbol.language {
+  if let Some(l) = &symbol_info.language {
     obj["language"] = json!(l);
   }
 
@@ -34,12 +34,12 @@ fn build_create_payload(symbol: &AndroidSymbol) -> serde_json::Value {
 }
 
 #[tauri::command]
-pub async fn andoroid_create_symbol(symbol: AndroidSymbol) -> Result<AndroidSymbol, String> {
+pub async fn andoroid_create_symbol(symbol_info: AndroidSymbol) -> Result<AndroidSymbol, String> {
   let db = FirestoreDb::new("mymodular-5b5b5")
     .await
     .map_err(|e| format!("Firestore Client Initialization Error: {}", e))?;
 
-  let payload = build_create_payload(&symbol);
+  let payload = build_create_payload(&symbol_info);
 
   let resp = db
     .fluent()
@@ -60,7 +60,7 @@ pub async fn andoroid_create_symbol(symbol: AndroidSymbol) -> Result<AndroidSymb
     .unwrap_or("")
     .to_string();
 
-  let mut out = symbol.clone();
+  let mut out = symbol_info.clone();
   out.id = doc_id;
 
   Ok(out)

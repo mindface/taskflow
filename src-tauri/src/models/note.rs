@@ -30,6 +30,7 @@ pub struct NoteDetail {
 pub struct AndroidSymbol {
   #[serde(rename = "_firestore_id", default)]
   pub id: String,
+  pub _id: Option<String>,
   pub user_id: Option<String>,
   pub title: Option<String>,
   pub content: Option<String>,
