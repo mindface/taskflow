@@ -7,6 +7,7 @@ import "./styles.css";
 import "./styles/dialog.css";
 import "./styles/follow.css";
 import { UIProvider } from "./store/ui";
+import { ShareNotesProvider } from "./store/shareNote";
 import { router } from "./router";
 
 const windowLabel = (window as any).__TAURI_WINDOW_LABEL__;
@@ -20,7 +21,9 @@ const renderSelectDom = () => {
     default:
       return (
         <UIProvider>
-          <RouterProvider router={router} />
+          <ShareNotesProvider>
+            <RouterProvider router={router} />
+          </ShareNotesProvider>
         </UIProvider>
       );
   }
