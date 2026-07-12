@@ -1,4 +1,5 @@
 use crate::models::note::ShareNote;
+use libsql::params;
 use libsql::{Builder, Connection};
 use serde_json;
 
@@ -12,16 +13,15 @@ pub fn deserialize_links(raw: &str) -> Result<Vec<String>, String> {
 
 pub async fn connect() -> Result<Connection, String> {
   let db = Builder::new_remote(
-    std::env::var("TURSO_DATABASE_URL")
-      .map_err(|e| format!("Missing TURSO_DATABASE_URL: {e}"))?,
-    std::env::var("TURSO_AUTH_TOKEN")
-      .map_err(|e| format!("Missing TURSO_AUTH_TOKEN: {e}"))?,
+    std::env::var("TURSO_DATABASE_URL").map_err(|e| format!("Missing TURSO_DATABASE_URL: {e}"))?,
+    std::env::var("TURSO_AUTH_TOKEN").map_err(|e| format!("Missing TURSO_AUTH_TOKEN: {e}"))?,
   )
   .build()
   .await
   .map_err(|e| format!("Turso build error: {e}"))?;
 
-  db.connect().map_err(|e| format!("Turso connect error: {e}"))
+  db.connect()
+    .map_err(|e| format!("Turso connect error: {e}"))
 }
 
 pub async fn create_table(conn: &Connection) -> Result<(), String> {
@@ -56,11 +56,11 @@ pub async fn insert(conn: &Connection, note: &ShareNote) -> Result<(), String> {
       ",
       (
         note.id,
-        &note.title,
-        &note.content,
-        links,
-        &note.created_at,
-        &note.updated_at,
+        note.title.as_str(),
+        note.content.as_str(),
+        links.as_str(),
+        note.created_at.as_str(),
+        note.updated_at.as_str(),
       ),
     )
     .await
@@ -119,8 +119,10 @@ pub async fn list_notes(conn: &Connection) -> Result<Vec<ShareNote>, String> {
 pub async fn get_note(conn: &Connection, id: i64) -> Result<Option<ShareNote>, String> {
   let mut rows = conn
     .query(
-      "SELECT id, title, content, links, created_at, updated_at FROM share_notes WHERE id = ?1",
-      (id,),
+      "SELECT id, title, content, links, created_at, updated_at
+         FROM share_notes
+         WHERE id = ?1",
+      params![id],
     )
     .await
     .map_err(|e| format!("Get share note error: {e}"))?;
@@ -174,11 +176,11 @@ pub async fn update_note(conn: &Connection, note: &ShareNote) -> Result<(), Stri
       ",
       (
         note.id,
-        &note.title,
-        &note.content,
-        links,
-        &note.created_at,
-        &note.updated_at,
+        note.title.as_str(),
+        note.content.as_str(),
+        links.as_str(),
+        note.created_at.as_str(),
+        note.updated_at.as_str(),
       ),
     )
     .await
@@ -189,7 +191,7 @@ pub async fn update_note(conn: &Connection, note: &ShareNote) -> Result<(), Stri
 
 pub async fn delete_note(conn: &Connection, id: i64) -> Result<(), String> {
   conn
-    .execute("DELETE FROM share_notes WHERE id = ?1", (id,))
+    .execute("DELETE FROM share_notes WHERE id = ?1", params![id])
     .await
     .map_err(|e| format!("Delete share note error: {e}"))?;
 
@@ -202,7 +204,10 @@ mod tests {
 
   #[test]
   fn serialize_and_deserialize_links_roundtrip() {
-    let links = vec!["https://example.com".to_string(), "https://example.org".to_string()];
+    let links = vec![
+      "https://example.com".to_string(),
+      "https://example.org".to_string(),
+    ];
     let serialized = serialize_links(&links).unwrap();
     let deserialized = deserialize_links(&serialized).unwrap();
 
