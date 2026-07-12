@@ -16,7 +16,7 @@ export default function SubMemo() {
 
   return (
     <div className="SubMemo flex-1 flex-col h-full">
-      <div className="h-full mb-4 p-4 ">
+      <div className="h-full p-4">
         <textarea
           className="w-full h-full"
           value={content}
