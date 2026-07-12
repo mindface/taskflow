@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 import { RouterProvider } from "@tanstack/react-router";
 import PreviewWindow from './window/PreviewWindow';
 import ViewScheduleWindow from './window/ViewScheduleWindow';
+import SubTextWindow from "./window/SubTextWindow";
 import "./styles.css";
 import "./styles/dialog.css";
 import "./styles/follow.css";
@@ -16,6 +17,8 @@ const renderSelectDom = () => {
   switch (windowLabel) {
     case 'schedule':
       return <ViewScheduleWindow />;
+    case 'submemo_maker':
+      return <SubTextWindow />;
     case 'preview':
       return <PreviewWindow />;
     default:

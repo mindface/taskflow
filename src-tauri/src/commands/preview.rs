@@ -52,7 +52,9 @@ pub fn open_submemo_window(app: tauri::AppHandle, open_continuous: bool) -> Resu
   // 既存のプレビューウィンドウがあれば閉じる
   if let Some(window) = app.get_webview_window("submemo_maker") {
     if open_continuous {
-      println!("[Rust] SubMemo preview window already open, keeping it open due to open_continuous=true");
+      println!(
+        "[Rust] SubMemo preview window already open, keeping it open due to open_continuous=true"
+      );
       return Ok(());
     }
     println!("[Rust] Closing existing SubMemo preview window");
