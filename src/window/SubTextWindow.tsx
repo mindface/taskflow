@@ -25,7 +25,7 @@ export default function SubTextWindow() {
   }, []);
 
   const handleContentUpdate = useCallback((payload: { content: string; title: string }) => {
-    setTitle(payload.title || 'プレビュー');
+    setTitle(payload.title || 'サブメモ');
     setContent(payload.content);
   }, []);
 
@@ -34,12 +34,12 @@ export default function SubTextWindow() {
     <div className="preview-window" style={{ 
       height: '100vh', 
       overflow: 'auto',
-      padding: '24px',
+      padding: '24px 0 0 0',
       display: 'flex',
       flexDirection: 'column',
     }}>
 
-      <div className="header mb-4 pb-4">サブ---マイカー
+      <div className="submemo-header p-2">
         <h2 className="text-3xl font-bold">{title}</h2>
       </div>
       <SubMemo />
