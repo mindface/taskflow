@@ -43,7 +43,15 @@ export function useWindowSync() {
     }
   }, []);
 
-  return { syncContent, syncNoteData, openPreview };
+  const openSubmemo = useCallback(async (openContinuous: boolean) => {
+    try {
+      await invoke('open_submemo_window', { openContinuous });
+    } catch (error) {
+      console.error('open_submemo_window error:', error);
+    }
+  }, []);
+
+  return { syncContent, syncNoteData, openPreview, openSubmemo };
 }
 
 export function usePreviewListener(
