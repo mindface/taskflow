@@ -15,6 +15,15 @@ export type NoteData = {
   relations: RelationView[];
 }
 
+export type ShareNote = {
+  id: number;
+  title: string;
+  content: string;
+  links: string[];
+  created_at: string;
+  updated_at: string;
+}
+
 export type AndroidNote = {
   id: string;
   user_id: string;

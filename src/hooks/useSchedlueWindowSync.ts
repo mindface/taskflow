@@ -30,7 +30,7 @@ export function useScheduleWindowSync() {
     try {
       await invoke('open_schedule_window', { openContinuous });
     } catch (error) {
-      console.error('open_preview_window error:', error);
+      console.error('open_schedule_window error:', error);
     }
   }, []);
 

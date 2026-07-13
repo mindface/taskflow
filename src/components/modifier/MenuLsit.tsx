@@ -2,11 +2,13 @@ import paths from "../../json/path.json";
 import ImageDialog from "./ImageDialog";
 import { useUIContext } from "../../store/ui";
 import { useRouterActions } from "../../hooks/useRouterActions";
+import { useWindowSync } from "../../hooks/useWindowSync";
 
 export default function MenuLsitDialog() {
   const { state } = useUIContext();
   const { requestViewtypeChange, toggleSidebar } = useRouterActions();
   const { viewtype: activePath, isSidebarOpen: switcher } = state;
+  const { openSubmemo } = useWindowSync();
 
   const pageAction = (path: string) => {
     const shouldConfirm =
@@ -16,6 +18,10 @@ export default function MenuLsitDialog() {
 
     requestViewtypeChange(path, shouldConfirm);
   };
+
+  const openSubmemoAction = () => {
+    openSubmemo(true);
+  }
 
   return (
     <div className={ switcher ? "mainbar-outer mainbar-on p-4" : "sidebar-outer p-4" }>
@@ -33,6 +39,12 @@ export default function MenuLsitDialog() {
             )}
           </ul>
           <div className="absolute left-0 bottom-5 w-full">
+            <span
+              className={`block cursor-pointer p-2 transition-all text-left
+                ${activePath === "Submemo" ? "bg-blue-500 text-white" : "text-gray-700 hover:bg-gray-100"}
+              `}
+              onClick={openSubmemoAction}>Submemo
+            </span>
             <ImageDialog />
           </div>
         </div>

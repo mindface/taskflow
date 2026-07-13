@@ -48,6 +48,51 @@ pub fn open_preview_window(app: tauri::AppHandle, open_continuous: bool) -> Resu
 }
 
 #[tauri::command]
+pub fn open_submemo_window(app: tauri::AppHandle, open_continuous: bool) -> Result<(), String> {
+  // 既存のプレビューウィンドウがあれば閉じる
+  if let Some(window) = app.get_webview_window("submemo_maker") {
+    if open_continuous {
+      println!(
+        "[Rust] SubMemo preview window already open, keeping it open due to open_continuous=true"
+      );
+      return Ok(());
+    }
+    println!("[Rust] Closing existing SubMemo preview window");
+    let _ = window.close(); // 型推論のため let _ = を使用
+  }
+
+  // 毎回ユニークなラベルを作成する（例: preview_1712345678）
+  let now = SystemTime::now()
+    .duration_since(UNIX_EPOCH)
+    .unwrap()
+    .as_secs();
+  let label = format!("submemo_maker_{}", now);
+
+  let _preview_window = tauri::webview::WebviewWindowBuilder::new(
+    &app,
+    &label,
+    tauri::WebviewUrl::App("index.html".into()),
+  )
+  .title("サブメモ")
+  .inner_size(800.0, 600.0)
+  .resizable(true)
+  .initialization_script(
+    r#"
+      window.__TAURI_WINDOW_LABEL__ = 'submemo_maker';
+    "#,
+  )
+  .build()
+  .map_err(|e| {
+    let err = format!("Failed to build window: {}", e);
+    println!("[Rust] ERROR: {}", err);
+    err
+  })?;
+
+  println!("[Rust] SubMemo preview window created successfully");
+  Ok(())
+}
+
+#[tauri::command]
 pub fn sync_content_to_preview(
   app: tauri::AppHandle,
   state: tauri::State<Mutex<PreviewState>>,

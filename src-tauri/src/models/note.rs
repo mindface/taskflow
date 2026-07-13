@@ -20,6 +20,16 @@ pub struct AndroidNote {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct ShareNote {
+  pub id: i64,
+  pub title: String,
+  pub content: String,
+  pub links: Vec<String>,
+  pub created_at: String,
+  pub updated_at: String,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct NoteDetail {
   pub note: Note,
   pub concepts: Vec<ConceptView>,
