@@ -74,6 +74,7 @@ mod tests {
   fn builds_update_payload_with_symbol_fields() {
     let symbol = AndroidSymbol {
       id: "symbol-1".to_string(),
+      _id: None,
       user_id: Some("user-1".to_string()),
       title: Some("main.rs".to_string()),
       content: Some("fn main() {}".to_string()),

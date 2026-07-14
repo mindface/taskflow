@@ -74,6 +74,7 @@ mod tests {
   fn builds_payload_without_manual_document_id() {
     let symbol = AndroidSymbol {
       id: String::new(),
+      _id: None,
       user_id: Some("user-1".to_string()),
       title: Some("main.rs".to_string()),
       content: Some("fn main() {}".to_string()),

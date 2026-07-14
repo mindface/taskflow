@@ -2,6 +2,8 @@ import React, { createContext, useReducer, useContext, ReactNode } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { ShareNote } from "../models/Notes";
 
+export type ShareNoteInput = Pick<ShareNote, "title" | "content" | "links">;
+
 type State = {
   shareNotes: ShareNote[];
   loadingShareNotes: boolean;
@@ -39,14 +41,16 @@ function reducer(state: State, action: Action): State {
 const ShareNotesContext = createContext<
   State & {
     loadShareNotes: () => Promise<void>;
-    addShareNote: (note: ShareNote) => Promise<void>;
+    addShareNote: (input: ShareNoteInput) => Promise<ShareNote>;
     updateShareNote: (note: ShareNote) => Promise<void>;
     deleteShareNote: (id: number) => Promise<void>;
   }
 >({
   ...initialState,
   loadShareNotes: async () => {},
-  addShareNote: async () => {},
+  addShareNote: async () => {
+    throw new Error("ShareNotesProvider is not available");
+  },
   updateShareNote: async () => {},
   deleteShareNote: async () => {},
 });
@@ -64,12 +68,14 @@ export function ShareNotesProvider({ children }: { children: ReactNode }) {
     }
   }
 
-  async function addShareNote(note: ShareNote) {
+  async function addShareNote(input: ShareNoteInput) {
     try {
-      await invoke("turso_insert_share_note", { note });
+      const note = await invoke<ShareNote>("turso_create_share_note", { input });
       await loadShareNotes();
+      return note;
     } catch (e: any) {
       dispatch({ type: "SET_ERROR", payload: String(e) });
+      throw e;
     }
   }
 
@@ -79,6 +85,7 @@ export function ShareNotesProvider({ children }: { children: ReactNode }) {
       await loadShareNotes();
     } catch (e: any) {
       dispatch({ type: "SET_ERROR", payload: String(e) });
+      throw e;
     }
   }
 
@@ -88,6 +95,7 @@ export function ShareNotesProvider({ children }: { children: ReactNode }) {
       await loadShareNotes();
     } catch (e: any) {
       dispatch({ type: "SET_ERROR", payload: String(e) });
+      throw e;
     }
   }
 
