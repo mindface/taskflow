@@ -1,5 +1,5 @@
 import paths from "../../json/path.json";
-import ImageDialog from "./ImageDialog";
+import ImageDialog from "./iconDialog/ImageDialog";
 import { useUIContext } from "../../store/ui";
 import { useRouterActions } from "../../hooks/useRouterActions";
 
