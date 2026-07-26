@@ -12,6 +12,41 @@ use migrations::run_migrations::run_migrations;
 use crate::models::state::PreviewState;
 use crate::models::state::ScheduleState;
 use std::sync::Mutex;
+use std::time::Duration;
+use tauri_plugin_clipboard_manager::ClipboardExt;
+use tauri_plugin_global_shortcut::{GlobalShortcutExt, ShortcutState};
+
+#[cfg(target_os = "macos")]
+const CLIPBOARD_SHORTCUT: &str = "Cmd+Shift+P";
+
+#[cfg(not(target_os = "macos"))]
+const CLIPBOARD_SHORTCUT: &str = "Ctrl+Shift+P";
+
+/// Watches clipboard changes outside the shortcut callback, so native Cmd/Ctrl+C
+/// continues to work without blocking the OS keyboard event handler.
+fn start_clipboard_history_monitor(app: tauri::AppHandle) {
+  std::thread::spawn(move || {
+    // Do not save clipboard content that existed before Taskflow started.
+    let mut last_content = app.clipboard().read_text().ok();
+
+    loop {
+      std::thread::sleep(Duration::from_millis(250));
+
+      let Ok(content) = app.clipboard().read_text() else {
+        continue;
+      };
+
+      if last_content.as_ref() == Some(&content) {
+        continue;
+      }
+
+      last_content = Some(content.clone());
+      if let Err(error) = db::clipboard_history::save_clipboard_content(&content) {
+        log::error!("Failed to save clipboard history: {error}");
+      }
+    }
+  });
+}
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
   if let Ok(current_dir) = std::env::current_dir() {
@@ -30,11 +65,38 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
   run_migrations().unwrap();
 
   tauri::Builder::default()
+    .plugin(tauri_plugin_clipboard_manager::init())
+    .plugin(
+      tauri_plugin_global_shortcut::Builder::new()
+        .with_handler(|app, _shortcut, event| {
+          if event.state() != ShortcutState::Pressed {
+            return;
+          }
+
+          match app.clipboard().read_text() {
+            Ok(content) => {
+              if let Err(error) = db::clipboard_history::save_clipboard_content(&content) {
+                log::error!("Failed to save clipboard history: {error}");
+              }
+            }
+            Err(error) => log::error!("Failed to read clipboard text: {error}"),
+          }
+        })
+        .build(),
+    )
     .plugin(tauri_plugin_fs::init())
     .plugin(tauri_plugin_shell::init())
     .plugin(tauri_plugin_dialog::init())
     .manage(Mutex::new(PreviewState::default()))
     .manage(Mutex::new(ScheduleState::default()))
+    .setup(|app| {
+      start_clipboard_history_monitor(app.handle().clone());
+      app
+        .global_shortcut()
+        .register(CLIPBOARD_SHORTCUT)
+        .map_err(|error| format!("Failed to register {CLIPBOARD_SHORTCUT}: {error}"))?;
+      Ok(())
+    })
     .invoke_handler(tauri::generate_handler![
       commands::file_operations::add_file,
       commands::file_operations::list_files,

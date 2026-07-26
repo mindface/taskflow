@@ -38,7 +38,7 @@ function App() {
       <div
         className={`div-outer p-4 ${backendClass}`}
       >
-          {viewtype}
+          {viewtype} | @@@{isProduction? "本番環境" : "開発環境"} | {import.meta.env.VITE_APP_ENV}
           <HoverFollow
             className="app-main-follow" glowClassName="app-main-follow__orb"
           >
