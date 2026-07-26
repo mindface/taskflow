@@ -38,6 +38,8 @@ tokio = { version = "1", features = ["full"] }
 futures = "0.3.32"
 jsonwebtoken = { version = "10.3.0", default-features = false, features = ["use_pem", "rust_crypto"] }
 dotenvy = "0.15"
+tauri-plugin-clipboard-manager = "2.3.2"
+tauri-plugin-global-shortcut = "2.3.2"
 
 [target.'cfg(target_os = "macos")'.dependencies]
 cocoa = "0.25"

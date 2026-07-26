@@ -16,6 +16,8 @@ import ViewAndroidMemo from "./pages/ViewAndroidMemo";
 import LlmMemoPage from "./pages/LlmMemo";
 import UserRegister from "./pages/UserRegister";
 import ShareNotes from "./pages/ShareNotes";
+import ClipboardHistory from "./pages/ClipboardHistory";
+
 import { DataProvider } from "./store/dataBox";
 import { NotesProvider } from "./store/note";
 
@@ -107,6 +109,12 @@ const shareNotesRoute = createRoute({
   component: ShareNotes,
 });
 
+const clipboardHistoryRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/clipboard-history",
+  component: ClipboardHistory,
+});
+
 const routeTree = rootRoute.addChildren([
   indexRoute,
   structsmakeRoute,
@@ -120,6 +128,7 @@ const routeTree = rootRoute.addChildren([
   llmMemoRoute,
   userRegisterRoute,
   shareNotesRoute,
+  clipboardHistoryRoute,
 ]);
 
 export const router = createRouter({ routeTree });

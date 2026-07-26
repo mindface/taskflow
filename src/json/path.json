@@ -65,5 +65,11 @@
     "name":"shareNotes",
     "path":"/share-notes",
     "description":"Turso共有メモページ"
+  },
+  {
+    "id":"path13",
+    "name":"clipboardHistory",
+    "path":"/clipboard-history",
+    "description":"クリップボード履歴"
   }
 ]
