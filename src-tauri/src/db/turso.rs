@@ -171,7 +171,7 @@ pub async fn update_note(conn: &Connection, note: &ShareNote) -> Result<(), Stri
     .execute(
       "
       UPDATE share_notes
-      SET title = ?2, content = ?3, links = ?4, created_at = ?5, updated_at = ?6
+      SET title = ?2, content = ?3, links = ?4, updated_at = ?5
       WHERE id = ?1
       ",
       (
@@ -179,7 +179,6 @@ pub async fn update_note(conn: &Connection, note: &ShareNote) -> Result<(), Stri
         note.title.as_str(),
         note.content.as_str(),
         links.as_str(),
-        note.created_at.as_str(),
         note.updated_at.as_str(),
       ),
     )

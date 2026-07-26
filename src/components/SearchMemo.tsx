@@ -15,7 +15,7 @@ interface SearchParams {
 }
 
 export function SearchMemo() {
-  const { syncContent, syncNoteData, openPreview } = useWindowSync();
+  const { syncContent, openPreview } = useWindowSync();
   const {
     concepts,
     loading,

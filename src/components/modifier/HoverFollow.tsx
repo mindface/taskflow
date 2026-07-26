@@ -67,6 +67,7 @@ export default function HoverFollow(props: Props) {
     toggleSidebar();
   };
 
+  // アプリごとに検証の余地がある
   const onTapToggle = (e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>) => {
   // if (e.touches.length === 2) {
   //   console.log("2本指タップ");

@@ -11,6 +11,7 @@ export default function MemoMakerDialog({
   note,
 }: Props) {
   const [isOpen, setIsOpen] = useState(false);
+  
   const dialogHandler = () => {
     setIsOpen(!isOpen);
   };

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useWindowSync } from "../../hooks/useWindowSync";
 import { Note } from "../../models/Notes";
 import CoreDialog from "../core/CoreDialog";
 import EditIcon from "../../assets/edit.svg";
@@ -6,8 +7,6 @@ import WindowIcon from "../../assets/window.svg";
 import DeleteIcon from "../../assets/delete.svg";
 
 import "../../styles/sidebar.css";
-
-import { useWindowSync } from "../../hooks/useWindowSync";
 
 type Props = {
   notes: Note[];
@@ -29,7 +28,7 @@ export default function MemoMakerDialog({
   onImportNotes
 }: Props) {
   const [isOpen, setIsOpen] = useState(false);
-  const { syncContent, syncNoteData, openPreview } = useWindowSync();
+  const { syncContent, openPreview } = useWindowSync();
   const DialogHandler = () => {
     setIsOpen(!isOpen);
   };

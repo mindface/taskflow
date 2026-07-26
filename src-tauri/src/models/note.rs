@@ -29,6 +29,14 @@ pub struct ShareNote {
   pub updated_at: String,
 }
 
+#[derive(Deserialize, Debug)]
+pub struct ShareNoteInput {
+  pub title: String,
+  pub content: String,
+  #[serde(default)]
+  pub links: Vec<String>,
+}
+
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct NoteDetail {
   pub note: Note,
