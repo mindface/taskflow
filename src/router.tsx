@@ -15,6 +15,7 @@ import Schedule from "./pages/Schedule";
 import ViewAndroidMemo from "./pages/ViewAndroidMemo";
 import LlmMemoPage from "./pages/LlmMemo";
 import UserRegister from "./pages/UserRegister";
+import ClipboardHistory from "./pages/ClipboardHistory";
 import { DataProvider } from "./store/dataBox";
 import { NotesProvider } from "./store/note";
 
@@ -100,6 +101,12 @@ const userRegisterRoute = createRoute({
   component: UserRegister,
 });
 
+const clipboardHistoryRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/clipboard-history",
+  component: ClipboardHistory,
+});
+
 const routeTree = rootRoute.addChildren([
   indexRoute,
   structsmakeRoute,
@@ -112,6 +119,7 @@ const routeTree = rootRoute.addChildren([
   viewAndroidMemoRoute,
   llmMemoRoute,
   userRegisterRoute,
+  clipboardHistoryRoute,
 ]);
 
 export const router = createRouter({ routeTree });
