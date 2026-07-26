@@ -98,7 +98,7 @@ export default function DbInspector() {
                   <div className="text-[9px] text-gray-400 font-bold uppercase">records</div>
                 </div>
               </div>
-              
+
               <div className="space-y-1">
                 {table.columns.map(col => (
                   <div key={col.name} className="flex justify-between text-[11px] font-mono">

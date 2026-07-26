@@ -1,15 +1,13 @@
 import paths from "../../json/path.json";
 
-import ImageDialog from "../modifier/ImageDialog";
+import ImageDialog from "../modifier/iconDialog/ImageDialog";
 
 import { useUIContext } from "../../store/ui";
 import { useRouterActions } from "../../hooks/useRouterActions";
 
-type Props = {}
-
-function Header(props: Props) {
+function Header() {
   const { state } = useUIContext();
-  const { requestViewtypeChange, toggleSidebar } = useRouterActions();
+  const { requestViewtypeChange } = useRouterActions();
   const { viewtype: activePath } = state;
 
   const pageAction = (path: string) => {

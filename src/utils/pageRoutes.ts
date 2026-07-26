@@ -10,6 +10,7 @@ export const pageRoutes = [
   { viewtype: "viewAndroidMemo", path: "/viewAndroidMemo" },
   { viewtype: "llmMemo", path: "/llmMemo" },
   { viewtype: "userRegister", path: "/user-register" },
+  { viewtype: "shareNotes", path: "/share-notes" },
 ] as const;
 
 export type AppViewType = (typeof pageRoutes)[number]["viewtype"];

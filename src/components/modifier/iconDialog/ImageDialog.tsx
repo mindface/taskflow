@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
-import CoreDialog from "../core/CoreDialog"
+import CoreDialog from "../../core/CoreDialog"
 import { convertFileSrc } from "@tauri-apps/api/core"
-import ImageElement from "./ImageElement"
-import ImageIcon from "../../assets/image.svg";
+import ImageElement from "./../ImageElement"
+import ImageIcon from "../../../assets/image.svg";
 
 export default function ImageDialog() {
   const [isOpen, setIsOpen] = useState(false);
@@ -19,9 +19,7 @@ export default function ImageDialog() {
       const res = await invoke<string[]>("list_image_files", {
         directory
       });
-      console.log(res)
       setImages(res);
-
     } catch (e) {
       console.error(e);
     }

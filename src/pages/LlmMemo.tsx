@@ -265,7 +265,7 @@ export default function LlmMemoPage() {
                   key={memo.id}
                   className="sidebar-item border rounded mb-4 relative p-2 bg-white border-b border-gray-200"
                 >
-                  <div className="flex justify-between items-center pb-2">
+                  <div className="pb-2">
                     <p className="pb-2 border-b border-gray-400">
                       <strong
                         className="inline-block hover"
@@ -274,7 +274,9 @@ export default function LlmMemoPage() {
                         {memo.title}
                       </strong>
                     </p>
-                    <small>{memo.updated_at}</small>
+                    <p>
+                      <small>{memo.updated_at}</small>
+                    </p>
                   </div>
                   <div className="pb-2">tag: {memo.tag || "-"}</div>
                   <div className="pb-2">role: {memo.role || "-"}</div>

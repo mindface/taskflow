@@ -59,5 +59,11 @@
     "name":"userRegister",
     "path":"/user-register",
     "description":"ユーザー登録ページ"
+  },
+  {
+    "id":"path12",
+    "name":"shareNotes",
+    "path":"/share-notes",
+    "description":"Turso共有メモページ"
   }
 ]
