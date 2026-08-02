@@ -2,6 +2,94 @@ use crate::db::db_core::get_conn;
 use crate::models::user::User;
 use chrono::Utc;
 use rusqlite::params;
+use serde::{Deserialize, Serialize};
+use std::fs;
+use std::path::PathBuf;
+
+pub fn init_firebase_credentials_from_user_config() {
+  // すでに OS 側の環境変数が設定されていればそれを優先
+  if let Ok(path) = std::env::var("GOOGLE_APPLICATION_CREDENTIALS") {
+    if !path.trim().is_empty() {
+      println!("Already set via OS env: {}", path);
+      return;
+    }
+  }
+
+  // .taskflow/users/ 内の json ファイルを探索（あるいは特定の uid を指定）
+  let home = std::env::var("HOME").unwrap_or_else(|_| ".".to_string());
+  let users_dir = PathBuf::from(home).join(".taskflow").join("users");
+
+  if let Ok(entries) = fs::read_dir(users_dir) {
+    for entry in entries.flatten() {
+      let path = entry.path();
+      // .json ファイルを見つけたら中身をパース
+      if path.extension().and_then(|s| s.to_str()) == Some("json") {
+        if let Ok(content) = fs::read_to_string(&path) {
+          if let Ok(config) = serde_json::from_str::<UserCredentialConfig>(&content) {
+            if let Some(cred_path) = config.firebase_credential_path {
+              if !cred_path.trim().is_empty() && std::path::Path::new(&cred_path).exists() {
+                println!("Setting GOOGLE_APPLICATION_CREDENTIALS to: {}", cred_path);
+                // 🔑 ここで環境変数をプロセス全体に設定する！
+                std::env::set_var("GOOGLE_APPLICATION_CREDENTIALS", &cred_path);
+                break;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+#[derive(Debug, Serialize, Deserialize, Default)]
+struct UserCredentialConfig {
+  firebase_credential_path: Option<String>,
+}
+
+fn user_config_dir() -> Result<PathBuf, String> {
+  let home = std::env::var("HOME").unwrap_or_else(|_| ".".to_string());
+  let dir = PathBuf::from(home).join(".taskflow").join("users");
+  fs::create_dir_all(&dir).map_err(|e| format!("Create user config dir error: {e}"))?;
+  Ok(dir)
+}
+
+fn user_config_path(firebase_uid: &str) -> Result<PathBuf, String> {
+  let dir = user_config_dir()?;
+  Ok(dir.join(format!("{}.json", firebase_uid)))
+}
+
+// pub fn ensure_user_credential_config(firebase_uid: &str) -> Result<PathBuf, String> {
+//   let path = user_config_path(firebase_uid)?;
+//   if path.exists() {
+//     return Ok(path);
+//   }
+
+//   let default_config = UserCredentialConfig {
+//     firebase_credential_path: None,
+//   };
+//   save_user_config(firebase_uid, &default_config)?;
+//   Ok(path)
+// }
+
+fn load_user_config(firebase_uid: &str) -> Result<UserCredentialConfig, String> {
+  let path = user_config_path(firebase_uid)?;
+  if !path.exists() {
+    return Ok(UserCredentialConfig::default());
+  }
+
+  let content = fs::read_to_string(&path).map_err(|e| format!("Read user config error: {e}"))?;
+  let config: UserCredentialConfig = serde_json::from_str(&content)
+    .map_err(|e| format!("Parse user config error: {e}"))?;
+  Ok(config)
+}
+
+fn save_user_config(firebase_uid: &str, config: &UserCredentialConfig) -> Result<(), String> {
+  let path = user_config_path(firebase_uid)?;
+  let content = serde_json::to_string_pretty(config)
+    .map_err(|e| format!("Serialize user config error: {e}"))?;
+  fs::write(&path, content).map_err(|e| format!("Write user config error: {e}"))?;
+  Ok(())
+}
 
 #[tauri::command]
 pub fn add_user(
@@ -60,6 +148,29 @@ pub fn list_users() -> Result<Vec<User>, String> {
     users.push(user.map_err(|e| format!("Row read error: {}", e))?);
   }
   Ok(users)
+}
+
+#[tauri::command]
+pub fn save_user_firebase_credential(
+  firebase_uid: String,
+  credential_path: String,
+) -> Result<String, String> {
+  let config = UserCredentialConfig {
+    firebase_credential_path: Some(credential_path.clone()),
+  };
+  save_user_config(&firebase_uid, &config)?;
+  Ok(credential_path)
+}
+
+#[tauri::command]
+pub fn get_user_firebase_credential(firebase_uid: String) -> Result<Option<String>, String> {
+  let config = load_user_config(&firebase_uid)?;
+  Ok(config.firebase_credential_path)
+}
+
+pub fn load_saved_user_firebase_credential(firebase_uid: &str) -> Result<Option<String>, String> {
+  let config = load_user_config(firebase_uid)?;
+  Ok(config.firebase_credential_path)
 }
 
 #[tauri::command]

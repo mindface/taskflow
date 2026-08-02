@@ -49,6 +49,8 @@ fn start_clipboard_history_monitor(app: tauri::AppHandle) {
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
+  crate::commands::user::init_firebase_credentials_from_user_config();
+
   if let Ok(current_dir) = std::env::current_dir() {
     let dotenv_path = current_dir.join("../.env");
     let _ = dotenvy::from_path(dotenv_path);
@@ -63,6 +65,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
   init_db().unwrap();
   init_schedule_db().unwrap();
   run_migrations().unwrap();
+
+  // if let Ok(firebase_uid) = std::env::var("FIREBASE_UID") {
+  //   let _ = crate::commands::user::ensure_user_credential_config(&firebase_uid);
+  //   if let Ok(Some(path)) = crate::commands::user::load_saved_user_firebase_credential(&firebase_uid) {
+  //     let _ = crate::commands::firestore::google_credentials::apply_saved_google_credentials(&path);
+  //   }
+  // }
 
   tauri::Builder::default()
     .plugin(tauri_plugin_clipboard_manager::init())
@@ -171,6 +180,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
       commands::firestore::andoroid_create_symbol::andoroid_create_symbol,
       commands::user::add_user,
       commands::user::list_users,
+      commands::user::save_user_firebase_credential,
+      commands::user::get_user_firebase_credential,
       commands::user::update_user,
       db::db_stats::get_db_stats,
       db::clipboard_history::list_clipboard_history,

@@ -1,5 +1,6 @@
 import { FormEvent, useState, useEffect } from "react";
 import { invoke } from "@tauri-apps/api/core";
+import { open } from "@tauri-apps/plugin-dialog";
 import { User } from "../models/User";
 import { useUIContext } from "../store/ui";
 
@@ -17,6 +18,8 @@ export default function UserRegister() {
   const [uiSelection, setUiSelection] = useState("{\n  \"theme\": \"light\",\n  \"sidebarOpen\": true,\n  \"voiceInputEnabled\": false\}");
   const [users, setUsers] = useState<User[]>([]);
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
+  const [credentialPath, setCredentialPath] = useState("");
+  const [credentialStatus, setCredentialStatus] = useState("");
 
   useEffect(() => {
     fetchUsers();
@@ -107,6 +110,51 @@ export default function UserRegister() {
     setActivated(true);
     setRoles("");
     setUiSelection("{\n  \"theme\": \"light\",\n  \"sidebarOpen\": true,\n  \"voiceInputEnabled\": false\}");
+  };
+
+  const handleSelectCredentialFile = async () => {
+    try {
+      const selected = await open({
+        multiple: false,
+        filters: [{ name: "JSON", extensions: ["json"] }],
+        title: "Firebase設定ファイルを選択してください",
+      });
+
+      if (!selected) {
+        return;
+      }
+
+      const selectedPath = typeof selected === "string" ? selected : selected[0];
+      setCredentialPath(selectedPath);
+      setCredentialStatus(`選択済み: ${selectedPath}`);
+    } catch (error) {
+      console.error("Failed to select credential file", error);
+      setCredentialStatus("ファイルの選択に失敗しました。" );
+    }
+  };
+
+  const handleSaveCredentialForUser = async () => {
+    if (!firebaseUid) {
+      window.alert("まず Firebase UID を入力してください。");
+      return;
+    }
+
+    if (!credentialPath) {
+      window.alert("まず Firebase 設定ファイルを選択してください。");
+      return;
+    }
+
+    try {
+      const savedPath = await invoke<string>("save_user_firebase_credential", {
+        firebaseUid,
+        credentialPath,
+      });
+      setCredentialStatus(`保存しました: ${savedPath}`);
+      window.alert(`ユーザー ${firebaseUid} に Firebase 設定を保存しました。`);
+    } catch (error) {
+      console.error("Failed to save user credential", error);
+      window.alert("Firebase 設定の保存に失敗しました。" );
+    }
   };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -230,6 +278,27 @@ export default function UserRegister() {
             onChange={(e) => setUiSelection(e.target.value)}
           />
         </div>
+        <div className="space-y-2 rounded border border-gray-300 bg-gray-50 p-3">
+          <label className="block text-sm font-medium">Firebase 設定ファイル</label>
+          <div className="flex gap-2">
+            <button
+              type="button"
+              className="rounded bg-gray-700 px-4 py-2 text-white hover:bg-gray-800"
+              onClick={handleSelectCredentialFile}
+            >
+              ファイルを選択
+            </button>
+            <button
+              type="button"
+              className="rounded bg-green-600 px-4 py-2 text-white hover:bg-green-700"
+              onClick={handleSaveCredentialForUser}
+            >
+              このユーザーに保存
+            </button>
+          </div>
+          <div className="text-sm text-slate-600">{credentialPath || "まだファイルが選択されていません"}</div>
+          {credentialStatus && <div className="text-sm text-blue-700">{credentialStatus}</div>}
+        </div>
         <div className="flex items-center gap-3">
           <button
             type="submit"
@@ -248,7 +317,6 @@ export default function UserRegister() {
           )}
         </div>
       </form>
-
       <div className="p-4 border rounded">
         <h2 className="text-xl font-semibold mb-3">Existing Users</h2>
         <div className="mb-4">
