@@ -132,6 +132,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
       commands::search_memo::get_search_memo::get_llm_memo,
       commands::search_memo::update_search_memo::update_llm_memo,
       commands::search_memo::delete_search_memo::delete_llm_memo,
+      commands::search::common_items::search_common_items,
       // commands::sql_memo::list_concepts,
       // commands::sql_memo::get_note_detail,
       // commands::sql_memo::search_concepts,

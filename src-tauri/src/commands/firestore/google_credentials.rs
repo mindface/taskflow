@@ -1,6 +1,6 @@
-use std::path::PathBuf;
-use std::path::Path;
 use crate::commands::user::load_saved_user_firebase_credential;
+use std::path::Path;
+use std::path::PathBuf;
 
 // pub fn google_application_credentials_path() -> PathBuf {
 //   if let Some(path) = std::env::var_os("GOOGLE_APPLICATION_CREDENTIALS") {
@@ -40,7 +40,7 @@ pub fn ensure_google_credentials(user_id: Option<&str>) -> Result<String, String
       let trimmed = saved_path.trim();
       if !trimmed.is_empty() && Path::new(trimmed).exists() {
         println!("Applying saved GOOGLE_APPLICATION_CREDENTIALS for user '{uid}': {trimmed}");
-        
+
         // ⚡️ 環境変数にセット
         std::env::set_var("GOOGLE_APPLICATION_CREDENTIALS", trimmed);
         return Ok(trimmed.to_string());

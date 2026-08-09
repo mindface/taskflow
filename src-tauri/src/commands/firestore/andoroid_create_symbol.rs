@@ -38,7 +38,9 @@ fn build_create_payload(symbol_info: &AndroidSymbol) -> serde_json::Value {
 pub async fn andoroid_create_symbol(symbol_info: AndroidSymbol) -> Result<AndroidSymbol, String> {
   if let Ok(path) = std::env::var("GOOGLE_APPLICATION_CREDENTIALS") {
     println!("Using Firebase credentials from env: {path}");
-  } else if let Ok(Some(saved_path)) = crate::commands::user::load_saved_user_firebase_credential("default") {
+  } else if let Ok(Some(saved_path)) =
+    crate::commands::user::load_saved_user_firebase_credential("default")
+  {
     let _ = google_credentials::apply_saved_google_credentials(&saved_path);
   }
 

@@ -9,6 +9,18 @@ pub struct Note {
   pub updated_at: String,
 }
 
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct SearchItem {
+  pub source: String,
+  pub id: i64,
+  pub title: Option<String>,
+  pub content: Option<String>,
+  pub created_at: Option<String>,
+  pub updated_at: Option<String>,
+  pub tag: Option<String>,
+  pub role: Option<String>,
+}
+
 #[derive(Serialize, Deserialize, Debug)]
 pub struct AndroidNote {
   pub id: String,

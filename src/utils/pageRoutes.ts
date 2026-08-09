@@ -12,6 +12,7 @@ export const pageRoutes = [
   { viewtype: "userRegister", path: "/user-register" },
   { viewtype: "shareNotes", path: "/share-notes" },
   { viewtype: "clipboardHistory", path: "/clipboard-history" },
+  { viewtype: "searchTotal", path: "/search-total" },
 ] as const;
 
 export type AppViewType = (typeof pageRoutes)[number]["viewtype"];

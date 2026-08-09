@@ -18,11 +18,15 @@
   padding: 2rem;
   width: 100%;
   max-width: min(500px, 80vw);
+  min-height: min(300px, 50vh);
   max-height: 80svh;
   overflow-y: auto;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
-.daialog-content-wide {
+.dialog-content.medium {
+  max-width: min(700px, 80vw);
+}
+.dialog-content.large {
   max-width: max(800px, 80vw);
 }
 .dialog-header {

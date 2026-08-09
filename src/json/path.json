@@ -71,5 +71,11 @@
     "name":"clipboardHistory",
     "path":"/clipboard-history",
     "description":"クリップボード履歴"
+  },
+  {
+    "id":"path14",
+    "name":"searchTotal",
+    "path":"/total-search",
+    "description":"総合検索"
   }
 ]
