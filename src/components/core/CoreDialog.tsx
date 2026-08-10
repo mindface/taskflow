@@ -10,6 +10,7 @@ interface CoreDialogProps {
   className?: string;
   returnFocus?: boolean;
   ariaLabel?: string;
+  size?: "small" | "medium" | "large";
 }
 
 const CoreDialog = ({
@@ -21,6 +22,7 @@ const CoreDialog = ({
   className = "",
   returnFocus = true,
   ariaLabel,
+  size = "medium"
 }: CoreDialogProps) => {
   const dialogRef = useRef<HTMLDialogElement | null>(null);
   const lastActiveElement = useRef<Element | null>(null);
@@ -119,7 +121,7 @@ const CoreDialog = ({
       style={{ padding: 0, border: "none", borderRadius: 6 }}
     >
       <div className="dialog-overlay" style={{ background: "transparent" }}>
-        <div className={`dialog-content ${className}`} style={contentStyle} role="document">
+        <div className={`dialog-content ${className} ${size?size:""}`} style={contentStyle} role="document">
           <div
             className="dialog-header"
             style={{

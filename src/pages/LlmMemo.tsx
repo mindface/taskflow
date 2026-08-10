@@ -1,7 +1,9 @@
 import { invoke } from "@tauri-apps/api/core";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { LlmMemo } from "../models/LlmMemo";
 import CoreDialog from "../components/core/CoreDialog";
+import ListSearch from "../components/core/ListSearch";
+import { filterBySearchValues, SearchValues } from "../utils/search";
 import { useUIContext } from "../store/ui";
 
 const initialForm = {
@@ -19,8 +21,12 @@ export default function LlmMemoPage() {
   const [content, setContent] = useState(initialForm.content);
   const [tag, setTag] = useState(initialForm.tag);
   const [role, setRole] = useState(initialForm.role);
-  const [filterTag, setFilterTag] = useState("");
-  const [filterRole, setFilterRole] = useState("");
+  const [searchValues, setSearchValues] = useState<SearchValues>({
+    title: "",
+    content: "",
+    tag: "",
+    role: "",
+  });
   const [loading, setLoading] = useState(false);
   const [editingMemo, setEditingMemo] = useState<LlmMemo | null>(null);
   const [deletingMemo, setDeletingMemo] = useState<LlmMemo | null>(null);
@@ -179,16 +185,16 @@ export default function LlmMemoPage() {
   }, []);
 
 
-  const filteredMemos = memos.filter((memo) => {
-    const tagMatched =
-      filterTag.trim() === "" ||
-      memo.tag.toLowerCase().includes(filterTag.trim().toLowerCase());
-    const roleMatched =
-      filterRole.trim() === "" ||
-      memo.role.toLowerCase().includes(filterRole.trim().toLowerCase());
-
-    return tagMatched && roleMatched;
-  });
+  const filteredMemos = useMemo(
+    () =>
+      filterBySearchValues(memos, searchValues, {
+        title: (memo) => memo.title,
+        content: (memo) => memo.content,
+        tag: (memo) => memo.tag,
+        role: (memo) => memo.role,
+      }),
+    [memos, searchValues],
+  );
 
   return (
     <div className="p-4">
@@ -244,20 +250,17 @@ export default function LlmMemoPage() {
           </div>
           <div className="w-half border rounded p-4">
             <div className="pb-2 font-size-middle">一覧</div>
-            <div className="pb-4 flex gap-4">
-              <input
-                className="w-half"
-                value={filterTag}
-                onChange={(event) => setFilterTag(event.target.value)}
-                placeholder="tagで絞り込み"
-              />
-              <input
-                className="w-half"
-                value={filterRole}
-                onChange={(event) => setFilterRole(event.target.value)}
-                placeholder="roleで絞り込み"
-              />
-            </div>
+            <div className="pb-4">
+            <ListSearch
+              fields={[
+                { key: "title", label: "タイトル", placeholder: "タイトル検索", value: searchValues.title },
+                { key: "content", label: "本文", placeholder: "本文検索", value: searchValues.content },
+                { key: "tag", label: "タグ", placeholder: "tagで絞り込み", value: searchValues.tag },
+                { key: "role", label: "ロール", placeholder: "roleで絞り込み", value: searchValues.role },
+              ]}
+              onFieldChange={(key, value) => setSearchValues((prev) => ({ ...prev, [key]: value }))}
+            />
+          </div>
             {loading && <div className="pb-2">loading...</div>}
             <ul>
               {filteredMemos.map((memo) => (

@@ -1,6 +1,8 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useMemo, useState, useRef } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { Note, NoteData } from "../models/Notes";
+import ListSearch from "../components/core/ListSearch";
+import { filterBySearchValues, SearchValues } from "../utils/search";
 import MemoList from "../components/modifier/MemoGridList";
 
 import Dialog from "../components/core/CoreDialog";
@@ -27,11 +29,15 @@ export default function MemoMaker() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [noteData, setNoteData] = useState<NoteData | null>(null)
+  const [noteSearchValues, setNoteSearchValues] = useState<SearchValues>({
+    title: "",
+    content: "",
+  });
   const [isOpen,isOpenSet] = useState(false);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [isVoiceListening, setIsVoiceListening] = useState(false);
   const recognitionRef = useRef<any>(null);
-  const { syncContent, syncNoteData, openPreview } = useWindowSync();
+  const { syncContent, openPreview } = useWindowSync();
   const { basedInputEvent } = inputSaved();
 
   const voiceInputEnabled = state.uiSelection?.voiceInputEnabled === true;
@@ -102,6 +108,15 @@ export default function MemoMaker() {
       dispatch({ type: "CLEAR_INPUT_CHECK_VALUE" });
     };
   }, [dispatch]);
+
+  const filteredNotes = useMemo(
+    () =>
+      filterBySearchValues(notes, noteSearchValues, {
+        title: (note) => note.title,
+        content: (note) => note.content,
+      }),
+    [notes, noteSearchValues],
+  );
 
   useEffect(() => {
     loadNotes();
@@ -219,8 +234,19 @@ export default function MemoMaker() {
       <section>
         <div className="flex">
           <div className={viewType === "list" ? "w-[300px] flex-none" : "w-full"}>
+            <div className="mb-4">
+              <ListSearch
+                fields={[
+                  { key: "title", label: "タイトル", placeholder: "タイトル検索", value: noteSearchValues.title },
+                  { key: "content", label: "本文", placeholder: "本文検索", value: noteSearchValues.content },
+                ]}
+                onFieldChange={(key, value) =>
+                  setNoteSearchValues((prev) => ({ ...prev, [key]: value }))
+                }
+              />
+            </div>
             <MemoList
-              notes={notes}
+              notes={filteredNotes}
               onSelectNote={selectNote}
               onCreateNote={newNote}
               onDeleteNote={removeNote}

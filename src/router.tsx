@@ -17,6 +17,7 @@ import LlmMemoPage from "./pages/LlmMemo";
 import UserRegister from "./pages/UserRegister";
 import ShareNotes from "./pages/ShareNotes";
 import ClipboardHistory from "./pages/ClipboardHistory";
+import SearchTotal from "./pages/SearchTotal";
 
 import { DataProvider } from "./store/dataBox";
 import { NotesProvider } from "./store/note";
@@ -115,6 +116,12 @@ const clipboardHistoryRoute = createRoute({
   component: ClipboardHistory,
 });
 
+const searchTotalRoute = createRoute({
+  getParentRoute: () => rootRoute, 
+  path: "/search-total",
+  component: SearchTotal,
+});
+
 const routeTree = rootRoute.addChildren([
   indexRoute,
   structsmakeRoute,
@@ -129,6 +136,7 @@ const routeTree = rootRoute.addChildren([
   userRegisterRoute,
   shareNotesRoute,
   clipboardHistoryRoute,
+  searchTotalRoute,
 ]);
 
 export const router = createRouter({ routeTree });

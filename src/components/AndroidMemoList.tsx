@@ -1,10 +1,17 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { AndroidNote } from "../models/Notes";
 import AndroidMemoDialog from "./modifier/AndroidMemoDialog";
+import ListSearch from "./core/ListSearch";
+import { filterBySearchValues, SearchValues } from "../utils/search";
 
 const AndroidMemoList = () => {
   const [notes, setNotes] = useState<AndroidNote[]>([]);
+  const [searchValues, setSearchValues] = useState<SearchValues>({
+    title: "",
+    content: "",
+    userId: "",
+  });
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -49,6 +56,16 @@ const AndroidMemoList = () => {
     return text;
   }
 
+  const filteredNotes = useMemo(
+    () =>
+      filterBySearchValues(notes, searchValues, {
+        title: (note) => note.title,
+        content: (note) => note.content,
+        userId: (note) => note.user_id,
+      }),
+    [notes, searchValues],
+  );
+
   useEffect(() => {
     fetchNotes();
   }, []);
@@ -56,14 +73,26 @@ const AndroidMemoList = () => {
   if (loading) return <div className="p-4 text-center">読み込み中...</div>;
   if (error) return <div className="p-4 text-red-500 text-center">エラー: {error}</div>;
 
+  const noteSearchFields = [
+    { key: "title", label: "タイトル", placeholder: "タイトル検索", value: searchValues.title },
+    { key: "content", label: "本文", placeholder: "本文検索", value: searchValues.content },
+    { key: "userId", label: "ユーザーID", placeholder: "ユーザーID検索", value: searchValues.userId },
+  ];
+
   return (
     <div className="p-4">
       <h3 className="text-2xl font-bold mb-6 text-gray-800">Android メモ一覧 (Firestore)</h3>
-      {notes.length === 0 ? (
+      <div className="mb-6">
+        <ListSearch
+          fields={noteSearchFields}
+          onFieldChange={(key, value) => setSearchValues((prev) => ({ ...prev, [key]: value }))}
+        />
+      </div>
+      {filteredNotes.length === 0 ? (
         <p className="text-gray-500">メモが見つかりませんでした。</p>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {notes.map((note) => (
+          {filteredNotes.map((note) => (
             <div 
               key={note.id} 
               className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow"

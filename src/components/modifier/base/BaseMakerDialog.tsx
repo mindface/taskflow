@@ -10,10 +10,14 @@ type MakerDialogProps<T extends CommonData> = {
   dialogTitle: string;
   btnText?: string;
   data: T;
+  row?: number;
+  col?: number;
   onSave: (data: T, title: string, content: string) => void;
 };
 
-const BaseMakerDialog = <T extends CommonData>({ data, onSave, dialogTitle, btnText }: MakerDialogProps<T>) => {
+const BaseMakerDialog = <T extends CommonData>({
+  data, onSave, dialogTitle, btnText, row, col
+}: MakerDialogProps<T>) => {
   const [isOpen, setIsOpen] = useState(false);
   const dialogHandler = () => {
     setIsOpen(!isOpen);
@@ -55,7 +59,7 @@ const BaseMakerDialog = <T extends CommonData>({ data, onSave, dialogTitle, btnT
         onClose={() => {}}
       >
         <div className="dialog">
-          <div className="dialog-content">
+          <div className="maker-dialog-content">
             <div className="pb-2">
               <input
                 className="border p-2 w-full"
@@ -70,6 +74,8 @@ const BaseMakerDialog = <T extends CommonData>({ data, onSave, dialogTitle, btnT
                 className="border p-2 w-full"
                 placeholder="description"
                 value={description}
+                cols={col || 30}
+                rows={row || 10}
                 required
                 onChange={(e)=>handleChange(e.target.value, "description")}
               />
