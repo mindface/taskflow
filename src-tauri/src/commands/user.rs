@@ -78,7 +78,9 @@ fn load_user_config(firebase_uid: &str) -> Result<UserCredentialConfig, String> 
   }
 
   let content = fs::read_to_string(&path).map_err(|e| format!("Read user config error: {e}"))?;
-  let config: UserCredentialConfig = serde_json::from_str(&content).map_err(|e| format!("Parse user config error: {e}"))?;
+  // let config: UserCredentialConfig = serde_json::from_str(&content).map_err(|e| format!("Parse user config error: {e}"))?;
+  let config: UserCredentialConfig =
+    serde_json::from_str(&content).map_err(|e| format!("Parse user config error: {e}"))?;
   Ok(config)
 }
 
