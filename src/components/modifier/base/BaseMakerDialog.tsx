@@ -50,7 +50,7 @@ const BaseMakerDialog = <T extends CommonData>({
           onClick={dialogHandler}
           className="hover shot-icon-btn p-2 flex gap-2"
         >
-          {btnText ? btnText : "を確認する"}
+          {btnText ? btnText : "情報を確認する"}
         </div>
       </div>
       <CoreDialog
