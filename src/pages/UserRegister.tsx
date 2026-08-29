@@ -193,7 +193,7 @@ export default function UserRegister() {
   return (
     <div className="p-2">
       <h1 className="text-2xl font-bold mb-4">{selectedUserId ? "Edit User" : "User Registration"}</h1>
-      <form className="space-y-4 mb-8" onSubmit={handleSubmit}>
+      <form className="rounded border border-gray-300 bg-gray-50 space-y-4 mb-4 p-4" onSubmit={handleSubmit}>
         <div className="pb-4">
           <label className="block text-sm font-medium">Firebase UID</label>
           <input
@@ -233,8 +233,8 @@ export default function UserRegister() {
             ユーザーを有効化する
           </label>
         </div>
-        <div>
-          <label className="block text-sm font-medium">Roles</label>
+        <div className="pb-2">
+          <label className="block text-sm font-medium pb-2">Roles</label>
           <input
             className="mt-1 block w-full rounded border px-3 py-2"
             value={roles}
@@ -242,9 +242,9 @@ export default function UserRegister() {
             placeholder="admin,editor"
           />
         </div>
-        <div className="space-y-3">
-          <div>
-            Select UI:
+        <div className="space-y-3 mb-4">
+          <div className="pb-2">
+            <span className="block text-sm font-medium pb-2">UI Selection</span>
             <select
               name="ui-select"
               id="pet-select"
@@ -257,7 +257,7 @@ export default function UserRegister() {
               <option value="2">mover</option>
             </select>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 pb-2">
             <input
               id="voice-input-enabled"
               type="checkbox"
@@ -269,8 +269,8 @@ export default function UserRegister() {
             </label>
           </div>
         </div>
-        <div>
-          <label className="block text-sm font-medium">UI Selection JSON</label>
+        <div className="mb-4 p-3">
+          <label className="block text-sm font-medium pb-2">UI Selection JSON</label>
           <textarea
             className="mt-1 block w-full rounded border px-3 py-2"
             rows={6}
@@ -278,8 +278,8 @@ export default function UserRegister() {
             onChange={(e) => setUiSelection(e.target.value)}
           />
         </div>
-        <div className="space-y-2 rounded border border-gray-300 bg-gray-50 p-3">
-          <label className="block text-sm font-medium">Firebase 設定ファイル</label>
+        <div className="space-y-2 rounded border border-gray-300 bg-gray-50 mb-4 p-3">
+          <label className="block text-sm font-medium pb-2">Firebase 設定ファイル</label>
           <div className="flex gap-2">
             <button
               type="button"
@@ -299,7 +299,7 @@ export default function UserRegister() {
           <div className="text-sm text-slate-600">{credentialPath || "まだファイルが選択されていません"}</div>
           {credentialStatus && <div className="text-sm text-blue-700">{credentialStatus}</div>}
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 py-2">
           <button
             type="submit"
             className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
@@ -317,8 +317,8 @@ export default function UserRegister() {
           )}
         </div>
       </form>
-      <div className="p-4 border rounded">
-        <h2 className="text-xl font-semibold mb-3">Existing Users</h2>
+      <div className="p-4 border rounded py-2">
+        <h2 className="text-xl font-semibold mb-4">Existing Users</h2>
         <div className="mb-4">
           <label className="block text-sm font-medium">Select User to Apply Settings:</label>
           <select
@@ -341,7 +341,7 @@ export default function UserRegister() {
             ))}
           </select>
         </div>
-        <div className="space-y-2">
+        <div className="space-y-2 py-2">
           {users.map((user) => (
             <div
               key={user.id}
