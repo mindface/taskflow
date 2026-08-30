@@ -1,4 +1,4 @@
-import { FormEvent, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { User } from "../models/User";
 import { useUIContext } from "../store/ui";

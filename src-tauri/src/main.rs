@@ -104,6 +104,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .global_shortcut()
         .register(CLIPBOARD_SHORTCUT)
         .map_err(|error| format!("Failed to register {CLIPBOARD_SHORTCUT}: {error}"))?;
+
+      commands::window_view::open_initial_windows(app.handle())?;
       Ok(())
     })
     .invoke_handler(tauri::generate_handler![
@@ -136,10 +138,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
       // commands::sql_memo::list_concepts,
       // commands::sql_memo::get_note_detail,
       // commands::sql_memo::search_concepts,
-      commands::preview::open_preview_window,
-      commands::preview::sync_content_to_preview,
-      commands::preview::open_submemo_window,
-      commands::preview::sync_note_data_to_preview,
+      commands::window_view::open_preview_window,
+      commands::window_view::sync_content_to_preview,
+      commands::window_view::open_submemo_window,
+      commands::window_view::sync_note_data_to_preview,
       commands::turso_notes::turso_create_table,
       commands::turso_notes::turso_create_share_note,
       commands::turso_notes::turso_insert_share_note,
@@ -150,7 +152,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
       commands::view_schedule_window::sync_schedule_to_preview,
       commands::view_schedule_window::open_schedule_window,
       commands::view_schedule_window::get_target_schedule_content,
-      commands::preview::get_current_preview_content,
+      commands::window_view::get_current_preview_content,
       commands::window_manager::get_all_windows,
       commands::window_manager::get_all_windows_with_thumbnails,
       commands::window_manager::capture_window,

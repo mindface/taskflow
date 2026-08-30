@@ -1,5 +1,5 @@
 pub mod file_operations;
-pub mod preview;
+pub mod window_view;
 pub mod sql_memo;
 pub mod turso_notes;
 pub mod user;

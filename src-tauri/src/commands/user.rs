@@ -29,7 +29,7 @@ pub fn init_firebase_credentials_from_user_config() {
             if let Some(cred_path) = config.firebase_credential_path {
               if !cred_path.trim().is_empty() && std::path::Path::new(&cred_path).exists() {
                 println!("Setting GOOGLE_APPLICATION_CREDENTIALS to: {}", cred_path);
-                // 🔑 ここで環境変数をプロセス全体に設定する！
+                // ここで環境変数をプロセス全体に設定する
                 std::env::set_var("GOOGLE_APPLICATION_CREDENTIALS", &cred_path);
                 break;
               }
