@@ -76,6 +76,8 @@ pub fn init_db() -> Result<String, String> {
             activated INTEGER NOT NULL DEFAULT 1,
             roles TEXT,
             ui_selection TEXT,
+            turso_database_url TEXT,
+            turso_auth_token TEXT,
             created_at TEXT NOT NULL,
             updated_at TEXT NOT NULL
         );

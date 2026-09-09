@@ -51,7 +51,16 @@ export function useWindowSync() {
     }
   }, []);
 
-  return { syncContent, syncNoteData, openPreview, openSubmemo };
+  const openMainWindow = useCallback(async () => {
+    console.log('[useWindowSync] Opening main window');
+    try {
+      await invoke('start_main_window');
+    } catch (error) {
+      console.error('start_main_window error:', error);
+    }
+  }, []);
+
+  return { syncContent, syncNoteData, openPreview, openSubmemo, openMainWindow };
 }
 
 export function usePreviewListener(

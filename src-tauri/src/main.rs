@@ -48,13 +48,48 @@ fn start_clipboard_history_monitor(app: tauri::AppHandle) {
   });
 }
 
-fn main() -> Result<(), Box<dyn std::error::Error>> {
-  crate::commands::user::init_firebase_credentials_from_user_config();
+fn load_runtime_env() {
+  let mut candidates = Vec::new();
 
   if let Ok(current_dir) = std::env::current_dir() {
-    let dotenv_path = current_dir.join("../.env");
-    let _ = dotenvy::from_path(dotenv_path);
+    candidates.push(current_dir.join(".env"));
+    candidates.push(current_dir.join(".env.local"));
+    candidates.push(current_dir.join(".env.production"));
+    candidates.push(current_dir.join("../.env"));
+    candidates.push(current_dir.join("../.env.local"));
+    candidates.push(current_dir.join("../.env.production"));
   }
+
+  if let Ok(exe) = std::env::current_exe() {
+    if let Some(dir) = exe.parent() {
+      candidates.push(dir.join(".env"));
+      candidates.push(dir.join(".env.local"));
+      candidates.push(dir.join(".env.production"));
+      if let Some(parent) = dir.parent() {
+        candidates.push(parent.join(".env"));
+        candidates.push(parent.join(".env.local"));
+        candidates.push(parent.join(".env.production"));
+      }
+    }
+  }
+
+  let mut seen = std::collections::HashSet::new();
+  for path in candidates {
+    if path.is_file() {
+      let key = path.to_string_lossy().to_string();
+      if seen.insert(key.clone()) {
+        match dotenvy::from_path(&path) {
+          Ok(_) => println!("Loaded env file: {}", path.display()),
+          Err(error) => println!("Skipping env file {}: {}", path.display(), error),
+        }
+      }
+    }
+  }
+}
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+  crate::commands::user::init_firebase_credentials_from_user_config();
+  load_runtime_env();
 
   if let Ok(path) = std::env::var("GOOGLE_APPLICATION_CREDENTIALS") {
     println!("認証ファイルを読み込みました: {}", path);
@@ -142,6 +177,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
       commands::window_view::sync_content_to_preview,
       commands::window_view::open_submemo_window,
       commands::window_view::sync_note_data_to_preview,
+      commands::window_view::start_main_window,
+      commands::window_view::get_current_preview_content,
       commands::turso_notes::turso_create_table,
       commands::turso_notes::turso_create_share_note,
       commands::turso_notes::turso_insert_share_note,
@@ -152,7 +189,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
       commands::view_schedule_window::sync_schedule_to_preview,
       commands::view_schedule_window::open_schedule_window,
       commands::view_schedule_window::get_target_schedule_content,
-      commands::window_view::get_current_preview_content,
       commands::window_manager::get_all_windows,
       commands::window_manager::get_all_windows_with_thumbnails,
       commands::window_manager::capture_window,
@@ -186,6 +222,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
       commands::user::save_user_firebase_credential,
       commands::user::get_user_firebase_credential,
       commands::user::update_user,
+      commands::user::apply_user_turso_credentials,
       db::db_stats::get_db_stats,
       db::clipboard_history::list_clipboard_history,
     ])

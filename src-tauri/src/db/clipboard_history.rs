@@ -31,19 +31,19 @@ pub fn detect_content_type(content: &str) -> &'static str {
 
 /// Inserts the original clipboard text as-is and returns its generated ID.
 pub fn save_clipboard_content(content: &str) -> Result<i64, String> {
-if content.trim().chars().count() > 180 {
-  let conn = get_conn()?;
-  let content_type = detect_content_type(content);
-  println!("Detected clipboard content: {content}");
-  println!("Detected clipboard content type: {content_type}");
+  if content.trim().chars().count() > 180 {
+    let conn = get_conn()?;
+    let content_type = detect_content_type(content);
+    println!("Detected clipboard content: {content}");
+    println!("Detected clipboard content type: {content_type}");
 
-  conn
-    .execute(
-      "INSERT INTO clipboard_history (title, content, content_type) VALUES (?1, ?2, ?3)",
-      params![Option::<String>::None, content, content_type],
-    )
-    .map_err(|e| format!("clipboard history insert error: {e}"))?;
-  Ok(conn.last_insert_rowid())
+    conn
+      .execute(
+        "INSERT INTO clipboard_history (title, content, content_type) VALUES (?1, ?2, ?3)",
+        params![Option::<String>::None, content, content_type],
+      )
+      .map_err(|e| format!("clipboard history insert error: {e}"))?;
+    Ok(conn.last_insert_rowid())
   } else {
     Ok(-1)
   }

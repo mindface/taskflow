@@ -15,8 +15,8 @@ export default function UserRegister() {
   const [displayName, setDisplayName] = useState("");
   const [activated, setActivated] = useState(true);
   const [roles, setRoles] = useState("");
-  const [uiSelection, setUiSelection] = useState("{\n  \"theme\": \"light\",\n  \"sidebarOpen\": true,\n  \"voiceInputEnabled\": false\}");
-  const [users, setUsers] = useState<User[]>([]);
+  const [uiSelection, setUiSelection] = useState("{\n  \"theme\": \"light\",\n  \"sidebarOpen\": true,\n  \"voiceInputEnabled\": false\}");  const [tursoDatabaseUrl, setTursoDatabaseUrl] = useState("");
+  const [tursoAuthToken, setTursoAuthToken] = useState("");  const [users, setUsers] = useState<User[]>([]);
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
   const [credentialPath, setCredentialPath] = useState("");
   const [credentialStatus, setCredentialStatus] = useState("");
@@ -92,7 +92,21 @@ export default function UserRegister() {
     setActivated(user.activated);
     setRoles(user.roles ?? "");
     setUiSelection(user.ui_selection ?? "{\n  \"theme\": \"light\",\n  \"sidebarOpen\": true\n}");
+    setTursoDatabaseUrl(user.turso_database_url ?? "");
+    setTursoAuthToken(user.turso_auth_token ?? "");
     applyUserUiSelection(user);
+
+    if (user.firebase_uid) {
+      void invoke<boolean>("apply_user_turso_credentials", { firebaseUid: user.firebase_uid })
+        .then((applied) => {
+          if (!applied) {
+            console.warn("このユーザーには Turso 設定が登録されていません");
+          }
+        })
+        .catch((error) => {
+          console.error("Failed to apply user Turso credentials", error);
+        });
+    }
   };
 
   const handleUserSelect = (userId: number) => {
@@ -109,8 +123,8 @@ export default function UserRegister() {
     setDisplayName("");
     setActivated(true);
     setRoles("");
-    setUiSelection("{\n  \"theme\": \"light\",\n  \"sidebarOpen\": true,\n  \"voiceInputEnabled\": false\}");
-  };
+    setUiSelection("{\n  \"theme\": \"light\",\n  \"sidebarOpen\": true,\n  \"voiceInputEnabled\": false\}");    setTursoDatabaseUrl("");
+    setTursoAuthToken("");  };
 
   const handleSelectCredentialFile = async () => {
     try {
@@ -169,6 +183,8 @@ export default function UserRegister() {
           activated,
           roles: roles || null,
           uiSelection: uiSelection || null,
+          tursoDatabaseUrl: tursoDatabaseUrl || null,
+          tursoAuthToken: tursoAuthToken || null,
         });
         window.alert(`User updated: ${userId}`);
       } else {
@@ -179,6 +195,8 @@ export default function UserRegister() {
           activated,
           roles: roles || null,
           uiSelection: uiSelection || null,
+          tursoDatabaseUrl: tursoDatabaseUrl || null,
+          tursoAuthToken: tursoAuthToken || null,
         });
         window.alert(`User created: ${userId}`);
       }
@@ -241,6 +259,28 @@ export default function UserRegister() {
             onChange={(e) => setRoles(e.target.value)}
             placeholder="admin,editor"
           />
+        </div>
+        <div className="space-y-3 mb-4 rounded border border-gray-300 bg-white p-3">
+          <label className="block text-sm font-medium">Turso 設定</label>
+          <div className="pb-2">
+            <label className="block text-sm font-medium pb-1">Database URL</label>
+            <input
+              className="mt-1 block w-full rounded border px-3 py-2"
+              value={tursoDatabaseUrl}
+              onChange={(e) => setTursoDatabaseUrl(e.target.value)}
+              placeholder="libsql://example.turso.io"
+            />
+          </div>
+          <div className="pb-2">
+            <label className="block text-sm font-medium pb-1">Auth Token</label>
+            <input
+              className="mt-1 block w-full rounded border px-3 py-2"
+              type="password"
+              value={tursoAuthToken}
+              onChange={(e) => setTursoAuthToken(e.target.value)}
+              placeholder="TURSO_AUTH_TOKEN"
+            />
+          </div>
         </div>
         <div className="space-y-3 mb-4">
           <div className="pb-2">
@@ -354,6 +394,8 @@ export default function UserRegister() {
               <div className="font-semibold">{user.display_name} ({user.email})</div>
               <div className="text-sm text-slate-600">UID: {user.firebase_uid}</div>
               <div className="text-sm">Activated: {user.activated ? "Yes" : "No"}</div>
+              <div className="text-sm">Turso URL: {user.turso_database_url || "未登録"}</div>
+              <div className="text-sm">Turso Token: {user.turso_auth_token ? "登録済み" : "未登録"}</div>
               {user.roles && <div className="text-sm">Roles: {user.roles}</div>}
               {selectedUserId === user.id && (
                 <div className="mt-2 rounded bg-blue-100 px-2 py-1 text-xs font-semibold text-blue-700">

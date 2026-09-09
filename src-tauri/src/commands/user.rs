@@ -100,11 +100,13 @@ pub fn add_user(
   activated: bool,
   roles: Option<String>,
   ui_selection: Option<String>,
+  turso_database_url: Option<String>,
+  turso_auth_token: Option<String>,
 ) -> Result<i64, String> {
   let conn = get_conn()?;
   let now = Utc::now().to_rfc3339();
   conn.execute(
-    "INSERT INTO users (firebase_uid, email, display_name, activated, roles, ui_selection, created_at, updated_at) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8)",
+    "INSERT INTO users (firebase_uid, email, display_name, activated, roles, ui_selection, turso_database_url, turso_auth_token, created_at, updated_at) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10)",
     params![
       firebase_uid,
       email,
@@ -112,6 +114,8 @@ pub fn add_user(
       activated as i64,
       roles,
       ui_selection,
+      turso_database_url,
+      turso_auth_token,
       now,
       now
     ],
@@ -125,7 +129,7 @@ pub fn list_users() -> Result<Vec<User>, String> {
   let conn = get_conn()?;
   let mut stmt = conn
     .prepare(
-      "SELECT id, firebase_uid, email, display_name, activated, roles, ui_selection, created_at, updated_at FROM users ORDER BY updated_at DESC",
+      "SELECT id, firebase_uid, email, display_name, activated, roles, ui_selection, turso_database_url, turso_auth_token, created_at, updated_at FROM users ORDER BY updated_at DESC",
     )
     .map_err(|e| format!("Prepare user list error: {}", e))?;
   let rows = stmt
@@ -138,8 +142,10 @@ pub fn list_users() -> Result<Vec<User>, String> {
         activated: row.get(4)?,
         roles: row.get(5)?,
         ui_selection: row.get(6)?,
-        created_at: row.get(7)?,
-        updated_at: row.get(8)?,
+        turso_database_url: row.get(7)?,
+        turso_auth_token: row.get(8)?,
+        created_at: row.get(9)?,
+        updated_at: row.get(10)?,
       })
     })
     .map_err(|e| format!("QueryMap user error: {}", e))?;
@@ -183,11 +189,13 @@ pub fn update_user(
   activated: bool,
   roles: Option<String>,
   ui_selection: Option<String>,
+  turso_database_url: Option<String>,
+  turso_auth_token: Option<String>,
 ) -> Result<i64, String> {
   let conn = get_conn()?;
   let now = Utc::now().to_rfc3339();
   conn.execute(
-    "UPDATE users SET firebase_uid = ?1, email = ?2, display_name = ?3, activated = ?4, roles = ?5, ui_selection = ?6, updated_at = ?7 WHERE id = ?8",
+    "UPDATE users SET firebase_uid = ?1, email = ?2, display_name = ?3, activated = ?4, roles = ?5, ui_selection = ?6, turso_database_url = ?7, turso_auth_token = ?8, updated_at = ?9 WHERE id = ?10",
     params![
       firebase_uid,
       email,
@@ -195,10 +203,43 @@ pub fn update_user(
       activated as i64,
       roles,
       ui_selection,
+      turso_database_url,
+      turso_auth_token,
       now,
       id,
     ],
   )
   .map_err(|e| format!("Update user error: {}", e))?;
   Ok(id)
+}
+
+#[tauri::command]
+pub fn apply_user_turso_credentials(firebase_uid: String) -> Result<bool, String> {
+  let conn = get_conn()?;
+  let mut stmt = conn
+    .prepare(
+      "SELECT turso_database_url, turso_auth_token FROM users WHERE firebase_uid = ?1 LIMIT 1",
+    )
+    .map_err(|e| format!("Prepare turso credentials error: {}", e))?;
+
+  let maybe_row = stmt
+    .query_row([firebase_uid], |row| {
+      let database_url: Option<String> = row.get(0)?;
+      let auth_token: Option<String> = row.get(1)?;
+      Ok((database_url, auth_token))
+    })
+    .ok();
+
+  match maybe_row {
+    Some((Some(database_url), Some(auth_token))) => {
+      if !database_url.trim().is_empty() && !auth_token.trim().is_empty() {
+        std::env::set_var("TURSO_DATABASE_URL", database_url.as_str());
+        std::env::set_var("TURSO_AUTH_TOKEN", auth_token.as_str());
+        return Ok(true);
+      }
+    }
+    _ => {}
+  }
+
+  Ok(false)
 }

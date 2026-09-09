@@ -1,4 +1,5 @@
 import paths from "../../json/path.json";
+import MainDialog from "./iconDialog/MainDialog";
 import ImageDialog from "./iconDialog/ImageDialog";
 import SubMemoDialog from "./iconDialog/SubMemoDialog";
 import { useUIContext } from "../../store/ui";
@@ -34,6 +35,7 @@ export default function MenuLsitDialog() {
             )}
           </ul>
           <div className="absolute left-0 bottom-5 w-full">
+            <MainDialog />
             <SubMemoDialog />
             <ImageDialog />
           </div>

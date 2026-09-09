@@ -10,7 +10,11 @@ struct WindowSpec {
   js_label: &'static str,
 }
 
-fn open_named_window(app: &tauri::AppHandle, spec: WindowSpec, open_continuous: bool) -> Result<(), String> {
+fn open_named_window(
+  app: &tauri::AppHandle,
+  spec: WindowSpec,
+  open_continuous: bool,
+) -> Result<(), String> {
   let existing = app
     .webview_windows()
     .into_iter()
@@ -18,7 +22,10 @@ fn open_named_window(app: &tauri::AppHandle, spec: WindowSpec, open_continuous: 
 
   if let Some((_, window)) = existing {
     if open_continuous {
-      println!("[Rust] {} window already open, keeping it open due to open_continuous=true", spec.kind);
+      println!(
+        "[Rust] {} window already open, keeping it open due to open_continuous=true",
+        spec.kind
+      );
       return Ok(());
     }
     println!("[Rust] Closing existing {} window", spec.kind);
@@ -56,9 +63,54 @@ fn open_named_window(app: &tauri::AppHandle, spec: WindowSpec, open_continuous: 
   Ok(())
 }
 
+pub fn start_main_window_impl(app: &tauri::AppHandle) -> Result<(), String> {
+  let label = format!("main_{}", SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs());
+  println!("[Rust] Starting main window: {}", label);
+
+  let _main_window = tauri::webview::WebviewWindowBuilder::new(
+    app,
+    &label,
+    tauri::WebviewUrl::App("index.html".into()),
+  )
+  .title("Taskflow")
+  .inner_size(1400.0, 900.0)
+  .resizable(true)
+  .build()
+  .map_err(|e| {
+    let err = format!("Failed to build main window: {}", e);
+    println!("[Rust] ERROR: {}", err);
+    err
+  })?;
+
+  println!("[Rust] Main window created successfully: {}", label);
+  Ok(())
+}
+
+#[tauri::command]
+pub fn start_main_window(app: tauri::AppHandle) -> Result<(), String> {
+  start_main_window_impl(&app)
+}
+
 pub fn open_initial_windows(app: &tauri::AppHandle) -> Result<(), String> {
-  open_named_window(app, WindowSpec { kind: "preview", title: "プレビュー", js_label: "preview" }, false)?;
-  open_named_window(app, WindowSpec { kind: "submemo_maker", title: "サブメモ", js_label: "submemo_maker" }, false)?;
+  start_main_window_impl(app)?;
+  open_named_window(
+    app,
+    WindowSpec {
+      kind: "preview",
+      title: "プレビュー",
+      js_label: "preview",
+    },
+    false,
+  )?;
+  open_named_window(
+    app,
+    WindowSpec {
+      kind: "submemo_maker",
+      title: "サブメモ",
+      js_label: "submemo_maker",
+    },
+    false,
+  )?;
   Ok(())
 }
 
@@ -66,7 +118,11 @@ pub fn open_initial_windows(app: &tauri::AppHandle) -> Result<(), String> {
 pub fn open_preview_window(app: tauri::AppHandle, open_continuous: bool) -> Result<(), String> {
   open_named_window(
     &app,
-    WindowSpec { kind: "preview", title: "プレビュー", js_label: "preview" },
+    WindowSpec {
+      kind: "preview",
+      title: "プレビュー",
+      js_label: "preview",
+    },
     open_continuous,
   )
 }
@@ -75,7 +131,11 @@ pub fn open_preview_window(app: tauri::AppHandle, open_continuous: bool) -> Resu
 pub fn open_submemo_window(app: tauri::AppHandle, open_continuous: bool) -> Result<(), String> {
   open_named_window(
     &app,
-    WindowSpec { kind: "submemo_maker", title: "サブメモ", js_label: "submemo_maker" },
+    WindowSpec {
+      kind: "submemo_maker",
+      title: "サブメモ",
+      js_label: "submemo_maker",
+    },
     open_continuous,
   )
 }
