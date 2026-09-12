@@ -56,7 +56,8 @@ pub fn list_clipboard_history() -> Result<Vec<ClipboardHistoryEntry>, String> {
     .prepare(
       "SELECT id, title, content, content_type, created_at
        FROM clipboard_history
-       ORDER BY id DESC",
+       ORDER BY id DESC
+       LIMIT 30",
     )
     .map_err(|e| format!("clipboard history query prepare error: {e}"))?;
 
