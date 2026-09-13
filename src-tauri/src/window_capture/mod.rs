@@ -13,6 +13,7 @@ use serde::{Deserialize, Serialize};
 pub struct WindowInfo {
   pub handle: usize,
   pub title: String,
+  pub owner_name: Option<String>,
   pub x: i32,
   pub y: i32,
   pub width: i32,
@@ -20,6 +21,7 @@ pub struct WindowInfo {
   pub is_visible: bool,
   pub is_minimized: bool,
   pub thumbnail: Option<String>,
+  pub page_path: Option<String>,
 }
 
 pub trait WindowCapture {

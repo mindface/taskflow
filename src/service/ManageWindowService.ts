@@ -11,6 +11,7 @@ export interface WindowInfo {
   is_visible: boolean;
   is_minimized: boolean;
   thumbnail?: string;
+  page_path?: string | null;
 }
 
 export class ManageWindowService {
@@ -43,5 +44,10 @@ export class ManageWindowService {
   static async focusWindow(handle: number): Promise<void> {
     console.log(`[WindowManagerService] Focusing window with handle: ${handle}`);
     return await invoke('focus_window', { handle });
+  }
+
+  static async removeWindow(handle: number, title?: string): Promise<void> {
+    console.log(`[WindowManagerService] Removing window with handle: ${handle}, title: ${title ?? 'unknown'}`);
+    return await invoke('remove_window', { handle, title });
   }
 }

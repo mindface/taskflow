@@ -191,6 +191,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
       commands::view_schedule_window::get_target_schedule_content,
       commands::window_manager::get_all_windows,
       commands::window_manager::get_all_windows_with_thumbnails,
+      commands::window_manager::set_window_page_path,
+      commands::window_manager::remove_window,
       commands::window_manager::capture_window,
       commands::window_manager::focus_window,
       commands::window_manager::test_enum_windows,

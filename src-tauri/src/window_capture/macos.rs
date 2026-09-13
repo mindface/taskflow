@@ -100,10 +100,19 @@ impl WindowCapture for MacOSCapture {
 
         // オーナー名（アプリ名）を取得
         let owner_name_key = CFString::from_static_string("kCGWindowOwnerName");
-        let _owner_name_value = core_foundation::dictionary::CFDictionaryGetValue(
+        let owner_name_value = core_foundation::dictionary::CFDictionaryGetValue(
           window_info,
           owner_name_key.as_concrete_TypeRef() as *const _,
         );
+
+        let owner_name = if owner_name_value.is_null() {
+          None
+        } else {
+          Some(
+            CFString::wrap_under_get_rule(owner_name_value as core_foundation::string::CFStringRef)
+              .to_string(),
+          )
+        };
 
         // ウィンドウ番号（ID）を取得
         let number_key = CFString::from_static_string("kCGWindowNumber");
@@ -201,6 +210,7 @@ impl WindowCapture for MacOSCapture {
         windows.push(WindowInfo {
           handle: window_id as usize,
           title,
+          owner_name,
           x,
           y,
           width,
@@ -208,6 +218,7 @@ impl WindowCapture for MacOSCapture {
           is_visible: true,
           is_minimized: false,
           thumbnail: None,
+          page_path: None,
         });
       }
 

@@ -54,6 +54,18 @@ export default function VirtualDesktopView() {
     }
   };
 
+  const handleRemoveWindow = async (window: WindowInfo) => {
+    try {
+      await ManageWindowService.removeWindow(window.handle, window.title);
+      setWindows((current) => current.filter((item) => item.handle !== window.handle));
+      if (selectedWindow?.handle === window.handle) {
+        setSelectedWindow(null);
+      }
+    } catch (error) {
+      console.error('Failed to remove window:', error);
+    }
+  };
+
   const handleRefresh = async () => {
     loadWindows();
     const result = await invoke('test_enum_windows');
@@ -113,6 +125,21 @@ export default function VirtualDesktopView() {
                 <span className="window-position">
                   ({window.x}, {window.y})
                 </span>
+              </div>
+              <div className="window-path text-slate-500 p-2 break-all">
+                {(window.page_path === '/' ? "home" : window.page_path) || "ページ: 未取得"}
+              </div>
+              <div className="mt-2 flex justify-end">
+                <button
+                  type="button"
+                  className="rounded bg-red-500 px-2 py-1 text-xs text-white hover:bg-red-600"
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    void handleRemoveWindow(window);
+                  }}
+                >
+                  削除
+                </button>
               </div>
             </div>
           </div>
