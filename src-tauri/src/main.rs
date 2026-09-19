@@ -143,6 +143,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
       commands::window_view::open_initial_windows(app.handle())?;
       Ok(())
     })
+    .on_window_event(|window, event| {
+      commands::window_view::handle_app_window_event(window, event);
+    })
     .invoke_handler(tauri::generate_handler![
       commands::file_operations::add_file,
       commands::file_operations::list_files,
@@ -191,6 +194,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
       commands::view_schedule_window::get_target_schedule_content,
       commands::window_manager::get_all_windows,
       commands::window_manager::get_all_windows_with_thumbnails,
+      commands::window_manager::list_app_windows,
+      commands::window_manager::focus_app_window,
       commands::window_manager::set_window_page_path,
       commands::window_manager::remove_window,
       commands::window_manager::capture_window,

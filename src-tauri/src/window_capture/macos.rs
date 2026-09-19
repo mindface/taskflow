@@ -219,6 +219,7 @@ impl WindowCapture for MacOSCapture {
           is_minimized: false,
           thumbnail: None,
           page_path: None,
+          label: None,
         });
       }
 

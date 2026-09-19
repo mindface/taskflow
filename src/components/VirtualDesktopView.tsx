@@ -1,8 +1,14 @@
 // src/components/VirtualDesktopView.tsx
 import { useState, useEffect } from 'react';
-import { invoke } from '@tauri-apps/api/core';
 import { ManageWindowService, WindowInfo } from '../service/ManageWindowService';
 import '../styles/virtualDesktop.css';
+
+/*
+function startWindowListTimer(onTick: () => void, intervalMs = 5000): () => void {
+  const intervalId = window.setInterval(onTick, intervalMs);
+  return () => window.clearInterval(intervalId);
+}
+*/
 
 export default function VirtualDesktopView() {
   const [windows, setWindows] = useState<WindowInfo[]>([]);
@@ -10,45 +16,57 @@ export default function VirtualDesktopView() {
   const [selectedWindow, setSelectedWindow] = useState<WindowInfo | null>(null);
 
   useEffect(() => {
-    loadWindows();
+    let unlisten: (() => void) | undefined;
+    let cancelled = false;
 
-    // 定期的に更新
-    const interval = setInterval(loadWindows, 5000);
-    return () => clearInterval(interval);
-  }, []);
-
-  const loadWindows = async () => {
-    try {
-      setLoading(true);
-
-      const windowsData = await ManageWindowService.getAllWindowsWithThumbnails(320, 180);
-
-      // フィルタリング前のログ
-      console.log('[VirtualDesktopView] Windows before filter:', 
-        windowsData.map(w => ({
-          title: w.title,
-          minimized: w.is_minimized,
-          width: w.width,
-          height: w.height
-        }))
+    const applyWindows = (nextWindows: WindowInfo[]) => {
+      const validWindows = nextWindows.filter(
+        (item) => item.is_visible && !item.is_minimized && item.width > 0 && item.height > 0
       );
-
-      const validWindows = windowsData.filter(
-        (w: any) => !w.is_minimized && w.width > 0 && w.height > 0
-      );
-
       setWindows(validWindows);
-    } catch (error) {
-      console.error('[VirtualDesktopView] Failed to load windows:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+    };
+
+    const loadWindows = async () => {
+      try {
+        const snapshot = await ManageWindowService.listAppWindows();
+        if (!cancelled) {
+          applyWindows(snapshot.windows);
+        }
+      } catch (error) {
+        console.error('[VirtualDesktopView] Failed to load windows:', error);
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      }
+    };
+
+    void loadWindows();
+    void ManageWindowService.onAppWindowsUpdated((payload) => {
+      if (!cancelled) {
+        applyWindows(payload.windows);
+        setLoading(false);
+      }
+    }).then((fn) => {
+      unlisten = fn;
+    });
+
+    // 定期取得が必要な場合は下のコメントを外す
+    // const stopWindowListTimer = startWindowListTimer(() => {
+    //   void loadWindows();
+    // });
+
+    return () => {
+      cancelled = true;
+      unlisten?.();
+      // stopWindowListTimer();
+    };
+  }, []);
 
   const handleWindowClick = async (window: WindowInfo) => {
     setSelectedWindow(window);
     try {
-      await ManageWindowService.focusWindow(window.handle);
+      await ManageWindowService.focusWindow(window);
     } catch (error) {
       console.error('Failed to focus window:', error);
     }
@@ -67,9 +85,16 @@ export default function VirtualDesktopView() {
   };
 
   const handleRefresh = async () => {
-    loadWindows();
-    const result = await invoke('test_enum_windows');
-    console.log(result);
+    try {
+      const snapshot = await ManageWindowService.listAppWindows();
+      setWindows(
+        snapshot.windows.filter(
+          (item) => item.is_visible && !item.is_minimized && item.width > 0 && item.height > 0
+        )
+      );
+    } catch (error) {
+      console.error('[VirtualDesktopView] Failed to refresh windows:', error);
+    }
   };
 
   if (loading && windows.length === 0) {
@@ -93,7 +118,7 @@ export default function VirtualDesktopView() {
       <div className="windows-grid">
         {windows.map((window) => (
           <div
-            key={window.handle}
+            key={window.label ?? window.handle}
             className={`window-card ${
               selectedWindow?.handle === window.handle ? 'selected' : ''
             }`}
@@ -109,7 +134,7 @@ export default function VirtualDesktopView() {
               ) : (
                 <div className="thumbnail-placeholder">
                   <span>📄</span>
-                  <p>サムネイル取得失敗</p>
+                  <p>{window.label || 'Taskflow'}</p>
                 </div>
               )}
             </div>

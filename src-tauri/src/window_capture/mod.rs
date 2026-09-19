@@ -22,6 +22,7 @@ pub struct WindowInfo {
   pub is_minimized: bool,
   pub thumbnail: Option<String>,
   pub page_path: Option<String>,
+  pub label: Option<String>,
 }
 
 pub trait WindowCapture {
