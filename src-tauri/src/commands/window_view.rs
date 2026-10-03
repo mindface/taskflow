@@ -2,52 +2,23 @@ use crate::models::note::Note;
 use crate::models::state::PreviewState;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Mutex;
-use std::time::{Duration, Instant, SystemTime, UNIX_EPOCH};
+use std::time::{SystemTime, UNIX_EPOCH};
 use tauri::{Emitter, Manager};
 
-static RAISING_APP_WINDOWS: AtomicBool = AtomicBool::new(false);
 static APP_HAS_FOCUS: AtomicBool = AtomicBool::new(false);
-static LAST_RAISE: Mutex<Option<Instant>> = Mutex::new(None);
 
-struct RaisingGuard;
-
-impl Drop for RaisingGuard {
-  fn drop(&mut self) {
-    RAISING_APP_WINDOWS.store(false, Ordering::SeqCst);
-  }
-}
-
-/// Bring every Taskflow window in front of other apps, keeping `focused_label` on top.
+/// Raise only the target Taskflow window so one window won't trigger a full app-wide focus cascade.
 pub fn raise_all_app_windows(app: &tauri::AppHandle, focused_label: &str) {
-  raise_all_app_windows_inner(app, focused_label, true);
+  let windows = app.webview_windows();
+  if let Some(window) = windows.get(focused_label) {
+    raise_window(window, true);
+  }
 }
 
-fn raise_all_app_windows_inner(app: &tauri::AppHandle, focused_label: &str, activate: bool) {
-  if RAISING_APP_WINDOWS.swap(true, Ordering::SeqCst) {
-    return;
-  }
-  let _guard = RaisingGuard;
-
-  if let Ok(mut last_raise) = LAST_RAISE.lock() {
-    let now = Instant::now();
-    if let Some(previous) = *last_raise {
-      if now.duration_since(previous) < Duration::from_millis(150) {
-        return;
-      }
-    }
-    *last_raise = Some(now);
-  }
-
+fn raise_target_window(app: &tauri::AppHandle, focused_label: &str, activate: bool) {
   let windows = app.webview_windows();
-  for (label, window) in &windows {
-    if label == focused_label {
-      continue;
-    }
-    raise_window(window, false);
-  }
-
-  if let Some(focused) = windows.get(focused_label) {
-    raise_window(focused, activate);
+  if let Some(window) = windows.get(focused_label) {
+    raise_window(window, activate);
   }
 }
 
@@ -70,7 +41,7 @@ pub fn handle_app_window_event(window: &tauri::Window, event: &tauri::WindowEven
   match event {
     tauri::WindowEvent::Focused(true) => {
       APP_HAS_FOCUS.store(true, Ordering::SeqCst);
-      raise_all_app_windows_inner(window.app_handle(), window.label(), false);
+      raise_target_window(window.app_handle(), window.label(), false);
     }
     tauri::WindowEvent::Focused(false) => {
       let any_focused = window
