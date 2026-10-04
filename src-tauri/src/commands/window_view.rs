@@ -156,7 +156,13 @@ fn open_named_window(
 }
 
 pub fn start_main_window_impl(app: &tauri::AppHandle) -> Result<(), String> {
-  let label = format!("main_{}", SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs());
+  let label = format!(
+    "main_{}",
+    SystemTime::now()
+      .duration_since(UNIX_EPOCH)
+      .unwrap()
+      .as_secs()
+  );
   println!("[Rust] Starting main window: {}", label);
 
   let _main_window = tauri::webview::WebviewWindowBuilder::new(

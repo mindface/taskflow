@@ -73,7 +73,12 @@ pub fn collect_app_windows(app: &tauri::AppHandle) -> AppWindowsPayload {
     });
   }
 
-  windows.sort_by(|left, right| left.title.cmp(&right.title).then(left.label.cmp(&right.label)));
+  windows.sort_by(|left, right| {
+    left
+      .title
+      .cmp(&right.title)
+      .then(left.label.cmp(&right.label))
+  });
 
   AppWindowsPayload {
     count: windows.len(),
@@ -100,7 +105,11 @@ pub fn focus_app_window(app: tauri::AppHandle, label: String) -> Result<(), Stri
 }
 
 #[tauri::command]
-pub fn set_window_page_path(app: tauri::AppHandle, title: String, path: String) -> Result<(), String> {
+pub fn set_window_page_path(
+  app: tauri::AppHandle,
+  title: String,
+  path: String,
+) -> Result<(), String> {
   {
     let mut paths = window_page_paths().lock().map_err(|e| e.to_string())?;
     paths.insert(title, path);
@@ -110,8 +119,15 @@ pub fn set_window_page_path(app: tauri::AppHandle, title: String, path: String) 
 }
 
 #[tauri::command]
-pub fn remove_window(app: tauri::AppHandle, handle: usize, title: Option<String>) -> Result<(), String> {
-  println!("[remove_window] Removing window with handle: {} title: {:?}", handle, title);
+pub fn remove_window(
+  app: tauri::AppHandle,
+  handle: usize,
+  title: Option<String>,
+) -> Result<(), String> {
+  println!(
+    "[remove_window] Removing window with handle: {} title: {:?}",
+    handle, title
+  );
 
   let windows = app.webview_windows();
   for (label, window) in windows {
@@ -125,7 +141,10 @@ pub fn remove_window(app: tauri::AppHandle, handle: usize, title: Option<String>
 
     let title_matches = title.as_deref() == Some(current_title.as_str());
     if title_matches || label_handle(&label) == handle {
-      println!("[remove_window] Closing matching Tauri window: {}", current_title);
+      println!(
+        "[remove_window] Closing matching Tauri window: {}",
+        current_title
+      );
       if let Err(err) = window.close() {
         println!("[remove_window] Failed to close {}: {}", current_title, err);
       }
@@ -142,7 +161,10 @@ pub fn remove_window(app: tauri::AppHandle, handle: usize, title: Option<String>
 pub fn get_all_windows() -> Result<Vec<WindowInfo>, String> {
   let removed = removed_windows().lock().map_err(|e| e.to_string())?.clone();
   let mut windows = PlatformCapture::get_all_windows();
-  let paths = window_page_paths().lock().map_err(|e| e.to_string())?.clone();
+  let paths = window_page_paths()
+    .lock()
+    .map_err(|e| e.to_string())?
+    .clone();
 
   windows.retain(|window| !removed.contains(&window.handle));
 
@@ -165,7 +187,10 @@ pub fn get_all_windows_with_thumbnails(
 
   let removed = removed_windows().lock().map_err(|e| e.to_string())?.clone();
   let mut windows = PlatformCapture::get_all_windows();
-  let paths = window_page_paths().lock().map_err(|e| e.to_string())?.clone();
+  let paths = window_page_paths()
+    .lock()
+    .map_err(|e| e.to_string())?
+    .clone();
 
   windows.retain(|window| !removed.contains(&window.handle));
 
