@@ -196,6 +196,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
       commands::window_manager::get_all_windows_with_thumbnails,
       commands::window_manager::list_app_windows,
       commands::window_manager::focus_app_window,
+      commands::window_manager::set_app_window_always_on_top,
       commands::window_manager::set_window_page_path,
       commands::window_manager::remove_window,
       commands::window_manager::capture_window,

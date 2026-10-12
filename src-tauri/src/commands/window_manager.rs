@@ -105,6 +105,17 @@ pub fn focus_app_window(app: tauri::AppHandle, label: String) -> Result<(), Stri
 }
 
 #[tauri::command]
+pub fn set_app_window_always_on_top(app: tauri::AppHandle, label: String) -> Result<(), String> {
+  let window = app
+    .get_webview_window(&label)
+    .ok_or_else(|| format!("No Tauri window found with label '{label}'"))?;
+
+  window
+    .set_always_on_top(true)
+    .map_err(|error| format!("Failed to set window '{label}' always on top: {error}"))
+}
+
+#[tauri::command]
 pub fn set_window_page_path(
   app: tauri::AppHandle,
   title: String,

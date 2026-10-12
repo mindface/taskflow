@@ -34,7 +34,15 @@ export function useScheduleWindowSync() {
     }
   }, []);
 
-  return { syncScheduleContent, openScheduleWindow };
+  const openMainWindow = useCallback(async (openContinuous: boolean) => {
+    try {
+      await invoke('open_main_window', { openContinuous });
+    } catch (error) {
+      console.error('open_main_window error:', error);
+    }
+  }, []);
+
+  return { syncScheduleContent, openScheduleWindow, openMainWindow };
 }
 
 export function useSchedulePreviewListener(

@@ -61,6 +61,13 @@ export class ManageWindowService {
     return await invoke('focus_window', { handle: window.handle });
   }
 
+  static async setAlwaysOnTop(window: WindowInfo): Promise<void> {
+    if (!window.label) {
+      throw new Error('Always-on-top is only supported for Taskflow windows');
+    }
+    return await invoke('set_app_window_always_on_top', { label: window.label });
+  }
+
   static async removeWindow(handle: number, title?: string): Promise<void> {
     console.log(`[WindowManagerService] Removing window with handle: ${handle}, title: ${title ?? 'unknown'}`);
     return await invoke('remove_window', { handle, title });
