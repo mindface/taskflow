@@ -213,6 +213,9 @@ unsafe extern "system" fn enum_windows_proc(hwnd: HWND, lparam: LPARAM) -> BOOL 
     is_visible: true,
     is_minimized: placement.showCmd == SW_SHOWMINIMIZED.0 as u32,
     thumbnail: None,
+    owner_name: None,
+    page_path: None,
+    label: None,
   };
 
   // 最初の10件はログ出力

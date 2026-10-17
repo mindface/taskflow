@@ -1,6 +1,7 @@
 use crate::db::db_core::get_conn;
 use crate::migrations::v1;
 use crate::migrations::v2;
+use crate::migrations::v3;
 use rusqlite::Connection;
 
 pub fn run_migrations() -> Result<(), String> {
@@ -18,10 +19,10 @@ pub fn run_migrations() -> Result<(), String> {
     set_version(&conn, 2)?;
   }
 
-  // if version < 3 {
-  //   v3::up(&conn)?;
-  //   set_version(&conn, 3)?;
-  // }
+  if version < 3 {
+    v3::up(&conn)?;
+    set_version(&conn, 3)?;
+  }
 
   // if version < 4 {
   //   v4::up(&conn)?;

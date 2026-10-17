@@ -9,6 +9,8 @@ pub struct User {
   pub activated: bool,
   pub roles: Option<String>,
   pub ui_selection: Option<String>,
+  pub turso_database_url: Option<String>,
+  pub turso_auth_token: Option<String>,
   pub created_at: String,
   pub updated_at: String,
 }

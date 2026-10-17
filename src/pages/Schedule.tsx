@@ -1,5 +1,3 @@
-import { useEffect, useState } from "react";
-import { invoke } from "@tauri-apps/api/core";
 import Scheduler from "../components/Scheduler";
 
 function Schedule() {

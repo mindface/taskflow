@@ -1,5 +1,6 @@
 // src/services/windowManager.ts
 import { invoke } from '@tauri-apps/api/core';
+import { listen, UnlistenFn } from '@tauri-apps/api/event';
 
 export interface WindowInfo {
   handle: number;
@@ -11,9 +12,20 @@ export interface WindowInfo {
   is_visible: boolean;
   is_minimized: boolean;
   thumbnail?: string;
+  page_path?: string | null;
+  label?: string | null;
+}
+
+export interface AppWindowsPayload {
+  count: number;
+  windows: WindowInfo[];
 }
 
 export class ManageWindowService {
+  static async listAppWindows(): Promise<AppWindowsPayload> {
+    return await invoke<AppWindowsPayload>('list_app_windows');
+  }
+
   static async getAllWindows(): Promise<WindowInfo[]> {
     try {
       const result = await invoke<WindowInfo[]>('get_all_windows');
@@ -40,8 +52,32 @@ export class ManageWindowService {
       throw error;
     }
   }
-  static async focusWindow(handle: number): Promise<void> {
-    console.log(`[WindowManagerService] Focusing window with handle: ${handle}`);
-    return await invoke('focus_window', { handle });
+
+  static async focusWindow(window: WindowInfo): Promise<void> {
+    if (window.label) {
+      return await invoke('focus_app_window', { label: window.label });
+    }
+    console.log(`[WindowManagerService] Focusing window with handle: ${window.handle}`);
+    return await invoke('focus_window', { handle: window.handle });
+  }
+
+  static async setAlwaysOnTop(window: WindowInfo): Promise<void> {
+    if (!window.label) {
+      throw new Error('Always-on-top is only supported for Taskflow windows');
+    }
+    return await invoke('set_app_window_always_on_top', { label: window.label });
+  }
+
+  static async removeWindow(handle: number, title?: string): Promise<void> {
+    console.log(`[WindowManagerService] Removing window with handle: ${handle}, title: ${title ?? 'unknown'}`);
+    return await invoke('remove_window', { handle, title });
+  }
+
+  static onAppWindowsUpdated(
+    handler: (payload: AppWindowsPayload) => void
+  ): Promise<UnlistenFn> {
+    return listen<AppWindowsPayload>('app-windows-updated', (event) => {
+      handler(event.payload);
+    });
   }
 }

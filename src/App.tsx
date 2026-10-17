@@ -1,4 +1,5 @@
 import "./App.css";
+import { invoke } from "@tauri-apps/api/core";
 import { Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useEffect } from "react";
 
@@ -21,7 +22,13 @@ function App() {
 
   useEffect(() => {
     dispatch({ type: "SET_VIEWTYPE", payload: pathToViewType(pathname) });
-  }, [dispatch, pathname,viewtype]);
+
+    const targetTitle = (window as any).__TAURI_WINDOW_TITLE__ ?? (window as any).__TAURI_WINDOW_LABEL__ ?? "Taskflow";
+    void invoke("set_window_page_path", {
+      title: targetTitle,
+      path: pathname,
+    }).catch((error) => console.error("Failed to sync current page path", error));
+  }, [dispatch, pathname, viewtype]);
 
   const confirmViewtypeChange = () => {
     const pendingViewtype = state.pendingViewtype;
@@ -38,7 +45,7 @@ function App() {
       <div
         className={`div-outer p-4 ${backendClass}`}
       >
-          {viewtype} | @@@{isProduction? "本番環境" : "開発環境"} | {import.meta.env.VITE_APP_ENV}
+          {viewtype} | {isProduction? "本番環境" : "開発環境"} | {import.meta.env.VITE_APP_ENV}
           <HoverFollow
             className="app-main-follow" glowClassName="app-main-follow__orb"
           >

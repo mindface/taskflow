@@ -65,6 +65,7 @@ pub fn open_schedule_window(
     err
   })?;
 
+  crate::commands::window_manager::emit_app_windows(&app);
   Ok(())
 }
 

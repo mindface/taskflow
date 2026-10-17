@@ -89,7 +89,6 @@ pub fn delete_note(id: i64) -> Result<(), String> {
 pub fn get_note_detail(note_id: i64) -> Result<NoteDetail, String> {
   let conn = get_conn()?;
 
-  // 1. Note 本体
   let note = conn
     .query_row(
       "SELECT id, title, content, created_at, updated_at FROM notes WHERE id = ?1",
@@ -106,7 +105,6 @@ pub fn get_note_detail(note_id: i64) -> Result<NoteDetail, String> {
     )
     .map_err(|e| format!("Query note error: {}", e))?;
 
-  // 2. ConceptView 一覧
   let mut stmt = conn
     .prepare(
       "

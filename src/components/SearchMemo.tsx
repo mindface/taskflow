@@ -1,5 +1,5 @@
 // src/components/VirtualDesktopView.tsx
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { invoke } from '@tauri-apps/api/core';
 
 import type { Note } from "../models/Notes";

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useNotes } from "../store/note";
 import ConnectLinker from "../components/ConnectLinker";
 

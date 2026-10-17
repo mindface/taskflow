@@ -34,30 +34,66 @@
   transform: translateY(-2px);
 }
 
-.windows-grid {
+.window-browser {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  grid-template-columns: minmax(220px, 0.7fr) minmax(320px, 1.3fr);
   gap: 20px;
   padding: 10px;
+  align-items: start;
 }
 
-.window-card {
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 12px;
-  overflow: hidden;
+.window-numbered-list {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.window-numbered-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 48px;
+  padding: 8px 12px;
+  text-align: left;
+  border: 1px solid #d8dde5;
+  border-radius: 6px;
+  background: #fff;
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.window-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+.window-numbered-item:hover,
+.window-numbered-item.selected {
+  border-color: #368bf2;
+  background: #edf5ff;
 }
 
-.window-card.selected {
-  border: 3px solid #667eea;
-  box-shadow: 0 0 20px rgba(102, 126, 234, 0.5);
+.window-number {
+  display: grid;
+  flex: 0 0 28px;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  border-radius: 50%;
+  background: #368bf2;
+  color: #fff;
+  font-weight: 700;
+}
+
+.window-list-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.window-selected-details {
+  overflow: hidden;
+  border: 1px solid #d8dde5;
+  border-radius: 6px;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
 }
 
 .thumbnail-container {
@@ -117,6 +153,46 @@
   padding: 4px 8px;
   border-radius: 4px;
   font-family: 'Courier New', monospace;
+}
+
+.window-selected-meta {
+  display: grid;
+  grid-template-columns: 80px minmax(0, 1fr);
+  gap: 8px 12px;
+  margin: 12px 0;
+  overflow-wrap: anywhere;
+}
+
+.window-selected-meta dt {
+  color: #64748b;
+}
+
+.window-selected-meta dd {
+  margin: 0;
+}
+
+.window-detail-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.window-detail-actions button {
+  padding: 8px 10px;
+  border: 1px solid #cbd5e1;
+  border-radius: 5px;
+  background: #f8fafc;
+}
+
+.window-detail-actions button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+@media (max-width: 700px) {
+  .window-browser {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 
 .loading {
