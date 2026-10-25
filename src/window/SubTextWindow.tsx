@@ -1,6 +1,4 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
 // TODO Tauriバージョン次第で変更予定
 // import { usePreviewListener } from '../hooks/useWindowSync';
 // import { listen, UnlistenFn } from '@tauri-apps/api/event';
