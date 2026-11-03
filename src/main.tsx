@@ -9,6 +9,7 @@ import "./styles/dialog.css";
 import "./styles/follow.css";
 import { UIProvider } from "./store/ui";
 import { ShareNotesProvider } from "./store/shareNote";
+import { LocalStorageProvider } from "./store/localStorage";
 import { router } from "./router";
 
 const windowLabel = (window as any).__TAURI_WINDOW_LABEL__;
@@ -34,6 +35,6 @@ const renderSelectDom = () => {
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
-    {renderSelectDom()}
+    <LocalStorageProvider>{renderSelectDom()}</LocalStorageProvider>
   </React.StrictMode>,
 );
