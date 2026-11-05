@@ -4,6 +4,7 @@ import { sendNotification } from "@tauri-apps/plugin-notification";
 import { open } from "@tauri-apps/plugin-dialog";
 
 import ReactMarkdown from "react-markdown";
+import MarkdownSourceInfo from "../components/MarkdownSourceInfo";
 
 export default function MakerText() {
   const [files, setFiles] = useState<string[]>([]);
@@ -139,6 +140,10 @@ export default function MakerText() {
           </div>
           { viewMarkDown && 
             <div className="output-box p-4 prose prose-sm max-w-none color-black">
+              <MarkdownSourceInfo
+                sourcePath={`${directoryPath}/${selectedFile}`}
+                location="MakerTextのMarkdownプレビュー"
+              />
               <ReactMarkdown>{fileContent}</ReactMarkdown>
             </div>
           }

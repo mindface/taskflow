@@ -27,6 +27,15 @@ const CoreDialog = ({
   const dialogRef = useRef<HTMLDialogElement | null>(null);
   const lastActiveElement = useRef<Element | null>(null);
 
+  const bodyStyleHandler = () => {
+    const prevBodyStyle = document.body.getAttribute("style") || "";
+    if(prevBodyStyle.indexOf("overflow:hidden") !== -1) {
+      document.body.setAttribute("style","");
+    }else {
+      document.body.setAttribute("style", prevBodyStyle + ";overflow:hidden;");
+    }
+  }
+
   useEffect(() => {
     const dialog = dialogRef.current;
     if (!dialog) return;
@@ -72,8 +81,6 @@ const CoreDialog = ({
       // save last focused element
       lastActiveElement.current = document.activeElement;
       // prevent background scroll
-      const prevBodyStyle = document.body.getAttribute("style") || "";
-      document.body.setAttribute("style", prevBodyStyle + ";overflow:hidden;");
 
       // open dialog
       if (typeof dialog.showModal === "function") {
@@ -86,6 +93,7 @@ const CoreDialog = ({
       } else {
         dialog.setAttribute("open", "true");
       }
+      bodyStyleHandler();
 
       // focus first focusable element inside dialog or dialog itself
       const focusable = dialog.querySelector<HTMLElement>(

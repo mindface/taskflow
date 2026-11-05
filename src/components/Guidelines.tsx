@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import MarkdownSourceInfo from "./MarkdownSourceInfo";
 
 export default function Guidelines() {
   const [content, setContent] = useState("")
@@ -19,6 +20,10 @@ export default function Guidelines() {
   return (
     <div className="DashBord">
       <div className="mb-4 p-4 preview">
+        <MarkdownSourceInfo
+          sourcePath="/md/homeview.md"
+          location="ホーム画面のガイドライン"
+        />
         <ReactMarkdown
           remarkPlugins={[remarkGfm]}
         >{content}</ReactMarkdown>

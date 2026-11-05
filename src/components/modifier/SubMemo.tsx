@@ -3,6 +3,7 @@ import { useLocalStorageStore } from "../../store/localStorage";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import CoreDialog from "../core/CoreDialog";
+import MarkdownSourceInfo from "../MarkdownSourceInfo";
 
 type FishingLog = {
   id: string;
@@ -88,10 +89,11 @@ export default function SubMemo() {
           </div>
           
           <textarea
-            className="w-full h-32 p-3 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 resize-none mb-4"
+            className="w-full h-32 p-3 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 mb-4"
             placeholder="ここにメモを入力（Markdown対応）..."
             value={content}
             onChange={handleContentChange}
+
           ></textarea>
 
           <div className="flex justify-end mb-4">
@@ -108,6 +110,10 @@ export default function SubMemo() {
           {/* マークダウンプレビューエリア */}
           <div className="flex-1 border border-gray-100 rounded-lg p-3 bg-gray-50 overflow-y-auto">
             <p className="text-xs font-semibold text-gray-400 mb-2 uppercase tracking-wider">Preview</p>
+            <MarkdownSourceInfo
+              sourcePath="/md/homeview.md"
+              location="サブメモ画面のプレビュー"
+            />
             <ReactMarkdown remarkPlugins={[remarkGfm]}>
               {mdcontent}
             </ReactMarkdown>

@@ -5,6 +5,7 @@ import { invoke } from "@tauri-apps/api/core";
 import { NoteData } from '../models/Notes';
 import 'github-markdown-css/github-markdown.css';
 import '../styles/markdown.css';
+import MarkdownSourceInfo from '../components/MarkdownSourceInfo';
 
 export default function PreviewWindow() {
   const [title, setTitle] = useState('プレビュー準備中...');
@@ -64,9 +65,15 @@ export default function PreviewWindow() {
 
       <div className="markdown-body mb-6" style={{ minHeight: '200px' }}>
         {content ? (
-          <ReactMarkdown remarkPlugins={[remarkGfm]}>
-            {content}
-          </ReactMarkdown>
+          <>
+            <MarkdownSourceInfo
+              sourcePath="同期されたメモ本文（ファイルパスなし）"
+              location="プレビューウィンドウ"
+            />
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+              {content}
+            </ReactMarkdown>
+          </>
         ) : (
           <p style={{ color: '#666', fontStyle: 'italic' }}>
             Markdownを入力すると、ここにプレビューが表示されます
