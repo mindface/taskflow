@@ -160,6 +160,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
       commands::file_operations::export_pdf,
       commands::file_operations::export_notes,
       commands::file_operations::import_notes,
+      commands::file_operations::store_uploaded_data_file,
+      commands::file_operations::read_uploaded_data_file_preview,
+      commands::file_operations::read_uploaded_molecule,
+      commands::file_operations::get_uploaded_3d_model_path,
+      commands::file_operations::save_cad_process_snapshot,
+      commands::file_operations::delete_cad_process_snapshot,
+      commands::file_operations::delete_uploaded_data_file,
       // SQL Memo commands
       commands::sql_memo::add_note,
       commands::sql_memo::list_notes,

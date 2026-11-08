@@ -1,12 +1,262 @@
 use crate::db::db_core::get_conn;
 use crate::models::note::Note;
+use base64::engine::general_purpose::STANDARD as BASE64_STANDARD;
+use base64::Engine;
 use csv::{Reader, Writer};
 use genpdf::{elements, fonts, Document};
 use rusqlite::params;
+use serde::Serialize;
 use std::fs;
-use std::io::{self};
-use std::path::{Path, PathBuf};
+use std::io::{self, Read};
+use std::path::{Component, Path, PathBuf};
+use std::time::{SystemTime, UNIX_EPOCH};
 use tauri::{AppHandle, Manager};
+
+const DATA_FILE_PREVIEW_LIMIT: usize = 256 * 1024;
+const MOLECULE_FILE_LIMIT: u64 = 64 * 1024 * 1024;
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct StoredDataFile {
+  stored_name: String,
+  file_name: String,
+  size_bytes: u64,
+}
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct DataFilePreview {
+  text: Option<String>,
+  is_binary: bool,
+  is_truncated: bool,
+}
+
+fn uploaded_data_dir(app: &AppHandle) -> Result<PathBuf, String> {
+  let directory = app
+    .path()
+    .app_data_dir()
+    .map_err(|e| e.to_string())?
+    .join("uploaded-data");
+  fs::create_dir_all(&directory).map_err(|e| format!("Failed to create data directory: {e}"))?;
+  Ok(directory)
+}
+
+fn validate_stored_data_file_name(file_name: &str) -> Result<(), String> {
+  let mut components = Path::new(file_name).components();
+  if !matches!(components.next(), Some(Component::Normal(_))) || components.next().is_some() {
+    return Err("Invalid stored file name".to_string());
+  }
+  Ok(())
+}
+
+#[tauri::command]
+pub fn store_uploaded_data_file(
+  app: AppHandle,
+  source_path: String,
+) -> Result<StoredDataFile, String> {
+  let source = PathBuf::from(source_path);
+  let metadata = fs::metadata(&source).map_err(|e| format!("Failed to read selected file: {e}"))?;
+  if !metadata.is_file() {
+    return Err("Selected path is not a file".to_string());
+  }
+
+  let file_name = source
+    .file_name()
+    .and_then(|name| name.to_str())
+    .filter(|name| !name.is_empty())
+    .ok_or_else(|| "Selected file has an invalid name".to_string())?
+    .to_string();
+  let safe_file_name: String = file_name
+    .chars()
+    .map(|character| {
+      if character.is_alphanumeric() || matches!(character, '.' | '-' | '_') {
+        character
+      } else {
+        '_'
+      }
+    })
+    .collect();
+  let timestamp = SystemTime::now()
+    .duration_since(UNIX_EPOCH)
+    .map_err(|e| format!("System clock error: {e}"))?
+    .as_nanos();
+  let stored_name = format!("{}-{}-{}", std::process::id(), timestamp, safe_file_name);
+  let destination = uploaded_data_dir(&app)?.join(&stored_name);
+  fs::copy(&source, &destination).map_err(|e| format!("Failed to copy selected file: {e}"))?;
+  let size_bytes = fs::metadata(&destination)
+    .map_err(|e| format!("Failed to inspect copied file: {e}"))?
+    .len();
+
+  Ok(StoredDataFile {
+    stored_name,
+    file_name,
+    size_bytes,
+  })
+}
+
+#[tauri::command]
+pub fn read_uploaded_data_file_preview(
+  app: AppHandle,
+  stored_name: String,
+) -> Result<DataFilePreview, String> {
+  validate_stored_data_file_name(&stored_name)?;
+  let path = uploaded_data_dir(&app)?.join(stored_name);
+  let file = fs::File::open(path).map_err(|e| format!("Failed to open uploaded file: {e}"))?;
+  let mut bytes = Vec::new();
+  file
+    .take((DATA_FILE_PREVIEW_LIMIT + 1) as u64)
+    .read_to_end(&mut bytes)
+    .map_err(|e| format!("Failed to read uploaded file: {e}"))?;
+  let is_truncated = bytes.len() > DATA_FILE_PREVIEW_LIMIT;
+  bytes.truncate(DATA_FILE_PREVIEW_LIMIT);
+
+  let utf8_error_is_only_truncated_character =
+    std::str::from_utf8(&bytes).err().is_some_and(|error| {
+      is_truncated
+        && error.error_len().is_none()
+        && error.valid_up_to() >= bytes.len().saturating_sub(4)
+    });
+  let is_binary = bytes.contains(&0)
+    || (std::str::from_utf8(&bytes).is_err() && !utf8_error_is_only_truncated_character);
+  let text = if is_binary {
+    None
+  } else {
+    Some(String::from_utf8_lossy(&bytes).into_owned())
+  };
+
+  Ok(DataFilePreview {
+    text,
+    is_binary,
+    is_truncated,
+  })
+}
+
+#[tauri::command]
+pub fn read_uploaded_molecule(app: AppHandle, stored_name: String) -> Result<String, String> {
+  validate_stored_data_file_name(&stored_name)?;
+  let extension = Path::new(&stored_name)
+    .extension()
+    .and_then(|value| value.to_str())
+    .unwrap_or_default()
+    .to_ascii_lowercase();
+  if extension != "pdb" {
+    return Err("Only PDB files can be loaded as molecular structures".to_string());
+  }
+
+  let path = uploaded_data_dir(&app)?.join(stored_name);
+  let metadata =
+    fs::metadata(&path).map_err(|e| format!("Failed to inspect molecular file: {e}"))?;
+  if metadata.len() > MOLECULE_FILE_LIMIT {
+    return Err("Molecular file exceeds the 64 MiB preview limit".to_string());
+  }
+  fs::read_to_string(path).map_err(|e| format!("Molecular file is not valid UTF-8 text: {e}"))
+}
+
+#[tauri::command]
+pub fn get_uploaded_3d_model_path(app: AppHandle, stored_name: String) -> Result<String, String> {
+  validate_stored_data_file_name(&stored_name)?;
+  let extension = Path::new(&stored_name)
+    .extension()
+    .and_then(|value| value.to_str())
+    .unwrap_or_default()
+    .to_ascii_lowercase();
+  if extension != "stl" && extension != "glb" {
+    return Err("Only STL and GLB files can be loaded as 3D models".to_string());
+  }
+
+  let path = uploaded_data_dir(&app)?.join(stored_name);
+  if !path.is_file() {
+    return Err("Uploaded 3D model was not found".to_string());
+  }
+  Ok(path.to_string_lossy().to_string())
+}
+
+#[tauri::command]
+pub fn save_cad_process_snapshot(
+  app: AppHandle,
+  stored_name: String,
+  snapshot_id: String,
+  image_data_url: String,
+) -> Result<String, String> {
+  validate_stored_data_file_name(&stored_name)?;
+  if !snapshot_id
+    .chars()
+    .all(|character| character.is_ascii_alphanumeric() || character == '-')
+  {
+    return Err("Invalid process snapshot ID".to_string());
+  }
+  let extension = Path::new(&stored_name)
+    .extension()
+    .and_then(|value| value.to_str())
+    .unwrap_or_default()
+    .to_ascii_lowercase();
+  if extension != "stl" && extension != "glb" {
+    return Err("Process snapshots are only available for STL and GLB files".to_string());
+  }
+  if !uploaded_data_dir(&app)?.join(&stored_name).is_file() {
+    return Err("Uploaded 3D model was not found".to_string());
+  }
+
+  let encoded_image = image_data_url
+    .strip_prefix("data:image/png;base64,")
+    .ok_or_else(|| "Snapshot must be a PNG data URL".to_string())?;
+  if encoded_image.len() > 28 * 1024 * 1024 {
+    return Err("Process snapshot exceeds the 20 MiB limit".to_string());
+  }
+  let image = BASE64_STANDARD
+    .decode(encoded_image)
+    .map_err(|e| format!("Invalid snapshot image data: {e}"))?;
+  if image.len() > 20 * 1024 * 1024 {
+    return Err("Process snapshot exceeds the 20 MiB limit".to_string());
+  }
+  if !image.starts_with(b"\x89PNG\r\n\x1a\n") {
+    return Err("Snapshot data is not a valid PNG image".to_string());
+  }
+
+  let snapshot_name = format!("{stored_name}.process-{snapshot_id}.png");
+  let path = uploaded_data_dir(&app)?.join(snapshot_name);
+  fs::write(&path, image).map_err(|e| format!("Failed to save process snapshot: {e}"))?;
+  Ok(path.to_string_lossy().to_string())
+}
+
+#[tauri::command]
+pub fn delete_cad_process_snapshot(
+  app: AppHandle,
+  stored_name: String,
+  snapshot_id: String,
+) -> Result<(), String> {
+  validate_stored_data_file_name(&stored_name)?;
+  if !snapshot_id
+    .chars()
+    .all(|character| character.is_ascii_alphanumeric() || character == '-')
+  {
+    return Err("Invalid process snapshot ID".to_string());
+  }
+  let path = uploaded_data_dir(&app)?.join(format!("{stored_name}.process-{snapshot_id}.png"));
+  fs::remove_file(path).map_err(|e| format!("Failed to delete process snapshot: {e}"))
+}
+
+#[tauri::command]
+pub fn delete_uploaded_data_file(app: AppHandle, stored_name: String) -> Result<(), String> {
+  validate_stored_data_file_name(&stored_name)?;
+  let directory = uploaded_data_dir(&app)?;
+  let path = directory.join(&stored_name);
+  fs::remove_file(path).map_err(|e| format!("Failed to delete uploaded file: {e}"))?;
+
+  let snapshot_prefix = format!("{stored_name}.process-");
+  for entry in
+    fs::read_dir(&directory).map_err(|e| format!("Failed to read data directory: {e}"))?
+  {
+    let entry = entry.map_err(|e| format!("Failed to inspect data directory: {e}"))?;
+    let file_name = entry.file_name();
+    let file_name = file_name.to_string_lossy();
+    if file_name.starts_with(&snapshot_prefix) && file_name.ends_with(".png") {
+      fs::remove_file(entry.path())
+        .map_err(|e| format!("Failed to delete process snapshot: {e}"))?;
+    }
+  }
+  Ok(())
+}
 
 fn desktop_path(app: &AppHandle) -> Result<PathBuf, String> {
   let desktop = app.path().desktop_dir().map_err(|e| e.to_string())?;

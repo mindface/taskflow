@@ -30,7 +30,7 @@ export default function MenuLsitDialog() {
                 className={`block cursor-pointer p-2 transition-all text-left
                   ${activePath === item.name ? "bg-blue-500 text-white" : "text-gray-700 hover:bg-gray-100"}
                 `}
-                onClick={() => pageAction(item.name)}>{item.name}
+                onClick={() => pageAction(item.name)}>{item.label ?? item.name}
               </li>
             )}
           </ul>
