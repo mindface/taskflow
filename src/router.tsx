@@ -18,6 +18,7 @@ import UserRegister from "./pages/UserRegister";
 import ShareNotes from "./pages/ShareNotes";
 import ClipboardHistory from "./pages/ClipboardHistory";
 import SearchTotal from "./pages/SearchTotal";
+import DataLibrary from "./pages/DataLibrary";
 
 import { DataProvider } from "./store/dataBox";
 import { NotesProvider } from "./store/note";
@@ -122,6 +123,12 @@ const searchTotalRoute = createRoute({
   component: SearchTotal,
 });
 
+const dataLibraryRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/data-library",
+  component: DataLibrary,
+});
+
 const routeTree = rootRoute.addChildren([
   indexRoute,
   structsmakeRoute,
@@ -137,6 +144,7 @@ const routeTree = rootRoute.addChildren([
   shareNotesRoute,
   clipboardHistoryRoute,
   searchTotalRoute,
+  dataLibraryRoute,
 ]);
 
 export const router = createRouter({ routeTree });

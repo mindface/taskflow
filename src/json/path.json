@@ -77,5 +77,12 @@
     "name":"searchTotal",
     "path":"/total-search",
     "description":"総合検索"
+  },
+  {
+    "id":"path15",
+    "name":"dataLibrary",
+    "path":"/data-library",
+    "label":"データ管理",
+    "description":"アップロードしたファイルの表示と記録"
   }
 ]

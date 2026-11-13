@@ -11,12 +11,14 @@
     "tauri": "tauri"
   },
   "dependencies": {
+    "3dmol": "^2.5.5",
     "@tailwindcss/vite": "^4.0.17",
     "@tanstack/react-router": "^1.169.2",
     "@tauri-apps/api": "^2.0.0",
     "@tauri-apps/plugin-dialog": "^2.0.0",
     "@tauri-apps/plugin-notification": "^2.3.3",
     "@tauri-apps/plugin-shell": "^2.0.0",
+    "fabric": "^7.4.0",
     "github-markdown-css": "^5.8.1",
     "react": "^18.2.0",
     "react-day-picker": "^10.0.1",
@@ -24,6 +26,7 @@
     "react-markdown": "^10.1.0",
     "remark-gfm": "^4.0.1",
     "styled-jsx": "^5.1.6",
+    "three": "^0.187.0",
     "vite-plugin-svgr": "^4.5.0"
   },
   "devDependencies": {
@@ -31,6 +34,7 @@
     "@types/node": "^18.7.10",
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",
+    "@types/three": "^0.187.0",
     "@vitejs/plugin-react": "^3.0.0",
     "autoprefixer": "^10.4.24",
     "esbuild": "^0.27.3",

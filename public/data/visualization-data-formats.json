@@ -1,0 +1,30 @@
+[
+  {
+    "type": "分子構造 (AlphaFold)",
+    "formats": ".pdb, .cif",
+    "frontend": "3Dmol.js / NGL Viewer",
+    "backend": "テキストパースまたはRust製パーサー",
+    "status": ".pdb: 3D表示対応 / .cif: 未実装"
+  },
+  {
+    "type": "CAD / 3Dモデル",
+    "formats": ".glb, .gltf, .stl, .step",
+    "frontend": "Three.js / @react-three/fiber",
+    "backend": "opencascade.js (Wasm) / gltf-rs",
+    "status": ".stl/.glb: 3D表示対応 / .gltf/.step: 未実装"
+  },
+  {
+    "type": "医療・解剖学 (DICOM)",
+    "formats": ".dcm, DICOM-Web",
+    "frontend": "cornerstone3D",
+    "backend": "pydicom (Python連携) / Rust DICOM crate",
+    "status": "未実装（ファイル情報のみ）"
+  },
+  {
+    "type": "行動・時系列データ",
+    "formats": "JSON, CSV, Parquet",
+    "frontend": "Chart.js / D3.js / Plotly",
+    "backend": "DuckDB-rs / SQLite",
+    "status": "グラフ表示は未実装（JSON/CSV/TSVのテキストプレビューのみ）"
+  }
+]
