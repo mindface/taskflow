@@ -220,6 +220,35 @@ pub fn save_cad_process_snapshot(
 }
 
 #[tauri::command]
+pub fn read_cad_process_snapshot(
+  app: AppHandle,
+  stored_name: String,
+  snapshot_id: String,
+) -> Result<String, String> {
+  validate_stored_data_file_name(&stored_name)?;
+  if !snapshot_id
+    .chars()
+    .all(|character| character.is_ascii_alphanumeric() || character == '-')
+  {
+    return Err("Invalid process snapshot ID".to_string());
+  }
+  let path = uploaded_data_dir(&app)?.join(format!("{stored_name}.process-{snapshot_id}.png"));
+  let metadata =
+    fs::metadata(&path).map_err(|e| format!("Failed to inspect process snapshot: {e}"))?;
+  if metadata.len() > 20 * 1024 * 1024 {
+    return Err("Process snapshot exceeds the 20 MiB limit".to_string());
+  }
+  let image = fs::read(path).map_err(|e| format!("Failed to read process snapshot: {e}"))?;
+  if !image.starts_with(b"\x89PNG\r\n\x1a\n") {
+    return Err("Process snapshot is not a valid PNG image".to_string());
+  }
+  Ok(format!(
+    "data:image/png;base64,{}",
+    BASE64_STANDARD.encode(image)
+  ))
+}
+
+#[tauri::command]
 pub fn delete_cad_process_snapshot(
   app: AppHandle,
   stored_name: String,

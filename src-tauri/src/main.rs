@@ -165,6 +165,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
       commands::file_operations::read_uploaded_molecule,
       commands::file_operations::get_uploaded_3d_model_path,
       commands::file_operations::save_cad_process_snapshot,
+      commands::file_operations::read_cad_process_snapshot,
       commands::file_operations::delete_cad_process_snapshot,
       commands::file_operations::delete_uploaded_data_file,
       // SQL Memo commands

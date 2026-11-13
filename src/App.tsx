@@ -3,7 +3,7 @@ import { invoke } from "@tauri-apps/api/core";
 import { Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useEffect } from "react";
 
-import MenuLsit from "./components/modifier/MenuLsit";
+import MenuList from "./components/modifier/MenuList";
 import Footer from "./components/core/Footer";
 import HoverFollow from "./components/modifier/HoverFollow";
 import CoreDialog from "./components/core/CoreDialog";
@@ -52,7 +52,7 @@ function App() {
             <main className="main">
               <Outlet />
             </main>
-            <MenuLsit />
+            <MenuList />
           </HoverFollow>
           <Footer />
           <CoreDialog

@@ -1,6 +1,7 @@
 import { convertFileSrc, invoke } from "@tauri-apps/api/core";
 import { open } from "@tauri-apps/plugin-dialog";
 import { useEffect, useState } from "react";
+import CadSnapshotEditor from "../components/CadSnapshotEditor";
 import CadModelViewer from "../components/CadModelViewer";
 import MoleculeStructureViewer from "../components/MoleculeStructureViewer";
 import { VisualizationDataFormats } from "../components/VisualizationDataFormats";
@@ -35,6 +36,7 @@ type CadProcessStep = {
   description: string;
   snapshotPath: string;
   createdAt: string;
+  updatedAt?: string;
 };
 
 const DATA_RECORDS_KEY = "uploadedDataFiles";
@@ -90,6 +92,7 @@ export default function DataLibrary() {
   const [saving, setSaving] = useState(false);
   const [processDescription, setProcessDescription] = useState("");
   const [savingProcess, setSavingProcess] = useState(false);
+  const [editingStepId, setEditingStepId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const selectedRecord = records.find((record) => record.id === selectedId);
@@ -267,6 +270,18 @@ export default function DataLibrary() {
     }
   }
 
+  function markProcessStepEdited(stepId: string) {
+    if (!selectedRecord) return;
+    const updatedAt = new Date().toISOString();
+    update<Record<string, CadProcessStep[]>>(CAD_PROCESSES_KEY, (current) => ({
+      ...(current ?? {}),
+      [selectedRecord.id]: (current?.[selectedRecord.id] ?? []).map((step) =>
+        step.id === stepId ? { ...step, updatedAt } : step,
+      ),
+    }));
+    setEditingStepId(null);
+  }
+
   return (
     <div className="space-y-6 p-4">
       <header>
@@ -361,23 +376,23 @@ export default function DataLibrary() {
         </div>
 
         <div className="min-h-64 rounded border border-gray-200 bg-white p-4">
-          <h2 className="mb-3 text-lg font-semibold">データ表示</h2>
+          <h2 className="mb-2 text-lg font-semibold">データ表示</h2>
           {!selectedRecord ? (
             <p className="text-sm text-gray-500">一覧からファイルを選択してください。</p>
           ) : (
             <>
-              <h3 className="break-all font-medium">{selectedRecord.fileName}</h3>
-              <p className="mt-1 text-xs text-gray-500">
+              <h3 className="break-all font-medium mb-2">{selectedRecord.fileName}</h3>
+              <p className="mt-1 text-xs text-gray-500 mb-2">
                 {categoryLabels[selectedRecord.category]} · {formatFileSize(selectedRecord.sizeBytes)} ·{" "}
                 {new Date(selectedRecord.addedAt).toLocaleString()}
               </p>
-              <p className={`mt-2 text-sm font-medium ${formatImplementationStatus(selectedRecord.fileName) === "3D表示対応" ? "text-green-700" : "text-amber-700"}`}>
+              <p className={`mt-2 mb-2 text-sm font-medium ${formatImplementationStatus(selectedRecord.fileName) === "3D表示対応" ? "text-green-700" : "text-amber-700"}`}>
                 {formatImplementationStatus(selectedRecord.fileName)}
                 {formatImplementationStatus(selectedRecord.fileName) !== "3D表示対応" &&
                   "。ファイル自体は保存され、対応可能な場合はテキストプレビューを表示します。"}
               </p>
               {selectedRecord.description && (
-                <p className="my-3 whitespace-pre-wrap text-sm">{selectedRecord.description}</p>
+                <p className="mb-2 whitespace-pre-wrap text-sm">{selectedRecord.description}</p>
               )}
               {selectedRecord.category === "molecular" && (
                 <MoleculeStructureViewer
@@ -386,9 +401,9 @@ export default function DataLibrary() {
                 />
               )}
               {supportsCadProcess && (
-                <section className="mt-4 border-t border-gray-200 pt-4">
-                  <h4 className="font-semibold">確認プロセス（{selectedProcessSteps.length}工程）</h4>
-                  <label className="mt-3 block text-sm">
+                <section className="border-t border-gray-200">
+                  <h4 className="font-semibold mb-2">確認プロセス（{selectedProcessSteps.length}工程）</h4>
+                  <label className="mb-2 block text-sm">
                     この表示で確認すること・作業内容
                     <textarea
                       className="mt-1 block w-full rounded border border-gray-300 p-2"
@@ -417,7 +432,7 @@ export default function DataLibrary() {
                   {selectedProcessSteps.length > 0 && (
                     <ol className="mt-4 space-y-3">
                       {selectedProcessSteps.map((step, index) => (
-                        <li key={step.id} className="rounded border border-gray-200 p-3">
+                        <li key={step.id} className="rounded border border-gray-200 mb-4 p-3">
                           <div className="flex items-start justify-between gap-2">
                             <div>
                               <p className="font-medium">工程 {index + 1}</p>
@@ -435,10 +450,31 @@ export default function DataLibrary() {
                           </div>
                           <p className="my-2 whitespace-pre-wrap text-sm">{step.description}</p>
                           <img
-                            className="max-h-80 max-w-full rounded border border-gray-100 object-contain"
-                            src={convertFileSrc(step.snapshotPath)}
+                            className="mb-2 max-h-80 max-w-full rounded border border-gray-100 object-contain"
+                            src={`${convertFileSrc(step.snapshotPath)}?v=${encodeURIComponent(
+                              step.updatedAt ?? step.createdAt,
+                            )}`}
                             alt={`工程 ${index + 1} の3D表示スナップショット`}
                           />
+                          <button
+                            type="button"
+                            onClick={() =>
+                              setEditingStepId((current) =>
+                                current === step.id ? null : step.id,
+                              )
+                            }
+                          >
+                            {editingStepId === step.id ? "画像加工を閉じる" : "画像に注釈"}
+                          </button>
+                          {editingStepId === step.id && selectedRecord && (
+                            <CadSnapshotEditor
+                              key={step.id}
+                              storedName={selectedRecord.storedName}
+                              snapshotId={step.id}
+                              onClose={() => setEditingStepId(null)}
+                              onSaved={() => markProcessStepEdited(step.id)}
+                            />
+                          )}
                         </li>
                       ))}
                     </ol>

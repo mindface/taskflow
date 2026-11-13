@@ -255,7 +255,7 @@ export default function CadModelViewer({
           aria-label={`${fileName}の3Dモデル`}
         />
       </div>
-      <p className="mt-1 text-xs text-gray-500">
+      <p className="p-2 text-xs text-gray-500">
         ドラッグで回転、スクロールで拡大・縮小できます。元のファイルは変更せず保存されています。
       </p>
     </section>
