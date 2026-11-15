@@ -39,7 +39,7 @@ function App() {
     console.log(import.meta.env)
   };
 
-  const backendClass = isProduction ? "min-h-screen bg-gradient-to-br from-green-100 via-white to-blue-100" : "bg-slate-100";
+  const backendClass = isProduction ? "min-h-screen bg-gradient-to-br from-green-100 via-white to-blue-100" : "bg-slate-100 border-8 border-indigo-600";
 
   return (
       <div

@@ -1,11 +1,10 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
 import { invoke } from "@tauri-apps/api/core";
 import { NoteData } from '../models/Notes';
 import 'github-markdown-css/github-markdown.css';
 import '../styles/markdown.css';
 import MarkdownSourceInfo from '../components/MarkdownSourceInfo';
+import MarkdownRenderer from '../components/MarkdownRenderer';
 
 export default function PreviewWindow() {
   const [title, setTitle] = useState('プレビュー準備中...');
@@ -70,9 +69,7 @@ export default function PreviewWindow() {
               sourcePath="同期されたメモ本文（ファイルパスなし）"
               location="プレビューウィンドウ"
             />
-            <ReactMarkdown remarkPlugins={[remarkGfm]}>
-              {content}
-            </ReactMarkdown>
+            <MarkdownRenderer>{content}</MarkdownRenderer>
           </>
         ) : (
           <p style={{ color: '#666', fontStyle: 'italic' }}>

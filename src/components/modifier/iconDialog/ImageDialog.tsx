@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import CoreDialog from "../../core/CoreDialog"
-import { convertFileSrc } from "@tauri-apps/api/core"
 import ImageElement from "./../ImageElement"
 import ImageIcon from "../../../assets/image.svg";
 
 export default function ImageDialog() {
   const [isOpen, setIsOpen] = useState(false);
   const [images, setImages] = useState<string[]>([]);
+  const [copyStatus, setCopyStatus] = useState("");
   const directory = "taskFllow/images";
 
   const DialogHandler = () => {
@@ -55,8 +55,26 @@ export default function ImageDialog() {
     loadImages();
   };
 
+  const copyToClipboard = async (text: string, message: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopyStatus(message);
+    } catch (error) {
+      console.error("Failed to copy image reference:", error);
+      setCopyStatus("クリップボードへのコピーに失敗しました。");
+    }
+  }
+
   const imageCopyPath = (imagePath: string) => {
-    navigator.clipboard.writeText(imagePath);
+    void copyToClipboard(imagePath, "画像URLをコピーしました。");
+  }
+
+  const imageCopyMarkdown = (imagePath: string, alt: string) => {
+    const escapedAlt = alt.replace(/[\\[\]]/g, "\\$&");
+    void copyToClipboard(
+      `![${escapedAlt}](<${imagePath}>)`,
+      "Markdown形式の画像リンクをコピーしました。",
+    );
   }
 
   return (
@@ -73,6 +91,11 @@ export default function ImageDialog() {
         onClose={() => setIsOpen(false)}
       >
         <div className="space-y-4">
+          {copyStatus && (
+            <p className="text-sm text-gray-600" role="status">
+              {copyStatus}
+            </p>
+          )}
           <div className="pb-4">
             <input
               type="file"
@@ -82,14 +105,13 @@ export default function ImageDialog() {
           </div>
           <div className="grid grid-cols-3 gap-2 p-8">
             {images.map((img) => {
-              const path = `${directory}/${img}`;
-              const src = convertFileSrc(path);
               return (
-                <div key={img} className="relative">
+                <div key={img} className="relative border border-gray-100 rounded-lg p-2">
                   <ImageElement
                     imagePath={img}
                     deleteImage={(path) => { deleteImage(path) }}
                     copyPath={(path) => { imageCopyPath(path) }}
+                    copyMarkdown={(path, alt) => { imageCopyMarkdown(path, alt) }}
                   />
                 </div>
               );
