@@ -1,0 +1,130 @@
+.header-page-link {
+  padding: 4px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  color: var(--color-base);
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+.header-page-link:hover {
+  background: var(--color-base);
+  color: var(--color-white);
+}
+
+.header-page-window-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  pointer-events: none;
+}
+
+.header-page-window {
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  min-width: min(360px, calc(100vw - 32px));
+  min-height: min(180px, calc(100vh - 32px));
+  max-width: calc(100vw - 32px);
+  max-height: calc(100vh - 32px);
+  overflow: hidden;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  background: white;
+  box-shadow: 0 20px 60px rgb(15 23 42 / 30%);
+  pointer-events: auto;
+}
+
+.header-page-window__titlebar {
+  display: flex;
+  min-height: 48px;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 6px 12px 6px 16px;
+  border-bottom: 1px solid #e2e8f0;
+  background: #f8fafc;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+
+.header-page-window__titlebar:active {
+  cursor: grabbing;
+}
+
+.header-page-window__titlebar h2 {
+  overflow: hidden;
+  color: #1e293b;
+  font-size: 15px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.header-page-window__titlebar button {
+  flex: 0 0 auto;
+  padding: 4px 10px;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  color: #475569;
+  font-size: 22px;
+}
+
+.header-page-window__titlebar button:hover {
+  background: #e2e8f0;
+}
+
+.header-page-window__content {
+  min-height: 0;
+  flex: 1 1 auto;
+  overflow: auto;
+  padding: 16px;
+}
+
+.header-page-window__resize-handle {
+  position: absolute;
+  top: 48px;
+  right: 0;
+  bottom: 10px;
+  width: 10px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  cursor: ew-resize;
+  touch-action: none;
+}
+
+.header-page-window__height-resize-handle {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 10px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  cursor: ns-resize;
+  touch-action: none;
+}
+
+.header-page-window__resize-handle:hover,
+.header-page-window__resize-handle:focus-visible,
+.header-page-window__height-resize-handle:hover,
+.header-page-window__height-resize-handle:focus-visible {
+  background: rgb(54 139 242 / 16%);
+}
+
+@media (max-width: 480px) {
+  .header-page-window__content {
+    padding: 12px;
+  }
+}
