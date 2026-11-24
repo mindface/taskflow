@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
 import MarkdownSourceInfo from "./MarkdownSourceInfo";
+import MarkdownRenderer from "./MarkdownRenderer";
 
 export default function Guidelines() {
   const [content, setContent] = useState("")
@@ -24,9 +23,7 @@ export default function Guidelines() {
           sourcePath="/md/homeview.md"
           location="ホーム画面のガイドライン"
         />
-        <ReactMarkdown
-          remarkPlugins={[remarkGfm]}
-        >{content}</ReactMarkdown>
+        <MarkdownRenderer>{content}</MarkdownRenderer>
       </div>
     </div>
   );

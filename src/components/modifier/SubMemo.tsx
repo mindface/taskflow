@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
 import { useLocalStorageStore } from "../../store/localStorage";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
 import CoreDialog from "../core/CoreDialog";
 import MarkdownSourceInfo from "../MarkdownSourceInfo";
+import MarkdownRenderer from "../MarkdownRenderer";
 
 type FishingLog = {
   id: string;
@@ -114,9 +113,7 @@ export default function SubMemo() {
               sourcePath="/md/homeview.md"
               location="サブメモ画面のプレビュー"
             />
-            <ReactMarkdown remarkPlugins={[remarkGfm]}>
-              {mdcontent}
-            </ReactMarkdown>
+            <MarkdownRenderer>{mdcontent}</MarkdownRenderer>
           </div>
         </div>
       </div>

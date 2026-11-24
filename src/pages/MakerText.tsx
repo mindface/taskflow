@@ -3,8 +3,8 @@ import { invoke } from "@tauri-apps/api/core";
 import { sendNotification } from "@tauri-apps/plugin-notification";
 import { open } from "@tauri-apps/plugin-dialog";
 
-import ReactMarkdown from "react-markdown";
 import MarkdownSourceInfo from "../components/MarkdownSourceInfo";
+import MarkdownRenderer from "../components/MarkdownRenderer";
 
 export default function MakerText() {
   const [files, setFiles] = useState<string[]>([]);
@@ -144,7 +144,7 @@ export default function MakerText() {
                 sourcePath={`${directoryPath}/${selectedFile}`}
                 location="MakerTextのMarkdownプレビュー"
               />
-              <ReactMarkdown>{fileContent}</ReactMarkdown>
+              <MarkdownRenderer>{fileContent}</MarkdownRenderer>
             </div>
           }
           <div className="p-3">

@@ -345,7 +345,7 @@ export default function DataLibrary() {
               {records.map((record) => (
                 <li
                   key={record.id}
-                  className={`rounded border p-3 ${selectedId === record.id ? "border-blue-500 bg-blue-50" : "border-gray-200"}`}
+                  className={`rounded border mb-2 p-3 ${selectedId === record.id ? "border-blue-500 bg-blue-50" : "border-gray-200"}`}
                 >
                   <div className="flex items-start gap-2">
                     <button
@@ -401,7 +401,7 @@ export default function DataLibrary() {
                 />
               )}
               {supportsCadProcess && (
-                <section className="border-t border-gray-200">
+                <section className="border-gray-200">
                   <h4 className="font-semibold mb-2">確認プロセス（{selectedProcessSteps.length}工程）</h4>
                   <label className="mb-2 block text-sm">
                     この表示で確認すること・作業内容
